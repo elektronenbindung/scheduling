@@ -20,7 +20,7 @@
       <archive>
         <manifest>
           <addClasspath>true</addClasspath>
-          <mainClass>common.Main</mainClass>
+          <mainClass>scheduling.Main</mainClass>
         </manifest>
       </archive>
       <descriptorRefs>
