@@ -34,10 +34,10 @@ public class UI extends javax.swing.JFrame {
     }
 
     public void finished() {
-        controller = null;
-        startButton.setEnabled(true);
         stopButton.setEnabled(false);
         inputFile.requestFocus();
+        startButton.setEnabled(true);
+        controller = null;
     }
 
     public void println(String message) {
@@ -223,13 +223,15 @@ public class UI extends javax.swing.JFrame {
     }// GEN-LAST:event_fileChooserButtonActionPerformed
 
     private void startButtonPressed() {
-        outputConsole.setText(null);
-        startButton.setEnabled(false);
-        stopButton.setEnabled(true);
-        File input = new File(inputFile.getText());
-        controller = new Controller(input, this);
-        new Thread(controller).start();
-        inputFile.requestFocus();
+        if (controller == null) {
+            outputConsole.setText(null);
+            startButton.setEnabled(false);
+            stopButton.setEnabled(true);
+            File input = new File(inputFile.getText());
+            controller = new Controller(input, this);
+            new Thread(controller).start();
+            inputFile.requestFocus();
+        }
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
