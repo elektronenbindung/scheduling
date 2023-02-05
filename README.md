@@ -1,6 +1,6 @@
 # scheduling
 
-This is a software to schedule up to 9 employees in the so called "Arbeitgebermodell" for disabled people. As an input the program takes a spreadsheet which can be derivied from the ```scheduling.ots``` file in the root directory of this repository.
+This is a software to schedule up to 30 employees in the so called "Arbeitgebermodell" for disabled people. As an input the program takes a spreadsheet which can be derivied from the ```scheduling.ots``` file in the root directory of this repository.
 
 ## Prerequisites
 

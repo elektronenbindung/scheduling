@@ -1,7 +1,7 @@
 package scheduling;
 
 public class Config {
-    public final static int NUMBER_OF_EMPLOYEES = 9;
+    public final static int NUMBER_OF_EMPLOYEES = 30;
     public final static String FREE_DAY = "F";
     public final static String WORKING = "x";
     public final static String SINGLE_SHIFT = "E";
