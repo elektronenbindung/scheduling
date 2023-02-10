@@ -116,7 +116,7 @@ public class Solution {
     }
 
     private void calculateCostOfSolutionForMandatoryBlockShiftOnDay(int day) {
-        if ((!input.isChangeOfShiftAllowedOnDay(day)) && day < solution.length - 1
+        if ((!input.isMandatoryBlockShiftOnDay(day)) && day < solution.length - 1
                 && solution[day] != solution[day + 1]) {
             costsOfSolution = costsOfSolution + Config.PENALTY_FOR_UNWANTED_SHIFT;
         }

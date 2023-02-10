@@ -1,14 +1,18 @@
 package scheduling;
 
+import java.util.Random;
+
 public class TabuSearch {
     private TabuList tabuList;
     private boolean stopped;
     private Controller controller;
+    private Random random;
 
     public TabuSearch(Controller controller) {
         tabuList = new TabuList(Config.LENGTH_OF_TABU_LIST);
         stopped = false;
         this.controller = controller;
+        random = new Random();
     }
 
     public Solution run(SpreadsheetReader input, Solution initialSolution) {
@@ -59,7 +63,7 @@ public class TabuSearch {
     }
 
     private int getRandomDay(int lengthOfMonth) {
-        return (int) (Math.random() * lengthOfMonth);
+        return random.nextInt(lengthOfMonth);
     }
 
     public void stop() {

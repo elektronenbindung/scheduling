@@ -36,8 +36,7 @@ public class SpreadsheetWriter {
                 output[employee][day] = Config.WORKING;
             }
         }
-        int numberOfRows = 5 + Config.NUMBER_OF_EMPLOYEES;
-        Range range = sheet.getRange("B6:AF" + numberOfRows);
+        Range range = sheet.getRange("B6:AF" + Config.LAST_ROW_OF_SCHEDULE);
         range.setValues(output);
         SpreadSheet spreadSheet = input.getSpreadSheet();
         spreadSheet.save(outputFile);

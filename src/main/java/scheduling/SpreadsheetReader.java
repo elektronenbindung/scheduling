@@ -16,7 +16,7 @@ public class SpreadsheetReader {
     private int lengthOfMonth;
     private double[] maxLengthOfShiftPerEmployee;
     private boolean[] isFreeDay;
-    private boolean[] isChangeOfShiftAllowed;
+    private boolean[] isMandatoryBlockShiftOnDay;
     private Integer[] fixedEmployeeOnDay;
     private Boolean[][] isAvailablePerDay;
     private double[] daysToWorkInTotalPerEmployee;
@@ -83,8 +83,8 @@ public class SpreadsheetReader {
         return daysToWorkAtFreeDayPerEmployee[employee];
     }
 
-    public boolean isChangeOfShiftAllowedOnDay(int day) {
-        return isChangeOfShiftAllowed[day];
+    public boolean isMandatoryBlockShiftOnDay(int day) {
+        return isMandatoryBlockShiftOnDay[day];
     }
 
     public void run() throws IOException {
@@ -92,7 +92,7 @@ public class SpreadsheetReader {
         sheet = spreadSheet.getSheet(0);
         lengthOfMonth = calculateDaysInMonth();
         isFreeDay = calculateIsFreeDay();
-        isChangeOfShiftAllowed = calculateIsChangeOfShiftAllowed();
+        isMandatoryBlockShiftOnDay = calculateIsMandatoryBlockShiftOnDay();
         maxLengthOfShiftPerEmployee = calculateMaxLengthOfShiftPerEmployee();
         isAvailablePerDay = calculateAvailability();
         fixedEmployeeOnDay = calculateFixedEmployees();
@@ -129,13 +129,13 @@ public class SpreadsheetReader {
     }
 
     private boolean[] calculateIsFreeDay() {
-        int numberOfRows = 6 + Config.NUMBER_OF_EMPLOYEES;
-        return calculateDayProperty(numberOfRows, Config.FREE_DAY);
+        int row = 1 + Config.LAST_ROW_OF_SCHEDULE;
+        return calculateDayProperty(row, Config.FREE_DAY);
     }
 
-    private boolean[] calculateIsChangeOfShiftAllowed() {
-        int numberOfRows = 7 + Config.NUMBER_OF_EMPLOYEES;
-        return calculateDayProperty(numberOfRows, Config.SINGLE_SHIFT);
+    private boolean[] calculateIsMandatoryBlockShiftOnDay() {
+        int row = 2 + Config.LAST_ROW_OF_SCHEDULE;
+        return calculateDayProperty(row, Config.SINGLE_SHIFT);
     }
 
     private Integer[] calculateFixedEmployees() {
@@ -187,8 +187,7 @@ public class SpreadsheetReader {
 
     private <T> void calculatePropertyForEmployeeOnDay(T[] result, int employee,
             ThreeFunction<Range, Integer, Integer, T> function) {
-        int numberOfRows = 5 + Config.NUMBER_OF_EMPLOYEES;
-        String a1Notation = "B6:AF" + numberOfRows;
+        String a1Notation = "B6:AF" + Config.LAST_ROW_OF_SCHEDULE;
         Range range = sheet.getRange(a1Notation);
 
         for (int day = 0; day < lengthOfMonth; day++) {
@@ -209,9 +208,9 @@ public class SpreadsheetReader {
         return calculateEmployeePreferencesOnSpreadsheet("AJ");
     }
 
-    private boolean[] calculateDayProperty(int numberOfRows, String property) {
+    private boolean[] calculateDayProperty(int row, String property) {
         boolean[] dayProperty = new boolean[lengthOfMonth];
-        String a1Notation = "B" + numberOfRows + ":AF" + numberOfRows;
+        String a1Notation = "B" + row + ":AF" + row;
         Range range = sheet.getRange(a1Notation);
         Object[] objects = range.getValues()[0];
 
@@ -224,8 +223,7 @@ public class SpreadsheetReader {
     }
 
     private double[] calculateEmployeePreferencesOnSpreadsheet(String rowInA1Notation) {
-        int numberOfRows = 5 + Config.NUMBER_OF_EMPLOYEES;
-        String a1Notation = rowInA1Notation + "6:" + rowInA1Notation + numberOfRows;
+        String a1Notation = rowInA1Notation + "6:" + rowInA1Notation + Config.LAST_ROW_OF_SCHEDULE;
         double[] preferencesPerEmployee = new double[Config.NUMBER_OF_EMPLOYEES];
         Range range = sheet.getRange(a1Notation);
         Object[][] values = range.getValues();
