@@ -26,7 +26,7 @@ public class TabuSearch {
             int randomDay2 = 0;
 
             while (numberOfRetry < Config.RETRYS_OF_FAILED_SOLUTION) {
-                if (stopped) {
+                if (stopped || currentlyBestSolution.getCosts() == 0) {
                     return currentlyBestSolution;
                 }
                 numberOfRetry++;

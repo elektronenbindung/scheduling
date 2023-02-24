@@ -24,9 +24,6 @@ public class Solution {
     }
 
     public void exchangeEmployeesOnDays(int day1, int day2) {
-        if (day1 < 0 || day1 > solution.length - 1 || day2 < 0 || day2 > solution.length - 1) {
-            throw new IllegalArgumentException("Invalid operation on a solution");
-        }
         costsOfSolution = -1;
         int changedEmployee = solution[day1];
         solution[day1] = solution[day2];
@@ -62,36 +59,27 @@ public class Solution {
 
             int interval = day - lastOccurenceOfEmployee[employee];
             lastOccurenceOfEmployee[employee] = day;
-            boolean hasIntervalCosts = true;
 
             if (interval == 1) {
-                hasIntervalCosts = calculateCostsForBlockShift(employee);
+                calculatePenaltyForBlockShift(employee);
             } else {
-                calculateCostOfSolutionForForbiddenShift(employee, interval);
+                calculatePenaltyForForbiddenShift(employee, interval);
             }
 
-            costsOfSolution = hasIntervalCosts ? costsOfSolution + getPartOfCostsOfSolution(interval, employee)
-                    : costsOfSolution;
+            calculateIntervalCosts(interval, employee);
         }
-        calculateCostOfSolutionForNextMonth(lastOccurenceOfEmployee);
 
         return costsOfSolution;
     }
 
-    private boolean calculateCostsForBlockShift(int employee) {
-        boolean hasIntervalCosts = true;
+    private void calculatePenaltyForBlockShift(int employee) {
         numberOfDirectFollowingShifts++;
         if (numberOfDirectFollowingShifts > input.getMaxLengthOfShiftPerEmployee(employee)) {
             costsOfSolution = costsOfSolution + Config.PENALTY_FOR_FORBIDDEN_SHIFT;
         }
-        if (input.getWishedLengthOfShiftForEmployee(employee) <= 0
-                || numberOfDirectFollowingShifts <= input.getWishedLengthOfShiftForEmployee(employee)) {
-            hasIntervalCosts = false;
-        }
-        return hasIntervalCosts;
     }
 
-    private void calculateCostOfSolutionForForbiddenShift(int employee, int interval) {
+    private void calculatePenaltyForForbiddenShift(int employee, int interval) {
         if (input.getMaxLengthOfShiftPerEmployee(employee) != 1
                 && (interval <= lengthOfLastBlockShiftForEmployee[employee] || interval == 2)) {
             costsOfSolution = costsOfSolution + Config.PENALTY_FOR_FORBIDDEN_SHIFT;
@@ -122,17 +110,14 @@ public class Solution {
         }
     }
 
-    private void calculateCostOfSolutionForNextMonth(int[] lastOccurenceOfEmployee) {
-        for (int employee = 0; employee < lastOccurenceOfEmployee.length; employee++) {
-            if (input.getWishedLengthOfShiftForEmployee(employee) > 0
-                    && input.getDaysToWorkInTotalForEmployee(employee) > 0) {
-                int interval = input.getLengthOfMonth() - lastOccurenceOfEmployee[employee];
-                costsOfSolution = costsOfSolution + getPartOfCostsOfSolution(interval, employee);
-            }
-        }
-    }
+    private void calculateIntervalCosts(int interval, int employee) {
+        boolean hasIntervalCosts = input.getWishedLengthOfShiftForEmployee(employee) > 0 && (interval != 1
+                || numberOfDirectFollowingShifts > input.getWishedLengthOfShiftForEmployee(employee));
 
-    private double getPartOfCostsOfSolution(int interval, int employee) {
-        return (Math.abs(interval - input.getExpectedDaysBetweenShiftsForEmployee(employee)));
+        if (hasIntervalCosts) {
+            double intervalCosts = Math.abs(interval - input.getExpectedDaysBetweenShiftsForEmployee(employee));
+            costsOfSolution = costsOfSolution + intervalCosts;
+        }
+
     }
 }
