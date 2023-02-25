@@ -62,12 +62,12 @@ public class TabuSearch {
         return currentlyBestSolution;
     }
 
-    private int getRandomDay(int lengthOfMonth) {
-        return random.nextInt(lengthOfMonth);
-    }
-
     public void stop() {
         stopped = true;
+    }
+
+    private int getRandomDay(int lengthOfMonth) {
+        return random.nextInt(lengthOfMonth);
     }
 
 }
