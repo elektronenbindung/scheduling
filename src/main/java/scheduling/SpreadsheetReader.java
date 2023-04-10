@@ -41,15 +41,14 @@ public class SpreadsheetReader {
     }
 
     public double getMaxLengthOfShiftPerEmployee(int employee) {
-        return maxLengthOfShiftPerEmployee[employee] > 0
+        double maxLengthOfShift = maxLengthOfShiftPerEmployee[employee] > 0
                 ? maxLengthOfShiftPerEmployee[employee]
                 : Config.DEFAULT_MAX_LENGTH_OF_SHIFT;
+        return Math.min(maxLengthOfShift, getDaysToWorkInTotalForEmployee(employee));
     }
 
     public double getWishedLengthOfShiftForEmployee(int employee) {
-        return wishedLengthOfShiftPerEmployee[employee] <= getMaxLengthOfShiftPerEmployee(employee)
-                ? wishedLengthOfShiftPerEmployee[employee]
-                : getMaxLengthOfShiftPerEmployee(employee);
+        return Math.min(wishedLengthOfShiftPerEmployee[employee], getMaxLengthOfShiftPerEmployee(employee));
     }
 
     public double getExpectedDaysBetweenShiftsForEmployee(int employee) {
@@ -93,10 +92,10 @@ public class SpreadsheetReader {
         lengthOfMonth = calculateDaysInMonth();
         isFreeDay = calculateIsFreeDay();
         isMandatoryBlockShiftOnDay = calculateIsMandatoryBlockShiftOnDay();
+        daysToWorkInTotalPerEmployee = calculateDaysToWorkInTotal();
         maxLengthOfShiftPerEmployee = calculateMaxLengthOfShiftPerEmployee();
         isAvailablePerDay = calculateAvailability();
         fixedEmployeeOnDay = calculateFixedEmployees();
-        daysToWorkInTotalPerEmployee = calculateDaysToWorkInTotal();
         daysToWorkAtFreeDayPerEmployee = calculateDaysToWorkAtFreeDay();
         wishedLengthOfShiftPerEmployee = calculateWishedLengthOfShiftPerEmployee();
         expectedDaysBetweenShiftsPerEmployee = calculateExpectedDaysBetweenShifts();
