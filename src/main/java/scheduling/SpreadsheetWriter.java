@@ -20,14 +20,15 @@ public class SpreadsheetWriter {
         File inputFile = input.getInputFile();
         String pathToOutputFile = inputFile.getAbsoluteFile().getParent() + File.separator
                 + inputFile.getName().split("\\.")[0] + "_output.ods";
-        File outputFile = new File(pathToOutputFile);
 
         controller.println("output file: " + pathToOutputFile);
 
-        if (outputFile.exists()) {
-            throw new Exception("The output file already exists and will not be overwritten");
-        }
-        Sheet sheet = input.getSheet();
+        String[][] output = getOutput();
+        saveOutput(pathToOutputFile, output);
+
+    }
+
+    private String[][] getOutput() {
         String[][] output = new String[Config.NUMBER_OF_EMPLOYEES][31];
 
         for (int day = 0; day < input.getLengthOfMonth(); day++) {
@@ -36,10 +37,18 @@ public class SpreadsheetWriter {
                 output[employee][day] = Config.WORKING;
             }
         }
+        return output;
+    }
+
+    private void saveOutput(String pathToOutputFile, String[][] output) throws Exception {
+        File outputFile = new File(pathToOutputFile);
+        if (outputFile.exists()) {
+            throw new Exception("The output file already exists and will not be overwritten");
+        }
+        Sheet sheet = input.getSheet();
         Range range = sheet.getRange("B6:AF" + Config.LAST_ROW_OF_SCHEDULE);
         range.setValues(output);
         SpreadSheet spreadSheet = input.getSpreadSheet();
         spreadSheet.save(outputFile);
-
     }
 }
