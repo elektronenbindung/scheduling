@@ -84,7 +84,7 @@ public class SpreadsheetReader {
     public void run() throws IOException {
         spreadSheet = new SpreadSheet(input);
         sheet = spreadSheet.getSheet(0);
-        lengthOfMonth = tools.calculateDaysInMonth();
+        lengthOfMonth = tools.calculateLengthOfMonth();
         isFreeDay = tools.calculateIsFreeDay();
         isMandatoryBlockShiftOnDay = tools.calculateIsMandatoryBlockShiftOnDay();
         daysToWorkInTotalPerEmployee = tools.calculateDaysToWorkInTotal();

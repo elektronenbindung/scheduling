@@ -10,11 +10,9 @@ import com.github.miachm.sods.Style;
 
 public class SpreadSheetReaderTools {
     private SpreadsheetReader reader;
-    private Integer[] fixedEmployeeOnDay;
 
     public SpreadSheetReaderTools(SpreadsheetReader reader) {
         this.reader = reader;
-        fixedEmployeeOnDay = null;
     }
 
     public double[] calculateMaxLengthOfShiftPerEmployee() {
@@ -47,7 +45,7 @@ public class SpreadSheetReaderTools {
         return expectedDaysBetweenShiftsPerEmployee;
     }
 
-    public int calculateDaysInMonth() {
+    public int calculateLengthOfMonth() {
         Range range = reader.getSheet().getRange("K1");
         LocalDate date = (LocalDate) range.getValue();
         return date.lengthOfMonth();
@@ -65,12 +63,11 @@ public class SpreadSheetReaderTools {
 
     public Integer[] calculateFixedEmployees() {
         Integer[] result = new Integer[reader.getLengthOfMonth()];
-        fixedEmployeeOnDay = result;
         Arrays.fill(result, -1);
 
         for (int employee = 0; employee < Config.NUMBER_OF_EMPLOYEES; employee++) {
             calculatePropertyForEmployeeOnDay(result, employee,
-                    getFunctionForCalculationOfFixedEmployees());
+                    getFunctionForCalculationOfFixedEmployees(result));
         }
         return result;
     }
@@ -132,7 +129,8 @@ public class SpreadSheetReaderTools {
         return preferencesPerEmployee;
     }
 
-    private ThreeFunction<Range, Integer, Integer, Integer> getFunctionForCalculationOfFixedEmployees() {
+    private ThreeFunction<Range, Integer, Integer, Integer> getFunctionForCalculationOfFixedEmployees(
+            Integer[] fixedEmployeeOnDay) {
         return (Range range, Integer employee, Integer day) -> {
             int date = day + 1;
             Object[][] values = range.getValues();
@@ -145,7 +143,7 @@ public class SpreadSheetReaderTools {
             if (isWorking && fixedEmployeeOnDay[day] != -1) {
                 throw new IllegalArgumentException("Two employees are working on day " + date);
             }
-            return isWorking ? employee : fixedEmployeeOnDay[day];
+            return isWorking ? employee : -1;
         };
     }
 
