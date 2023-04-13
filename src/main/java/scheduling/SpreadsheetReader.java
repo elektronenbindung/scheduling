@@ -13,7 +13,7 @@ public class SpreadsheetReader {
     private int lengthOfMonth;
     private double[] maxLengthOfShiftPerEmployee;
     private boolean[] isFreeDay;
-    private boolean[] isMandatoryBlockShiftOnDay;
+    private boolean[] isSingleSShiftAllowedOnDay;
     private Integer[] fixedEmployeeOnDay;
     private Boolean[][] isAvailablePerDay;
     private double[] daysToWorkInTotalPerEmployee;
@@ -77,8 +77,8 @@ public class SpreadsheetReader {
         return daysToWorkAtFreeDayPerEmployee[employee];
     }
 
-    public boolean isMandatoryBlockShiftOnDay(int day) {
-        return isMandatoryBlockShiftOnDay[day];
+    public boolean isSingleShiftAllowedOnDay(int day) {
+        return isSingleSShiftAllowedOnDay[day];
     }
 
     public void run() throws IOException {
@@ -86,7 +86,7 @@ public class SpreadsheetReader {
         sheet = spreadSheet.getSheet(0);
         lengthOfMonth = tools.calculateLengthOfMonth();
         isFreeDay = tools.calculateIsFreeDay();
-        isMandatoryBlockShiftOnDay = tools.calculateIsMandatoryBlockShiftOnDay();
+        isSingleSShiftAllowedOnDay = tools.calculateIsSingleShiftAllowedOnDay();
         daysToWorkInTotalPerEmployee = tools.calculateDaysToWorkInTotal();
         maxLengthOfShiftPerEmployee = tools.calculateMaxLengthOfShiftPerEmployee();
         isAvailablePerDay = tools.calculateAvailability();

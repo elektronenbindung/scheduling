@@ -6,12 +6,14 @@ public class Controller implements Runnable {
     private File inputFile;
     private SpreadsheetReader inputReader;
     private UI ui;
+    private boolean inUIMode;
     private TabuSearch tabuSearch;
 
     public Controller(File file, UI ui) {
         inputFile = file;
         this.ui = ui;
         tabuSearch = new TabuSearch(this);
+        this.inUIMode = ui != null;
     }
 
     public void run() {
@@ -28,13 +30,13 @@ public class Controller implements Runnable {
                 println("Error: " + exception.getMessage());
             }
         }
-        if (this.ui != null) {
+        if (inUIMode) {
             ui.finished();
         }
     }
 
     public void println(String message) {
-        if (this.ui != null) {
+        if (inUIMode) {
             ui.println(message);
         } else {
             System.out.println(message);
