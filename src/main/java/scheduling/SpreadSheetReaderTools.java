@@ -24,7 +24,7 @@ public class SpreadSheetReaderTools {
             return Math.min(maxLengthOfShift, reader.getDaysToWorkInTotalForEmployee(employee));
         };
 
-        return IntStream.range(0, result.length - 1).mapToDouble(function).toArray();
+        return IntStream.range(0, result.length).mapToDouble(function).toArray();
 
     }
 
@@ -92,7 +92,7 @@ public class SpreadSheetReaderTools {
     public double[] calculateWishedLengthOfShiftPerEmployee() {
         double[] result = calculateEmployeePreferencesOnSpreadsheet("AJ");
 
-        return IntStream.range(0, result.length - 1)
+        return IntStream.range(0, result.length)
                 .mapToDouble(employee -> Math.min(result[employee], reader.getMaxLengthOfShiftPerEmployee(employee)))
                 .toArray();
     }
