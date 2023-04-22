@@ -25,7 +25,7 @@ public class SpreadsheetReaderToolsHelper {
             if (isWorking && fixedEmployeeOnDay[day] != -1) {
                 throw new IllegalArgumentException("Two employees are working on day " + date);
             }
-            return isWorking ? employee : -1;
+            return isWorking ? employee : fixedEmployeeOnDay[day];
         };
     }
 
