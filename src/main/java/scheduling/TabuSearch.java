@@ -35,22 +35,11 @@ public class TabuSearch {
                 numberOfRetry++;
                 randomDay1 = getRandomDay(input.getLengthOfMonth());
                 randomDay2 = getRandomDay(input.getLengthOfMonth());
-                Tuple tuple = new Tuple(randomDay1, randomDay2);
 
-                if (isExchangeOFShiftAllowedOnDay(currenSolution, randomDay1, randomDay2, tuple)) {
-                    continue;
-                }
-                int employee1 = currenSolution.getEmployeeForDay(randomDay1);
-                int employee2 = currenSolution.getEmployeeForDay(randomDay2);
-
-                boolean areEmployeesAvailable = input.getIsEmployeeAvailableOnDay(employee1, randomDay2)
-                        && input.getIsEmployeeAvailableOnDay(employee2, randomDay1);
-
-                if (!areEmployeesAvailable) {
+                if (!isSwapOfShiftAllowed(currenSolution, randomDay1, randomDay2)) {
                     continue;
                 }
                 currenSolution.exchangeEmployeesOnDays(randomDay1, randomDay2);
-                tabuList.add(tuple);
 
                 if (currenSolution.getCosts() < currentlyBestSolution.getCosts()) {
                     controller.println("Costs of solution: " + currenSolution.getCosts());
@@ -68,18 +57,42 @@ public class TabuSearch {
         stopped = true;
     }
 
-    private boolean isExchangeOFShiftAllowedOnDay(Solution currenSolution, int day1, int day2, Tuple tuple) {
+    private boolean isSwapOfShiftAllowed(Solution currenSolution, int day1, int day2) {
+        Tuple tuple = new Tuple(day1, day2);
+
+        if (areDaysForbidden(day1, day2, tuple) || isAtLeastOneEmployeeUnavailable(currenSolution, day1, day2)
+                || isAtLeastOnEmployeeFixed(currenSolution, day1, day2)) {
+            return false;
+        }
+
+        tabuList.add(tuple);
+
+        return true;
+    }
+
+    private boolean areDaysForbidden(int day1, int day2, Tuple tuple) {
+        boolean areDaysForbidden = day1 == day2
+                || tabuList.contains(tuple)
+                || input.isFreeDay(day1) != input.isFreeDay(day2);
+        return areDaysForbidden;
+    }
+
+    private boolean isAtLeastOneEmployeeUnavailable(Solution currentSolution, int day1, int day2) {
+        int employee1 = currentSolution.getEmployeeForDay(day1);
+        int employee2 = currentSolution.getEmployeeForDay(day2);
+
+        return !(input.getIsEmployeeAvailableOnDay(employee1, day2)
+                && input.getIsEmployeeAvailableOnDay(employee2, day1));
+    }
+
+    private boolean isAtLeastOnEmployeeFixed(Solution currenSolution, int day1, int day2) {
         boolean isEmployeeFixedOnDay1 = input.getEmployeeOnFixedDay(day1) != -1
                 && currenSolution.getEmployeeForDay(day1) == input.getEmployeeOnFixedDay(day1);
 
         boolean isEmployeeFixedOnDay2 = input.getEmployeeOnFixedDay(day2) != -1
                 && currenSolution.getEmployeeForDay(day2) == input.getEmployeeOnFixedDay(day2);
 
-        return day1 == day2
-                || tabuList.contains(tuple)
-                || isEmployeeFixedOnDay1
-                || isEmployeeFixedOnDay2
-                || input.isFreeDay(day1) != input.isFreeDay(day2);
+        return isEmployeeFixedOnDay1 || isEmployeeFixedOnDay2;
     }
 
     private int getRandomDay(int lengthOfMonth) {
