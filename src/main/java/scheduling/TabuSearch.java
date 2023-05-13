@@ -61,7 +61,7 @@ public class TabuSearch {
         Tuple tuple = new Tuple(day1, day2);
 
         if (areDaysForbidden(day1, day2, tuple) || isAtLeastOneEmployeeUnavailable(currenSolution, day1, day2)
-                || isAtLeastOnEmployeeFixed(currenSolution, day1, day2)) {
+                || isAtLeastOneEmployeeFixed(currenSolution, day1, day2)) {
             return false;
         }
 
@@ -85,7 +85,7 @@ public class TabuSearch {
                 && input.getIsEmployeeAvailableOnDay(employee2, day1));
     }
 
-    private boolean isAtLeastOnEmployeeFixed(Solution currenSolution, int day1, int day2) {
+    private boolean isAtLeastOneEmployeeFixed(Solution currenSolution, int day1, int day2) {
         boolean isEmployeeFixedOnDay1 = input.getEmployeeOnFixedDay(day1) != -1
                 && currenSolution.getEmployeeForDay(day1) == input.getEmployeeOnFixedDay(day1);
 
