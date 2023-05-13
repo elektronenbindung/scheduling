@@ -1,4 +1,4 @@
-package scheduling;
+package scheduling.common;
 
 public class Config {
     public final static int NUMBER_OF_EMPLOYEES = 30;

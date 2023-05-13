@@ -1,4 +1,4 @@
-package scheduling;
+package scheduling.tabuSearch;
 
 public class Tuple {
     private int x, y;

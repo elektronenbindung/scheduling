@@ -11,6 +11,8 @@ import javax.swing.JFileChooser;
 import javax.swing.filechooser.FileNameExtensionFilter;
 import javax.swing.text.DefaultCaret;
 
+import scheduling.common.Controller;
+
 /**
  *
  * @author christian

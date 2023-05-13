@@ -1,4 +1,4 @@
-package scheduling;
+package scheduling.matching;
 
 public class Day implements Vertex {
 

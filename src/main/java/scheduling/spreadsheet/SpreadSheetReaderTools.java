@@ -1,10 +1,12 @@
-package scheduling;
+package scheduling.spreadsheet;
 
 import java.time.LocalDate;
 import java.util.Arrays;
 import java.util.function.IntToDoubleFunction;
 import java.util.stream.IntStream;
 import com.github.miachm.sods.Range;
+
+import scheduling.common.Config;
 
 public class SpreadSheetReaderTools {
     private SpreadsheetReader reader;

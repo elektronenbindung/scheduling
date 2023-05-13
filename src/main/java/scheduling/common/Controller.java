@@ -1,6 +1,12 @@
-package scheduling;
+package scheduling.common;
 
 import java.io.File;
+
+import scheduling.UI;
+import scheduling.matching.Matching;
+import scheduling.spreadsheet.SpreadsheetReader;
+import scheduling.spreadsheet.SpreadsheetWriter;
+import scheduling.tabuSearch.TabuSearch;
 
 public class Controller implements Runnable {
     private File inputFile;

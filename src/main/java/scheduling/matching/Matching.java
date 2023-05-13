@@ -1,4 +1,4 @@
-package scheduling;
+package scheduling.matching;
 
 import java.util.Arrays;
 import java.util.HashSet;
@@ -9,6 +9,10 @@ import org.jgrapht.Graph;
 import org.jgrapht.alg.matching.MaximumWeightBipartiteMatching;
 import org.jgrapht.graph.DefaultWeightedEdge;
 import org.jgrapht.graph.builder.GraphTypeBuilder;
+
+import scheduling.common.Config;
+import scheduling.common.Solution;
+import scheduling.spreadsheet.SpreadsheetReader;
 
 public class Matching {
 

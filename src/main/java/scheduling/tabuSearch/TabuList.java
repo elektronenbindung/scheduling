@@ -1,4 +1,4 @@
-package scheduling;
+package scheduling.tabuSearch;
 
 import java.util.Arrays;
 

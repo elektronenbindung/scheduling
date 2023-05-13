@@ -1,4 +1,4 @@
-package scheduling;
+package scheduling.matching;
 
 public class Worker implements Vertex {
 

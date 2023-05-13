@@ -1,9 +1,13 @@
-package scheduling;
+package scheduling.spreadsheet;
 
 import java.io.File;
 import com.github.miachm.sods.Range;
 import com.github.miachm.sods.Sheet;
 import com.github.miachm.sods.SpreadSheet;
+
+import scheduling.common.Config;
+import scheduling.common.Controller;
+import scheduling.common.Solution;
 
 public class SpreadsheetWriter {
     private SpreadsheetReader input;

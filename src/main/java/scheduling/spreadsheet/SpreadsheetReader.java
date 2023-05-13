@@ -1,4 +1,4 @@
-package scheduling;
+package scheduling.spreadsheet;
 
 import java.io.File;
 import java.io.IOException;

@@ -1,6 +1,11 @@
-package scheduling;
+package scheduling.tabuSearch;
 
 import java.util.Random;
+
+import scheduling.common.Config;
+import scheduling.common.Controller;
+import scheduling.common.Solution;
+import scheduling.spreadsheet.SpreadsheetReader;
 
 public class TabuSearch {
     private TabuList tabuList;

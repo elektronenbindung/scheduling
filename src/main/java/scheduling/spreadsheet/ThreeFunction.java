@@ -1,4 +1,4 @@
-package scheduling;
+package scheduling.spreadsheet;
 
 @FunctionalInterface
 interface ThreeFunction<One, Two, Three, Four> {

@@ -2,6 +2,8 @@ package scheduling;
 
 import java.io.File;
 
+import scheduling.common.Controller;
+
 public final class Main {
 
     private Main() {

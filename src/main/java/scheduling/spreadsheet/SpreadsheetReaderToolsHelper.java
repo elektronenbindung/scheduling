@@ -1,7 +1,9 @@
-package scheduling;
+package scheduling.spreadsheet;
 
 import com.github.miachm.sods.Range;
 import com.github.miachm.sods.Style;
+
+import scheduling.common.Config;
 
 public class SpreadsheetReaderToolsHelper {
 

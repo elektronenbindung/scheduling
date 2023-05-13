@@ -1,6 +1,8 @@
-package scheduling;
+package scheduling.common;
 
 import java.util.Arrays;
+
+import scheduling.spreadsheet.SpreadsheetReader;
 
 public class Solution {
     private int[] solution;
