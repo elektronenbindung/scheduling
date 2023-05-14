@@ -1,10 +1,10 @@
 package scheduling.matching;
 
-public class Worker implements Vertex {
+public class Employee implements Vertex {
 
     private final int employeeNumber;
 
-    public Worker(int employeeNumber) {
+    public Employee(int employeeNumber) {
         this.employeeNumber = employeeNumber;
     }
 
