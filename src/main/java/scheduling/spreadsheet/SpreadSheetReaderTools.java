@@ -99,7 +99,7 @@ public class SpreadSheetReaderTools {
                 .toArray();
     }
 
-    public boolean[] calculateDayProperty(int row, String property) {
+    private boolean[] calculateDayProperty(int row, String property) {
         boolean[] dayProperty = new boolean[reader.getLengthOfMonth()];
         String a1Notation = "B" + row + ":AF" + row;
         Range range = reader.getSheet().getRange(a1Notation);
@@ -113,7 +113,7 @@ public class SpreadSheetReaderTools {
         return dayProperty;
     }
 
-    public double[] calculateEmployeePreferencesOnSpreadsheet(String rowInA1Notation) {
+    private double[] calculateEmployeePreferencesOnSpreadsheet(String rowInA1Notation) {
         String a1Notation = rowInA1Notation + "6:" + rowInA1Notation + Config.LAST_ROW_OF_SCHEDULE;
         double[] preferencesPerEmployee = new double[Config.NUMBER_OF_EMPLOYEES];
         Range range = reader.getSheet().getRange(a1Notation);

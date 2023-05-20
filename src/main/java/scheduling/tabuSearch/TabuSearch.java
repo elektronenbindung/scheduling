@@ -62,6 +62,10 @@ public class TabuSearch {
         stopped = true;
     }
 
+    private int getRandomDay(int lengthOfMonth) {
+        return random.nextInt(lengthOfMonth);
+    }
+
     private boolean isSwapOfShiftAllowed(Solution currenSolution, int day1, int day2) {
         Tuple tuple = new Tuple(day1, day2);
 
@@ -98,10 +102,6 @@ public class TabuSearch {
                 && currenSolution.getEmployeeForDay(day2) == input.getEmployeeOnFixedDay(day2);
 
         return isEmployeeFixedOnDay1 || isEmployeeFixedOnDay2;
-    }
-
-    private int getRandomDay(int lengthOfMonth) {
-        return random.nextInt(lengthOfMonth);
     }
 
 }

@@ -54,22 +54,23 @@ public class Matching {
     }
 
     private void addEmployeesToGraph() {
-        for (int employeeNumber = 0; employeeNumber < Config.NUMBER_OF_EMPLOYEES; employeeNumber++) {
-            for (int shift = 0; shift < inputReader.getDaysToWorkInTotalForEmployee(employeeNumber); shift++) {
-                Employee employee = new Employee(employeeNumber);
-                employeesSet.add(employee);
-                graph.addVertex(employee);
-                int weightForFreeDay = shift < inputReader.getDaysToWorkAtFreeDayForEmployee(employeeNumber)
+        for (int employee = 0; employee < Config.NUMBER_OF_EMPLOYEES; employee++) {
+            for (int shiftNumber = 0; shiftNumber < inputReader
+                    .getDaysToWorkInTotalForEmployee(employee); shiftNumber++) {
+                Shift shift = new Shift(employee);
+                employeesSet.add(shift);
+                graph.addVertex(shift);
+                int weightForFreeDay = shiftNumber < inputReader.getDaysToWorkAtFreeDayForEmployee(employee)
                         ? Config.WEIGHT_FOR_FREE_DAY
                         : Config.WEIGHT_FOR_NORMAL_DAY;
                 for (int day = 0; day < days.length; day++) {
-                    if (inputReader.getIsEmployeeAvailableOnDay(employeeNumber, day)) {
+                    if (inputReader.getIsEmployeeAvailableOnDay(employee, day)) {
                         int weight = inputReader.isFreeDay(day) ? weightForFreeDay : Config.WEIGHT_FOR_NORMAL_DAY;
-                        weight = inputReader.getEmployeeOnFixedDay(day) == employeeNumber
+                        weight = inputReader.getEmployeeOnFixedDay(day) == employee
                                 ? weight + Config.WEIGHT_FOR_FIXED_DAY
                                 : weight;
-                        graph.addEdge(employee, days[day]);
-                        graph.setEdgeWeight(employee, days[day], weight);
+                        graph.addEdge(shift, days[day]);
+                        graph.setEdgeWeight(shift, days[day], weight);
                     }
                 }
             }
@@ -90,11 +91,11 @@ public class Matching {
 
         while (iterator.hasNext()) {
             DefaultWeightedEdge edge = iterator.next();
-            Employee employee = (Employee) graph.getEdgeSource(edge);
+            Shift shift = (Shift) graph.getEdgeSource(edge);
             Day day = (Day) graph.getEdgeTarget(edge);
-            int employeeNumber = employee.getEmployeeNumber();
+            int employee = shift.getEmployee();
             int dayNumber = day.getDayNumber();
-            solution[dayNumber] = employeeNumber;
+            solution[dayNumber] = employee;
         }
         return new Solution(solution, inputReader);
     }

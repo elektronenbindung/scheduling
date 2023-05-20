@@ -74,6 +74,31 @@ public class Solution {
         return costs;
     }
 
+    private void initializeForCalculationOfCosts() {
+        costs = 0;
+        Arrays.fill(lastOccurenceOfEmployee, -1);
+
+        Arrays.fill(lengthOfLastBlockShiftForEmployee, 1);
+
+        numberOfDirectFollowingShifts = 1;
+    }
+
+    private void initializeNextBlockShift(int day) {
+        int previousEmployee = solution[day - 1];
+        if (previousEmployee != -1) {
+            lengthOfLastBlockShiftForEmployee[previousEmployee] = numberOfDirectFollowingShifts;
+        }
+        numberOfDirectFollowingShifts = 1;
+    }
+
+    private double calculateCostsForMandatoryBlockShiftOnDay(int day) {
+        if ((!input.isSingleShiftAllowedOnDay(day)) && day < solution.length - 1
+                && solution[day] != solution[day + 1]) {
+            return Config.PENALTY_FOR_UNWANTED_SHIFT;
+        }
+        return 0;
+    }
+
     private double calculatePenaltyForBlockShift(int employee) {
         numberOfDirectFollowingShifts++;
         if (numberOfDirectFollowingShifts > input.getMaxLengthOfShiftPerEmployee(employee)) {
@@ -90,14 +115,6 @@ public class Solution {
         return 0;
     }
 
-    private double calculateCostsForMandatoryBlockShiftOnDay(int day) {
-        if ((!input.isSingleShiftAllowedOnDay(day)) && day < solution.length - 1
-                && solution[day] != solution[day + 1]) {
-            return Config.PENALTY_FOR_UNWANTED_SHIFT;
-        }
-        return 0;
-    }
-
     private double calculateIntervalCosts(int interval, int employee) {
         boolean hasIntervalCosts = input.getWishedLengthOfShiftForEmployee(employee) > 0 && (interval != 1
                 || numberOfDirectFollowingShifts > input.getWishedLengthOfShiftForEmployee(employee));
@@ -107,23 +124,6 @@ public class Solution {
             return intervalCosts;
         }
         return 0;
-    }
-
-    private void initializeNextBlockShift(int day) {
-        int previousEmployee = solution[day - 1];
-        if (previousEmployee != -1) {
-            lengthOfLastBlockShiftForEmployee[previousEmployee] = numberOfDirectFollowingShifts;
-        }
-        numberOfDirectFollowingShifts = 1;
-    }
-
-    private void initializeForCalculationOfCosts() {
-        costs = 0;
-        Arrays.fill(lastOccurenceOfEmployee, -1);
-
-        Arrays.fill(lengthOfLastBlockShiftForEmployee, 1);
-
-        numberOfDirectFollowingShifts = 1;
     }
 
 }
