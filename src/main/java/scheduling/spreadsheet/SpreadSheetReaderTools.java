@@ -66,10 +66,11 @@ public class SpreadSheetReaderTools {
     public Integer[] calculateFixedEmployees() {
         Integer[] result = new Integer[reader.getLengthOfMonth()];
         Arrays.fill(result, -1);
+        helper.setFixedEmployeeOnDay(result);
 
         for (int employee = 0; employee < Config.NUMBER_OF_EMPLOYEES; employee++) {
-            calculatePropertyForEmployeeOnDay(result, employee,
-                    helper.getFunctionForCalculationOfFixedEmployees(result));
+            calculatePropertyForEmployeeOnDays(result, employee,
+                    helper.getFunctionForCalculationOfFixedEmployees());
         }
         return result;
     }
@@ -77,7 +78,7 @@ public class SpreadSheetReaderTools {
     public Boolean[][] calculateAvailability() {
         Boolean[][] result = new Boolean[Config.NUMBER_OF_EMPLOYEES][reader.getLengthOfMonth()];
         for (int employee = 0; employee < Config.NUMBER_OF_EMPLOYEES; employee++) {
-            calculatePropertyForEmployeeOnDay(result[employee], employee,
+            calculatePropertyForEmployeeOnDays(result[employee], employee,
                     helper.getFunctionForCalculationOfAvailableEmployees());
         }
         return result;
@@ -131,7 +132,7 @@ public class SpreadSheetReaderTools {
         return preferencesPerEmployee;
     }
 
-    private <T> void calculatePropertyForEmployeeOnDay(T[] result, int employee,
+    private <T> void calculatePropertyForEmployeeOnDays(T[] result, int employee,
             ThreeFunction<Range, Integer, Integer, T> function) {
         String a1Notation = "B6:AF" + Config.LAST_ROW_OF_SCHEDULE;
         Range range = reader.getSheet().getRange(a1Notation);

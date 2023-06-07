@@ -8,13 +8,14 @@ import scheduling.common.Config;
 public class SpreadsheetReaderToolsHelper {
 
     private SpreadsheetReader reader;
+    private Integer[] fixedEmployeeOnDay;
 
     public SpreadsheetReaderToolsHelper(SpreadsheetReader reader) {
         this.reader = reader;
+        this.fixedEmployeeOnDay = null;
     }
 
-    public ThreeFunction<Range, Integer, Integer, Integer> getFunctionForCalculationOfFixedEmployees(
-            Integer[] fixedEmployeeOnDay) {
+    public ThreeFunction<Range, Integer, Integer, Integer> getFunctionForCalculationOfFixedEmployees() {
         return (Range range, Integer employee, Integer day) -> {
             int date = day + 1;
             Object[][] values = range.getValues();
@@ -38,5 +39,9 @@ public class SpreadsheetReaderToolsHelper {
 
             return canWork;
         };
+    }
+
+    public void setFixedEmployeeOnDay(Integer[] fixedEmployeeOnDay) {
+        this.fixedEmployeeOnDay = fixedEmployeeOnDay;
     }
 }
