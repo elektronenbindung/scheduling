@@ -117,7 +117,7 @@ public class Solution {
 
     private double calculateIntervalCosts(int interval, int employee) {
         boolean hasIntervalCosts = input.getWishedLengthOfShiftForEmployee(employee) > 0 && (interval != 1
-                || numberOfDirectFollowingShifts > input.getWishedLengthOfShiftForEmployee(employee));
+                || numberOfDirectFollowingShifts > Math.ceil(input.getWishedLengthOfShiftForEmployee(employee)));
 
         if (hasIntervalCosts) {
             double intervalCosts = Math.abs(interval - input.getExpectedDaysBetweenShiftsForEmployee(employee));
