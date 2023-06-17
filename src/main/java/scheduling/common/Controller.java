@@ -38,6 +38,8 @@ public class Controller implements Runnable {
         }
         if (inUIMode) {
             ui.finished();
+        } else {
+            System.exit(0);
         }
     }
 

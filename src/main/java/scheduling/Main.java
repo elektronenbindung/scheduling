@@ -3,6 +3,7 @@ package scheduling;
 import java.io.File;
 
 import scheduling.common.Controller;
+import scheduling.common.Config;
 
 public final class Main {
 
@@ -13,14 +14,32 @@ public final class Main {
         if (args.length != 1) {
             System.out.println(
                     "Hint: Provide exactly one single paramter on console as an input file - Using UI instead");
-            new UI().setVisible(true);
+            new UI(getVersion()).setVisible(true);
         } else {
+            if (args[0].equals(Config.VERSION)) {
+                System.out.println("version: " + getVersion());
+                System.exit(0);
+            }
             File input = new File(args[0]);
             Controller controller = new Controller(input, null);
-            controller.run();
-            System.exit(0);
+            new Thread(controller).start();
+            System.out.println("You can quit by typing '" + Config.QUIT + "'");
+
+            while (true) {
+                String line = System.console().readLine();
+
+                if (line.equals(Config.QUIT)) {
+                    controller.stop();
+                }
+            }
         }
 
+    }
+
+    private static String getVersion() {
+        Package mainPackage = Main.class.getPackage();
+        String version = mainPackage.getImplementationVersion();
+        return version;
     }
 
 }
