@@ -12,7 +12,7 @@ public class Config {
     public final static int WEIGHT_FOR_FREE_DAY = 2;
     public final static int MAX_UNSUCCESSFUL_RETRYS_OF_TABU_SEARCH = 80000000;
     public final static int RETRYS_OF_FAILED_SOLUTION = 3;
-    public final static int LENGTH_OF_TABU_LIST = 4;
+    public final static int LENGTH_OF_TABU_LIST = 10;
     public final static int DEFAULT_MAX_LENGTH_OF_SHIFT = 31;
     public final static double PENALTY_FOR_FORBIDDEN_SHIFT = 10000;
     public final static double PENALTY_FOR_UNWANTED_SHIFT = 300;
