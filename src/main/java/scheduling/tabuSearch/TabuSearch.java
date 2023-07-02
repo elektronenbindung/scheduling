@@ -15,7 +15,7 @@ public class TabuSearch {
     private SpreadsheetReader input;
 
     public TabuSearch(Controller controller) {
-        tabuList = new TabuList(Config.LENGTH_OF_TABU_LIST);
+        tabuList = new TabuList();
         stopped = false;
         this.controller = controller;
         random = new Random();
@@ -28,16 +28,20 @@ public class TabuSearch {
         controller.println("Initial costs of solution: " + currentlyBestSolution.getCosts());
         Solution currenSolution = currentlyBestSolution.createCopy();
 
-        for (int numberOfUnsuccessfulRetry = 0; numberOfUnsuccessfulRetry < Config.MAX_UNSUCCESSFUL_RETRYS_OF_TABU_SEARCH; numberOfUnsuccessfulRetry++) {
-            int numberOfRetry = 0;
+        for (int numberOfRetry = 0; numberOfRetry < Config.MAX_RETRYS_OF_TABU_SEARCH; numberOfRetry++) {
+            if (numberOfRetry % Config.RESIZE_OF_TABU_LIST == 0) {
+                tabuList.resize();
+            }
+
+            int numberOfInvalidRetry = 0;
             int randomDay1 = 0;
             int randomDay2 = 0;
 
-            while (numberOfRetry < Config.RETRYS_OF_FAILED_SOLUTION) {
+            while (numberOfInvalidRetry < Config.RETRYS_OF_INVALID_SOLUTION) {
                 if (stopped || currentlyBestSolution.getCosts() == 0) {
                     return currentlyBestSolution;
                 }
-                numberOfRetry++;
+                numberOfInvalidRetry++;
                 randomDay1 = getRandomDay(input.getLengthOfMonth());
                 randomDay2 = getRandomDay(input.getLengthOfMonth());
 
@@ -49,7 +53,7 @@ public class TabuSearch {
                 if (currenSolution.getCosts() < currentlyBestSolution.getCosts()) {
                     controller.println("Costs of solution: " + currenSolution.getCosts());
                     currentlyBestSolution = currenSolution;
-                    numberOfUnsuccessfulRetry = 0;
+                    numberOfRetry = 0;
                     currenSolution = currentlyBestSolution.createCopy();
                 }
                 break;
