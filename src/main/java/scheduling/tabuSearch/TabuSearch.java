@@ -46,6 +46,10 @@ public class TabuSearch {
                 randomDay2 = getRandomDay(input.getLengthOfMonth());
 
                 if (!isSwapOfShiftAllowed(currenSolution, randomDay1, randomDay2)) {
+                    if (numberOfInvalidRetry == Config.RETRYS_OF_INVALID_SOLUTION) {
+                        currenSolution = currentlyBestSolution.createCopy();
+                        tabuList.reset();
+                    }
                     continue;
                 }
                 currenSolution.exchangeEmployeesOnDays(randomDay1, randomDay2);

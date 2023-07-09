@@ -53,4 +53,9 @@ public class TabuList {
         }
         currentLength = newLength;
     }
+
+    public void reset() {
+        Arrays.fill(tabuList, null);
+        nextElement = 0;
+    }
 }
