@@ -15,7 +15,7 @@ public class TabuSearch {
     private SpreadsheetReader input;
 
     public TabuSearch(Controller controller) {
-        tabuList = new TabuList();
+        tabuList = new TabuList(Config.LENGTH_OF_TABU_LIST);
         stopped = false;
         this.controller = controller;
         random = new Random();
@@ -28,11 +28,7 @@ public class TabuSearch {
         controller.println("Initial costs of solution: " + currentlyBestSolution.getCosts());
         Solution currenSolution = currentlyBestSolution.createCopy();
 
-        for (int numberOfRetry = 0; numberOfRetry < Config.MAX_RETRYS_OF_TABU_SEARCH; numberOfRetry++) {
-            if (numberOfRetry % Config.RESIZE_OF_TABU_LIST == 0) {
-                tabuList.resize();
-            }
-
+        for (int numberOfUnsuccessfulRetry = 0; numberOfUnsuccessfulRetry < Config.MAX_RETRYS_OF_TABU_SEARCH; numberOfUnsuccessfulRetry++) {
             int numberOfInvalidRetry = 0;
             int randomDay1 = 0;
             int randomDay2 = 0;
@@ -57,7 +53,7 @@ public class TabuSearch {
                 if (currenSolution.getCosts() < currentlyBestSolution.getCosts()) {
                     controller.println("Costs of solution: " + currenSolution.getCosts());
                     currentlyBestSolution = currenSolution;
-                    numberOfRetry = 0;
+                    numberOfUnsuccessfulRetry = 0;
                     currenSolution = currentlyBestSolution.createCopy();
                 }
                 break;

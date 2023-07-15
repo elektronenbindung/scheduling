@@ -10,11 +10,9 @@ public class Config {
     public final static int WEIGHT_FOR_NORMAL_DAY = 1;
     public final static int WEIGHT_FOR_FIXED_DAY = 100;
     public final static int WEIGHT_FOR_FREE_DAY = 2;
-    public final static int RETRYS_OF_INVALID_SOLUTION = 5;
     public final static int MAX_RETRYS_OF_TABU_SEARCH = 80000000;
-    public final static int MIN_LENGTH_OF_TABU_LIST = 5;
-    public final static int MAX_LENGTH_OF_TABU_LIST = 15;
-    public final static int RESIZE_OF_TABU_LIST = MAX_RETRYS_OF_TABU_SEARCH / 10000;
+    public final static int RETRYS_OF_INVALID_SOLUTION = 5;
+    public final static int LENGTH_OF_TABU_LIST = 10;
     public final static int DEFAULT_MAX_LENGTH_OF_SHIFT = 31;
     public final static double PENALTY_FOR_FORBIDDEN_SHIFT = 10000;
     public final static double PENALTY_FOR_UNWANTED_SHIFT = 300;
