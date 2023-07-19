@@ -48,7 +48,7 @@ public class SpreadSheetReaderTools {
     }
 
     public int calculateLengthOfMonth() {
-        Range range = reader.getSheet().getRange("K1");
+        Range range = reader.getSheet().getRange("L1");
         LocalDate date = (LocalDate) range.getValue();
         return date.lengthOfMonth();
     }
