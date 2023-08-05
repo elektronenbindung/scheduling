@@ -50,8 +50,8 @@ public class TabuSearch {
                             controller.stop();
                         } else {
                             currenSolution = currenSolution.createCopy();
+                            tabuList.reset();
                         }
-                        tabuList.reset();
                     }
                     continue;
                 }
