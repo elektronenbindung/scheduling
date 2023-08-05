@@ -9,6 +9,7 @@ import scheduling.spreadsheet.SpreadsheetReader;
 
 public class TabuSearch {
     private TabuList tabuList;
+    private SolutionList solutionList;
     private boolean stopped;
     private Controller controller;
     private Random random;
@@ -16,6 +17,7 @@ public class TabuSearch {
 
     public TabuSearch(Controller controller) {
         tabuList = new TabuList(Config.LENGTH_OF_TABU_LIST);
+        solutionList = new SolutionList(Config.LENGTH_OF_SOLUTION_LIST);
         stopped = false;
         this.controller = controller;
         random = new Random();
@@ -43,7 +45,12 @@ public class TabuSearch {
 
                 if (!isSwapOfShiftAllowed(currenSolution, randomDay1, randomDay2)) {
                     if (numberOfInvalidRetry == Config.RETRYS_OF_INVALID_SOLUTION) {
-                        currenSolution = currentlyBestSolution.createCopy();
+                        currenSolution = solutionList.getPreviouSolution();
+                        if (currenSolution == null) {
+                            controller.stop();
+                        } else {
+                            currenSolution = currenSolution.createCopy();
+                        }
                         tabuList.reset();
                     }
                     continue;
@@ -52,6 +59,7 @@ public class TabuSearch {
 
                 if (currenSolution.getCosts() < currentlyBestSolution.getCosts()) {
                     controller.println("Costs of solution: " + currenSolution.getCosts());
+                    solutionList.addSolution(currenSolution);
                     currentlyBestSolution = currenSolution;
                     numberOfUnsuccessfulRetry = 0;
                     currenSolution = currentlyBestSolution.createCopy();
