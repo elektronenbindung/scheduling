@@ -47,7 +47,7 @@ public class TabuSearch {
                     if (numberOfInvalidRetry == Config.RETRYS_OF_INVALID_SOLUTION) {
                         currenSolution = solutionList.getPreviouSolution();
                         if (currenSolution == null) {
-                            controller.stop();
+                            return currentlyBestSolution;
                         } else {
                             currenSolution = currenSolution.createCopy();
                             tabuList.reset();
