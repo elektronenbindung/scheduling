@@ -11,21 +11,21 @@ public class Solution {
     private int[] lastOccurenceOfEmployee;
     private int[] lengthOfLastBlockShiftForEmployee;
     private int numberOfDirectFollowingShifts;
-    private int numberOfRevisits;
+    private int numberOfRetrys;
 
     public Solution(int[] solution, SpreadsheetReader input) {
         this.solution = solution;
         this.input = input;
         costs = -1;
-        numberOfRevisits = 0;
+        numberOfRetrys = 0;
         lastOccurenceOfEmployee = new int[Config.NUMBER_OF_EMPLOYEES];
         lengthOfLastBlockShiftForEmployee = new int[Config.NUMBER_OF_EMPLOYEES];
         numberOfDirectFollowingShifts = 1;
     }
 
-    public boolean canBeRevisited() {
-        if (numberOfRevisits < Config.MAX_RETRYS_OF_SOLUTION) {
-            numberOfRevisits++;
+    public boolean canBeRetried() {
+        if (numberOfRetrys < Config.MAX_RETRYS_OF_SOLUTION) {
+            numberOfRetrys++;
             return true;
         }
         return false;

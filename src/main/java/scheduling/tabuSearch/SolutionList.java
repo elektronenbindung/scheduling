@@ -20,7 +20,7 @@ public class SolutionList {
         int currentSolution = getNextPointer(nextElement);
 
         while (currentSolution != nextElement && solutionList[currentSolution] != null) {
-            if (solutionList[currentSolution].canBeRevisited()) {
+            if (solutionList[currentSolution].canBeRetried()) {
                 return solutionList[currentSolution];
             }
             currentSolution = getNextPointer(currentSolution);
