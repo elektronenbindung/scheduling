@@ -29,6 +29,7 @@ public class TabuSearch {
         Solution currentlyBestSolution = initialSolution;
         controller.println("Initial costs of solution: " + currentlyBestSolution.getCosts());
         Solution currenSolution = currentlyBestSolution.createCopy();
+        solutionList.add(currentlyBestSolution);
 
         for (int numberOfUnsuccessfulRetry = 0; numberOfUnsuccessfulRetry < Config.MAX_RETRYS_OF_TABU_SEARCH; numberOfUnsuccessfulRetry++) {
             int numberOfInvalidRetry = 0;
@@ -59,7 +60,7 @@ public class TabuSearch {
 
                 if (currenSolution.getCosts() < currentlyBestSolution.getCosts()) {
                     controller.println("Costs of solution: " + currenSolution.getCosts());
-                    solutionList.addSolution(currenSolution);
+                    solutionList.add(currenSolution);
                     currentlyBestSolution = currenSolution;
                     numberOfUnsuccessfulRetry = 0;
                     currenSolution = currentlyBestSolution.createCopy();

@@ -11,7 +11,7 @@ public class SolutionList {
         nextElement = 0;
     }
 
-    public void addSolution(Solution solution) {
+    public void add(Solution solution) {
         solutionList[nextElement] = solution;
         nextElement = (nextElement + 1) % solutionList.length;
     }
