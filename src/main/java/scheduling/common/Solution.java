@@ -12,9 +12,11 @@ public class Solution {
     private int[] lengthOfLastBlockShiftForEmployee;
     private int numberOfDirectFollowingShifts;
     private int numberOfRetrys;
+    private int[] numberOfFreeDaysForEmployee;
 
-    public Solution(int[] solution, SpreadsheetReader input) {
+    public Solution(int[] solution, int[] numberOfFreeDaysForEmployee, SpreadsheetReader input) {
         this.solution = solution;
+        this.numberOfFreeDaysForEmployee = numberOfFreeDaysForEmployee;
         this.input = input;
         costs = -1;
         numberOfRetrys = 0;
@@ -42,8 +44,20 @@ public class Solution {
         solution[day2] = changedEmployee;
     }
 
+    public void exchangeFreeDayBetweenEmployees(int fromDay, int toDay) {
+        int fromEmployee = getEmployeeForDay(fromDay);
+        int toEmployee = getEmployeeForDay(toDay);
+        numberOfFreeDaysForEmployee[fromEmployee] = numberOfFreeDaysForEmployee[fromEmployee]--;
+        numberOfFreeDaysForEmployee[toEmployee] = numberOfFreeDaysForEmployee[toEmployee]++;
+    }
+
+    public int getNumberOfFreeDaysForEmployee(int employee) {
+        return numberOfFreeDaysForEmployee[employee];
+    }
+
     public Solution createCopy() {
-        return new Solution(Arrays.copyOf(solution, solution.length), input);
+        return new Solution(Arrays.copyOf(solution, solution.length),
+                Arrays.copyOf(numberOfFreeDaysForEmployee, numberOfFreeDaysForEmployee.length), input);
     }
 
     public double getCosts() {

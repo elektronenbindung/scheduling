@@ -97,7 +97,19 @@ public class Matching {
             int dayNumber = day.getDayNumber();
             solution[dayNumber] = employee;
         }
-        return new Solution(solution, inputReader);
+        int[] numberOfFreeDaysForEmployee = getNumberOfFreeDaysForEmployee(solution);
+        return new Solution(solution, numberOfFreeDaysForEmployee, inputReader);
+    }
+
+    private int[] getNumberOfFreeDaysForEmployee(int[] solution) {
+        int[] numberOfFreeDaysForEmployee = new int[Config.NUMBER_OF_EMPLOYEES];
+
+        for (int day = 0; day < inputReader.getLengthOfMonth(); day++) {
+            if (inputReader.isFreeDay(day)) {
+                numberOfFreeDaysForEmployee[solution[day]] = numberOfFreeDaysForEmployee[solution[day]]++;
+            }
+        }
+        return numberOfFreeDaysForEmployee;
     }
 
 }

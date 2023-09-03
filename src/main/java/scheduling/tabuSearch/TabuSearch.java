@@ -56,6 +56,11 @@ public class TabuSearch {
                     }
                     continue;
                 }
+
+                if (input.isFreeDay(randomDay1) != input.isFreeDay(randomDay2)) {
+                    currenSolution.exchangeFreeDayBetweenEmployees(randomDay1, randomDay2);
+                }
+
                 currenSolution.exchangeEmployeesOnDays(randomDay1, randomDay2);
 
                 if (currenSolution.getCosts() < currentlyBestSolution.getCosts()) {
@@ -82,7 +87,8 @@ public class TabuSearch {
     private boolean isSwapOfShiftAllowed(Solution currenSolution, int day1, int day2) {
         Tuple tuple = new Tuple(day1, day2);
 
-        if (areDaysForbidden(day1, day2, tuple) || isAtLeastOneEmployeeUnavailable(currenSolution, day1, day2)
+        if (areDaysForbidden(day1, day2, tuple, currenSolution)
+                || isAtLeastOneEmployeeUnavailable(currenSolution, day1, day2)
                 || isAtLeastOneEmployeeFixed(currenSolution, day1, day2)) {
             return false;
         }
@@ -92,11 +98,26 @@ public class TabuSearch {
         return true;
     }
 
-    private boolean areDaysForbidden(int day1, int day2, Tuple tuple) {
+    private boolean areDaysForbidden(int day1, int day2, Tuple tuple, Solution currentSolution) {
+
         boolean areDaysForbidden = day1 == day2
                 || tabuList.contains(tuple)
-                || input.isFreeDay(day1) != input.isFreeDay(day2);
+                || areFreeDaysForbidden(day1, day2, currentSolution);
         return areDaysForbidden;
+    }
+
+    private boolean areFreeDaysForbidden(int fromDay, int toDay, Solution currentSolution) {
+        if (input.isFreeDay(fromDay) == input.isFreeDay(toDay)) {
+            return false;
+        }
+        int employeeOnFromDay = currentSolution.getEmployeeForDay(fromDay);
+        int employeeOnToDay = currentSolution.getEmployeeForDay(toDay);
+
+        int numberOfFreeDaysForEmployeeOnFromDay = currentSolution.getNumberOfFreeDaysForEmployee(employeeOnFromDay);
+        int numberOfFreeDaysForEmployeeOnToDay = currentSolution.getNumberOfFreeDaysForEmployee(employeeOnToDay);
+
+        return numberOfFreeDaysForEmployeeOnFromDay <= input.getDaysToWorkAtFreeDayForEmployee(employeeOnFromDay)
+                || numberOfFreeDaysForEmployeeOnToDay >= input.getDaysToWorkAtFreeDayForEmployee(employeeOnToDay);
     }
 
     private boolean isAtLeastOneEmployeeUnavailable(Solution currentSolution, int day1, int day2) {
