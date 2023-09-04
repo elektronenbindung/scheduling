@@ -116,8 +116,12 @@ public class TabuSearch {
         int numberOfFreeDaysForEmployeeOnFromDay = currentSolution.getNumberOfFreeDaysForEmployee(employeeOnFromDay);
         int numberOfFreeDaysForEmployeeOnToDay = currentSolution.getNumberOfFreeDaysForEmployee(employeeOnToDay);
 
-        return numberOfFreeDaysForEmployeeOnFromDay <= input.getDaysToWorkAtFreeDayForEmployee(employeeOnFromDay)
-                || numberOfFreeDaysForEmployeeOnToDay >= input.getDaysToWorkAtFreeDayForEmployee(employeeOnToDay);
+        boolean canFreeDayBeMovedFrom = numberOfFreeDaysForEmployeeOnFromDay > input
+                .getDaysToWorkAtFreeDayForEmployee(employeeOnFromDay);
+        boolean canFreeDayBeMovedTo = numberOfFreeDaysForEmployeeOnToDay < input
+                .getDaysToWorkAtFreeDayForEmployee(employeeOnToDay);
+
+        return (!canFreeDayBeMovedFrom) && (!canFreeDayBeMovedTo);
     }
 
     private boolean isAtLeastOneEmployeeUnavailable(Solution currentSolution, int day1, int day2) {

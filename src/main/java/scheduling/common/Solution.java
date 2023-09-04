@@ -47,8 +47,8 @@ public class Solution {
     public void exchangeFreeDayBetweenEmployees(int fromDay, int toDay) {
         int fromEmployee = getEmployeeForDay(fromDay);
         int toEmployee = getEmployeeForDay(toDay);
-        numberOfFreeDaysForEmployee[fromEmployee] = numberOfFreeDaysForEmployee[fromEmployee]--;
-        numberOfFreeDaysForEmployee[toEmployee] = numberOfFreeDaysForEmployee[toEmployee]++;
+        numberOfFreeDaysForEmployee[fromEmployee]--;
+        numberOfFreeDaysForEmployee[toEmployee]++;
     }
 
     public int getNumberOfFreeDaysForEmployee(int employee) {
