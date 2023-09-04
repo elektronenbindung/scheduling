@@ -106,7 +106,7 @@ public class Matching {
 
         for (int day = 0; day < inputReader.getLengthOfMonth(); day++) {
             if (inputReader.isFreeDay(day)) {
-                numberOfFreeDaysForEmployee[solution[day]] = numberOfFreeDaysForEmployee[solution[day]]++;
+                numberOfFreeDaysForEmployee[solution[day]]++;
             }
         }
         return numberOfFreeDaysForEmployee;

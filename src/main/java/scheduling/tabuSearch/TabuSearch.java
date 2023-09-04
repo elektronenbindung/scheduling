@@ -110,15 +110,16 @@ public class TabuSearch {
         if (input.isFreeDay(fromDay) == input.isFreeDay(toDay)) {
             return false;
         }
+
+        if (input.isFreeDay(toDay)) {
+            return true;
+        }
+
         int employeeOnFromDay = currentSolution.getEmployeeForDay(fromDay);
         int employeeOnToDay = currentSolution.getEmployeeForDay(toDay);
 
         int numberOfFreeDaysForEmployeeOnFromDay = currentSolution.getNumberOfFreeDaysForEmployee(employeeOnFromDay);
         int numberOfFreeDaysForEmployeeOnToDay = currentSolution.getNumberOfFreeDaysForEmployee(employeeOnToDay);
-
-        if (input.isFreeDay(toDay)) {
-            return true;
-        }
 
         boolean canFreeDayBeMovedFrom = numberOfFreeDaysForEmployeeOnFromDay > input
                 .getDaysToWorkAtFreeDayForEmployee(employeeOnFromDay);
