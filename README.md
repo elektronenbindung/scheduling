@@ -25,4 +25,4 @@ Right now there are the following features:
 
 ## Known issues
 
-When yo copy the result of the program from the output file to the input file, you will lose the borders of the schedule. It is recommended to just copy the text and not the whole content. This is an issue of the library that deals with spreadsheet.
+When you copy the result of the program from the output file to the input file, you will lose the borders of the schedule. It is recommended to just copy the text and not the whole content. This is an issue of the library that deals with spreadsheet.
