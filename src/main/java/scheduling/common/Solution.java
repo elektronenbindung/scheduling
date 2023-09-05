@@ -8,10 +8,10 @@ public class Solution {
     private int[] solution;
     private double costs;
     private SpreadsheetReader input;
-    private int[] lastOccurenceOfEmployee;
+    private int[] lastOccurrenceOfEmployee;
     private int[] lengthOfLastBlockShiftForEmployee;
     private int numberOfDirectFollowingShifts;
-    private int numberOfRetrys;
+    private int numberOfRetries;
     private int[] numberOfFreeDaysForEmployee;
 
     public Solution(int[] solution, int[] numberOfFreeDaysForEmployee, SpreadsheetReader input) {
@@ -19,15 +19,15 @@ public class Solution {
         this.numberOfFreeDaysForEmployee = numberOfFreeDaysForEmployee;
         this.input = input;
         costs = -1;
-        numberOfRetrys = 0;
-        lastOccurenceOfEmployee = new int[Config.NUMBER_OF_EMPLOYEES];
+        numberOfRetries = 0;
+        lastOccurrenceOfEmployee = new int[Config.NUMBER_OF_EMPLOYEES];
         lengthOfLastBlockShiftForEmployee = new int[Config.NUMBER_OF_EMPLOYEES];
         numberOfDirectFollowingShifts = 1;
     }
 
     public boolean canBeRetried() {
-        if (numberOfRetrys < Config.MAX_RETRYS_OF_SOLUTION) {
-            numberOfRetrys++;
+        if (numberOfRetries < Config.MAX_RETRIES_OF_SOLUTION) {
+            numberOfRetries++;
             return true;
         }
         return false;
@@ -78,13 +78,13 @@ public class Solution {
 
             costs = costs + calculateCostsForMandatoryBlockShiftOnDay(day);
 
-            if (lastOccurenceOfEmployee[employee] == -1) {
-                lastOccurenceOfEmployee[employee] = day;
+            if (lastOccurrenceOfEmployee[employee] == -1) {
+                lastOccurrenceOfEmployee[employee] = day;
                 continue;
             }
 
-            int interval = day - lastOccurenceOfEmployee[employee];
-            lastOccurenceOfEmployee[employee] = day;
+            int interval = day - lastOccurrenceOfEmployee[employee];
+            lastOccurrenceOfEmployee[employee] = day;
 
             if (interval == 1) {
                 costs = costs + calculatePenaltyForBlockShift(employee);
@@ -100,7 +100,7 @@ public class Solution {
 
     private void initializeForCalculationOfCosts() {
         costs = 0;
-        Arrays.fill(lastOccurenceOfEmployee, -1);
+        Arrays.fill(lastOccurrenceOfEmployee, -1);
 
         Arrays.fill(lengthOfLastBlockShiftForEmployee, 1);
 

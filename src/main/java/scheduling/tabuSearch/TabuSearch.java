@@ -28,15 +28,15 @@ public class TabuSearch {
         input = reader;
         Solution currentlyBestSolution = initialSolution;
         controller.println("Initial costs of solution: " + currentlyBestSolution.getCosts());
-        Solution currenSolution = currentlyBestSolution.createCopy();
+        Solution currentSolution = currentlyBestSolution.createCopy();
         solutionList.add(currentlyBestSolution);
 
-        for (int numberOfUnsuccessfulRetry = 0; numberOfUnsuccessfulRetry < Config.MAX_RETRYS_OF_TABU_SEARCH; numberOfUnsuccessfulRetry++) {
+        for (int numberOfUnsuccessfulRetry = 0; numberOfUnsuccessfulRetry < Config.MAX_RETRIES_OF_TABU_SEARCH; numberOfUnsuccessfulRetry++) {
             int numberOfInvalidRetry = 0;
             int randomDay1 = 0;
             int randomDay2 = 0;
 
-            while (numberOfInvalidRetry < Config.RETRYS_OF_INVALID_SOLUTION) {
+            while (numberOfInvalidRetry < Config.RETRIES_OF_INVALID_SOLUTION) {
                 if (stopped || currentlyBestSolution.getCosts() == 0) {
                     return currentlyBestSolution;
                 }
@@ -44,13 +44,13 @@ public class TabuSearch {
                 randomDay1 = getRandomDay(input.getLengthOfMonth());
                 randomDay2 = getRandomDay(input.getLengthOfMonth());
 
-                if (!isSwapOfShiftAllowed(currenSolution, randomDay1, randomDay2)) {
-                    if (numberOfInvalidRetry == Config.RETRYS_OF_INVALID_SOLUTION) {
-                        currenSolution = solutionList.getPreviouSolution();
-                        if (currenSolution == null) {
+                if (!isSwapOfShiftAllowed(currentSolution, randomDay1, randomDay2)) {
+                    if (numberOfInvalidRetry == Config.RETRIES_OF_INVALID_SOLUTION) {
+                        currentSolution = solutionList.getPreviouSolution();
+                        if (currentSolution == null) {
                             return currentlyBestSolution;
                         } else {
-                            currenSolution = currenSolution.createCopy();
+                            currentSolution = currentSolution.createCopy();
                             tabuList.reset();
                         }
                     }
@@ -58,17 +58,17 @@ public class TabuSearch {
                 }
 
                 if (input.isFreeDay(randomDay1) != input.isFreeDay(randomDay2)) {
-                    currenSolution.exchangeFreeDayBetweenEmployees(randomDay1, randomDay2);
+                    currentSolution.exchangeFreeDayBetweenEmployees(randomDay1, randomDay2);
                 }
 
-                currenSolution.exchangeEmployeesOnDays(randomDay1, randomDay2);
+                currentSolution.exchangeEmployeesOnDays(randomDay1, randomDay2);
 
-                if (currenSolution.getCosts() < currentlyBestSolution.getCosts()) {
-                    controller.println("Costs of solution: " + currenSolution.getCosts());
-                    solutionList.add(currenSolution);
-                    currentlyBestSolution = currenSolution;
+                if (currentSolution.getCosts() < currentlyBestSolution.getCosts()) {
+                    controller.println("Costs of solution: " + currentSolution.getCosts());
+                    solutionList.add(currentSolution);
+                    currentlyBestSolution = currentSolution;
                     numberOfUnsuccessfulRetry = 0;
-                    currenSolution = currentlyBestSolution.createCopy();
+                    currentSolution = currentlyBestSolution.createCopy();
                 }
                 break;
             }

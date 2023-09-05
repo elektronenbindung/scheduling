@@ -13,7 +13,7 @@ public final class Main {
     public static void main(String[] args) {
         if (args.length != 1) {
             System.out.println(
-                    "Hint: Provide exactly one single paramter on console as an input file - Using UI instead");
+                    "Hint: Provide exactly one single parameter on console as an input file - Using UI instead");
             new UI(getVersion()).setVisible(true);
         } else {
             if (args[0].equals(Config.VERSION)) {
