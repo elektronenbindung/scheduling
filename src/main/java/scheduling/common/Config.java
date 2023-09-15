@@ -13,7 +13,7 @@ public class Config {
     public final static int MAX_RETRIES_OF_TABU_SEARCH = 80000000;
     public final static int RETRIES_OF_INVALID_SOLUTION = 10;
     public final static int LENGTH_OF_TABU_LIST = 10;
-    public final static int MAX_RETRIES_OF_SOLUTION = 1000000;
+    public final static int MAX_RETRIES_OF_SOLUTION = 500000;
     public final static int LENGTH_OF_SOLUTION_LIST = 100;
     public final static int DEFAULT_MAX_LENGTH_OF_SHIFT = 31;
     public final static double PENALTY_FOR_FORBIDDEN_SHIFT = 10000;
