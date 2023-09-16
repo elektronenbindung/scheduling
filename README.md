@@ -4,7 +4,7 @@ This is a software to schedule up to 30 employees in the so called "Arbeitgeberm
 
 ## Prerequisites
 
-* The software runs on at least Java 11 or higher. The spreadsheet can be provided as an argument on console. If the program is started without any arguments on console or with one than more argument, the program starts with a user interface. The user then can select the input file via file chooser. Afterwards the user can hit ```ENTER``` or use the start button the run the program. The program terminates after some time and writes the result to an output file located in the same directory as the input file. In the user interface the customer can stop the program via the specific button. On command line the user can type ```:q```.  Then the output file is written immediately. However, it is recommended to let the program run until the end to get optimal results.
+* The software runs on at least Java 11 or higher. The spreadsheet can be provided as an argument on console. If the program is started without any arguments on console or with more than one argument, the program starts with a user interface. The user then can select the input file via file chooser. Afterwards the user can hit ```ENTER``` or use the start button the run the program. The program terminates after some time and writes the result to an output file located in the same directory as the input file. In the user interface the customer can stop the program via the specific button. On command line the user can type ```:q```.  Then the output file is written immediately. However, it is recommended to let the program run until the end to get optimal results.
 
 * To generate the spreadsheet and to show the result LibreOffice is needed.
 
