@@ -46,7 +46,7 @@ public class TabuSearch {
 
                 if (!isSwapOfShiftAllowed(currentSolution, randomDay1, randomDay2)) {
                     if (numberOfInvalidRetry == Config.RETRIES_OF_INVALID_SOLUTION) {
-                        currentSolution = solutionList.getPreviouSolution();
+                        currentSolution = solutionList.getPreviousSolution();
                         if (currentSolution == null) {
                             return currentlyBestSolution;
                         } else {

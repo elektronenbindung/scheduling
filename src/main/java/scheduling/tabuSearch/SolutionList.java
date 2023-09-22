@@ -16,7 +16,7 @@ public class SolutionList {
         nextElement = (nextElement + 1) % solutionList.length;
     }
 
-    public Solution getPreviouSolution() {
+    public Solution getPreviousSolution() {
         int currentSolution = getNextPointer(nextElement);
 
         while (currentSolution != nextElement && solutionList[currentSolution] != null) {
