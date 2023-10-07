@@ -12,7 +12,7 @@ public class Config {
     public final static int WEIGHT_FOR_FREE_DAY = 2;
     public final static int MAX_RETRIES_OF_TABU_SEARCH = 23000000;
     public final static int RETRIES_OF_INVALID_SOLUTION = 5;
-    public final static int LENGTH_OF_TABU_LIST = 10;
+    public final static int LENGTH_OF_TABU_LIST = 20;
     public final static int MAX_RETRIES_OF_SOLUTION = 700000;
     public final static int LENGTH_OF_SOLUTION_LIST = 30;
     public final static int DEFAULT_MAX_LENGTH_OF_SHIFT = 31;
