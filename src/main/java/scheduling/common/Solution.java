@@ -52,6 +52,9 @@ public class Solution {
     }
 
     public int getNumberOfFreeDaysForEmployee(int employee) {
+        if (employee == -1) {
+            return Config.DEFAULT_MAX_LENGTH_OF_SHIFT;
+        }
         return numberOfFreeDaysForEmployee[employee];
     }
 

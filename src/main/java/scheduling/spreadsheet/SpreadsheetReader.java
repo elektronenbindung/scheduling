@@ -2,6 +2,8 @@ package scheduling.spreadsheet;
 
 import java.io.File;
 import java.io.IOException;
+import scheduling.common.Config;
+
 import com.github.miachm.sods.Sheet;
 import com.github.miachm.sods.SpreadSheet;
 
@@ -74,6 +76,9 @@ public class SpreadsheetReader {
     }
 
     public double getDaysToWorkAtFreeDayForEmployee(int employee) {
+        if (employee == -1) {
+            return Config.DEFAULT_MAX_LENGTH_OF_SHIFT;
+        }
         return daysToWorkAtFreeDayPerEmployee[employee];
     }
 
