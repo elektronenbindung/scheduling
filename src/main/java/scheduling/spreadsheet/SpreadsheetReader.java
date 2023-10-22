@@ -2,7 +2,6 @@ package scheduling.spreadsheet;
 
 import java.io.File;
 import java.io.IOException;
-import scheduling.common.Config;
 
 import com.github.miachm.sods.Sheet;
 import com.github.miachm.sods.SpreadSheet;
