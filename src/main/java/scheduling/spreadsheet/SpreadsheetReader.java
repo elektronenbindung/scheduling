@@ -76,9 +76,6 @@ public class SpreadsheetReader {
     }
 
     public double getDaysToWorkAtFreeDayForEmployee(int employee) {
-        if (employee == -1) {
-            return Config.DEFAULT_MAX_LENGTH_OF_SHIFT;
-        }
         return daysToWorkAtFreeDayPerEmployee[employee];
     }
 

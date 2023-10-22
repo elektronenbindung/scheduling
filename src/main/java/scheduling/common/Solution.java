@@ -47,14 +47,16 @@ public class Solution {
     public void exchangeFreeDayBetweenEmployees(int fromDay, int toDay) {
         int fromEmployee = getEmployeeForDay(fromDay);
         int toEmployee = getEmployeeForDay(toDay);
-        numberOfFreeDaysForEmployee[fromEmployee]--;
-        numberOfFreeDaysForEmployee[toEmployee]++;
+
+        if (fromEmployee != -1) {
+            numberOfFreeDaysForEmployee[fromEmployee]--;
+        }
+        if (toEmployee != -1) {
+            numberOfFreeDaysForEmployee[toEmployee]++;
+        }
     }
 
     public int getNumberOfFreeDaysForEmployee(int employee) {
-        if (employee == -1) {
-            return Config.DEFAULT_MAX_LENGTH_OF_SHIFT;
-        }
         return numberOfFreeDaysForEmployee[employee];
     }
 

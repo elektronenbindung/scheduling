@@ -33,6 +33,7 @@ public class Controller implements Runnable {
                 solution = tabuSearch.run(inputReader, solution);
                 new SpreadsheetWriter(inputReader, solution, this).run();
             } catch (Exception exception) {
+                exception.printStackTrace();
                 println("Error: " + exception.getMessage());
             }
         }

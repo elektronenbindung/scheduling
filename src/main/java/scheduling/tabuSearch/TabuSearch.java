@@ -118,6 +118,10 @@ public class TabuSearch {
         int employeeOnFromDay = currentSolution.getEmployeeForDay(fromDay);
         int employeeOnToDay = currentSolution.getEmployeeForDay(toDay);
 
+        if (employeeOnFromDay == -1 || employeeOnToDay == -1) {
+            return false;
+        }
+
         int numberOfFreeDaysForEmployeeOnFromDay = currentSolution.getNumberOfFreeDaysForEmployee(employeeOnFromDay);
         int numberOfFreeDaysForEmployeeOnToDay = currentSolution.getNumberOfFreeDaysForEmployee(employeeOnToDay);
 
