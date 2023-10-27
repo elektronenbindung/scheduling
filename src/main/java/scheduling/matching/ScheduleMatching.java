@@ -6,23 +6,27 @@ import java.util.Iterator;
 import java.util.Set;
 
 import org.jgrapht.Graph;
+import org.jgrapht.alg.interfaces.MatchingAlgorithm.Matching;
 import org.jgrapht.alg.matching.MaximumWeightBipartiteMatching;
 import org.jgrapht.graph.DefaultWeightedEdge;
 import org.jgrapht.graph.builder.GraphTypeBuilder;
 
 import scheduling.common.Config;
+import scheduling.common.Controller;
 import scheduling.common.Solution;
 import scheduling.spreadsheet.SpreadsheetReader;
 
-public class Matching {
+public class ScheduleMatching {
 
+    private Controller controller;
     private SpreadsheetReader inputReader;
     private Graph<Vertex, DefaultWeightedEdge> graph;
     private Set<Vertex> daysSet;
     private Set<Vertex> employeesSet;
     private Day[] days;
 
-    public Matching(SpreadsheetReader inputReader) {
+    public ScheduleMatching(SpreadsheetReader inputReader, Controller controller) {
+        this.controller = controller;
         this.inputReader = inputReader;
         graph = GraphTypeBuilder
                 .undirected()
@@ -80,7 +84,14 @@ public class Matching {
     private Set<DefaultWeightedEdge> performMatching() {
         MaximumWeightBipartiteMatching<Vertex, DefaultWeightedEdge> matching = new MaximumWeightBipartiteMatching<Vertex, DefaultWeightedEdge>(
                 graph, employeesSet, daysSet);
-        return matching.getMatching().getEdges();
+
+        Matching<Vertex, DefaultWeightedEdge> result = matching.getMatching();
+
+        if(!result.isPerfect()){
+            controller.println("Warning: No perfect matching between shift and days has been found");
+        }
+
+        return result.getEdges();
     }
 
     private Solution getSolutionFromMatching(Set<DefaultWeightedEdge> matchingResult) {

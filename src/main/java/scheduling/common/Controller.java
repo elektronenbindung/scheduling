@@ -3,7 +3,7 @@ package scheduling.common;
 import java.io.File;
 
 import scheduling.UI;
-import scheduling.matching.Matching;
+import scheduling.matching.ScheduleMatching;
 import scheduling.spreadsheet.SpreadsheetReader;
 import scheduling.spreadsheet.SpreadsheetWriter;
 import scheduling.tabuSearch.TabuSearch;
@@ -29,7 +29,7 @@ public class Controller implements Runnable {
             try {
                 inputReader = new SpreadsheetReader(inputFile);
                 inputReader.run();
-                Solution solution = new Matching(inputReader).run();
+                Solution solution = new ScheduleMatching(inputReader, this).run();
                 solution = tabuSearch.run(inputReader, solution);
                 new SpreadsheetWriter(inputReader, solution, this).run();
             } catch (Exception exception) {
