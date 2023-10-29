@@ -9,8 +9,8 @@ public class Config {
     public final static String SINGLE_SHIFT = "E";
     public final static int MISSING_EMPLOYEE = -1;
     public final static int WEIGHT_FOR_NORMAL_DAY = 1;
-    public final static int WEIGHT_FOR_FIXED_DAY = 100;
-    public final static int WEIGHT_FOR_FREE_DAY = 2;
+    public final static int WEIGHT_FOR_FIXED_DAY = 1000;
+    public final static int WEIGHT_FOR_FREE_DAY = 32;
     public final static int MAX_RETRIES_OF_TABU_SEARCH = 23000000;
     public final static int RETRIES_OF_INVALID_SOLUTION = 5;
     public final static int LENGTH_OF_TABU_LIST = 15;
