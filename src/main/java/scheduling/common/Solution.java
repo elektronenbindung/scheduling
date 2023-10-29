@@ -5,6 +5,7 @@ import java.util.Arrays;
 import scheduling.spreadsheet.SpreadsheetReader;
 
 public class Solution {
+    private static final int UNKNOWN_COSTS = -1;
     private int[] solution;
     private double costs;
     private SpreadsheetReader input;
@@ -18,7 +19,7 @@ public class Solution {
         this.solution = solution;
         this.numberOfFreeDaysForEmployee = numberOfFreeDaysForEmployee;
         this.input = input;
-        costs = -1;
+        costs = UNKNOWN_COSTS;
         numberOfRetries = 0;
         lastOccurrenceOfEmployee = new int[Config.NUMBER_OF_EMPLOYEES];
         lengthOfLastBlockShiftForEmployee = new int[Config.NUMBER_OF_EMPLOYEES];
@@ -38,7 +39,7 @@ public class Solution {
     }
 
     public void exchangeEmployeesOnDays(int day1, int day2) {
-        costs = -1;
+        costs = UNKNOWN_COSTS;
         int changedEmployee = solution[day1];
         solution[day1] = solution[day2];
         solution[day2] = changedEmployee;
@@ -48,10 +49,10 @@ public class Solution {
         int fromEmployee = getEmployeeForDay(fromDay);
         int toEmployee = getEmployeeForDay(toDay);
 
-        if (fromEmployee != -1) {
+        if (fromEmployee != Config.MISSING_EMPLOYEE) {
             numberOfFreeDaysForEmployee[fromEmployee]--;
         }
-        if (toEmployee != -1) {
+        if (toEmployee != Config.MISSING_EMPLOYEE) {
             numberOfFreeDaysForEmployee[toEmployee]++;
         }
     }
@@ -66,7 +67,7 @@ public class Solution {
     }
 
     public double getCosts() {
-        if (costs != -1) {
+        if (costs != UNKNOWN_COSTS) {
             return costs;
         }
         initializeForCalculationOfCosts();
@@ -74,7 +75,7 @@ public class Solution {
         for (int day = 0; day < solution.length; day++) {
             int employee = solution[day];
 
-            if (employee == -1) {
+            if (employee == Config.MISSING_EMPLOYEE) {
                 continue;
             }
             if (day != 0 && employee != solution[day - 1]) {
@@ -83,7 +84,7 @@ public class Solution {
 
             costs = costs + calculateCostsForMandatoryBlockShiftOnDay(day);
 
-            if (lastOccurrenceOfEmployee[employee] == -1) {
+            if (lastOccurrenceOfEmployee[employee] == Config.MISSING_EMPLOYEE) {
                 lastOccurrenceOfEmployee[employee] = day;
                 continue;
             }
@@ -105,7 +106,7 @@ public class Solution {
 
     private void initializeForCalculationOfCosts() {
         costs = 0;
-        Arrays.fill(lastOccurrenceOfEmployee, -1);
+        Arrays.fill(lastOccurrenceOfEmployee, Config.MISSING_EMPLOYEE);
 
         Arrays.fill(lengthOfLastBlockShiftForEmployee, 1);
 
@@ -114,7 +115,7 @@ public class Solution {
 
     private void initializeNextBlockShift(int day) {
         int previousEmployee = solution[day - 1];
-        if (previousEmployee != -1) {
+        if (previousEmployee != Config.MISSING_EMPLOYEE) {
             lengthOfLastBlockShiftForEmployee[previousEmployee] = numberOfDirectFollowingShifts;
         }
         numberOfDirectFollowingShifts = 1;

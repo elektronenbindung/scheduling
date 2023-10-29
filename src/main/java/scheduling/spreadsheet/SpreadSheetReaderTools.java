@@ -36,7 +36,7 @@ public class SpreadSheetReaderTools {
         for (int employee = 0; employee < Config.NUMBER_OF_EMPLOYEES; employee++) {
             if (reader.getDaysToWorkInTotalForEmployee(employee) <= 0
                     || reader.getWishedLengthOfShiftForEmployee(employee) <= 0) {
-                expectedDaysBetweenShiftsPerEmployee[employee] = -1;
+                expectedDaysBetweenShiftsPerEmployee[employee] = Config.MISSING_EMPLOYEE;
             } else {
                 expectedDaysBetweenShiftsPerEmployee[employee] = (reader.getLengthOfMonth()
                         * reader.getWishedLengthOfShiftForEmployee(employee))
@@ -65,7 +65,7 @@ public class SpreadSheetReaderTools {
 
     public Integer[] calculateFixedEmployees() {
         Integer[] result = new Integer[reader.getLengthOfMonth()];
-        Arrays.fill(result, -1);
+        Arrays.fill(result, Config.MISSING_EMPLOYEE);
         helper.setFixedEmployeeOnDay(result);
 
         for (int employee = 0; employee < Config.NUMBER_OF_EMPLOYEES; employee++) {
@@ -124,8 +124,8 @@ public class SpreadSheetReaderTools {
             Object[] value = values[employee];
             preferencesPerEmployee[employee] = value[0] != null
                     ? Double.parseDouble(String.valueOf(value[0]))
-                    : -1;
-            preferencesPerEmployee[employee] = preferencesPerEmployee[employee] < 0 ? -1
+                    : Config.MISSING_EMPLOYEE;
+            preferencesPerEmployee[employee] = preferencesPerEmployee[employee] < 0 ? Config.MISSING_EMPLOYEE
                     : preferencesPerEmployee[employee];
 
         }

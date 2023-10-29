@@ -25,7 +25,7 @@ public class SpreadsheetReaderToolsHelper {
                 throw new IllegalArgumentException("An employee is working on day " + date + " but is not available");
             }
 
-            if (isWorking && fixedEmployeeOnDay[day] != -1) {
+            if (isWorking && fixedEmployeeOnDay[day] != Config.MISSING_EMPLOYEE) {
                 throw new IllegalArgumentException(
                         "At least two employees are working on day " + date + " but only one is allowed");
             }

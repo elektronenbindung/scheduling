@@ -6,6 +6,8 @@ import java.io.IOException;
 import com.github.miachm.sods.Sheet;
 import com.github.miachm.sods.SpreadSheet;
 
+import scheduling.common.Config;
+
 public class SpreadsheetReader {
     private File input;
     private SpreadSheetReaderTools tools;
@@ -64,7 +66,7 @@ public class SpreadsheetReader {
     }
 
     public boolean getIsEmployeeAvailableOnDay(int employee, int day) {
-        if (employee == -1) {
+        if (employee == Config.MISSING_EMPLOYEE) {
             return true;
         }
         return isAvailablePerDay[employee][day];

@@ -87,7 +87,7 @@ public class ScheduleMatching {
 
         Matching<Vertex, DefaultWeightedEdge> result = matching.getMatching();
 
-        if(!result.isPerfect()){
+        if (!result.isPerfect()) {
             controller.println("Warning: No perfect matching between shift and days has been found");
         }
 
@@ -98,7 +98,7 @@ public class ScheduleMatching {
         Iterator<DefaultWeightedEdge> iterator = matchingResult.iterator();
         int[] solution = new int[inputReader.getLengthOfMonth()];
 
-        Arrays.fill(solution, -1);
+        Arrays.fill(solution, Config.MISSING_EMPLOYEE);
 
         while (iterator.hasNext()) {
             DefaultWeightedEdge edge = iterator.next();

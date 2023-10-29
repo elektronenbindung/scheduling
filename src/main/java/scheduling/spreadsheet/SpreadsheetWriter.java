@@ -37,7 +37,7 @@ public class SpreadsheetWriter {
 
         for (int day = 0; day < input.getLengthOfMonth(); day++) {
             int employee = solution.getEmployeeForDay(day);
-            if (employee != -1) {
+            if (employee != Config.MISSING_EMPLOYEE) {
                 output[employee][day] = Config.WORKING;
             }
         }

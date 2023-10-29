@@ -118,7 +118,7 @@ public class TabuSearch {
         int employeeOnFromDay = currentSolution.getEmployeeForDay(fromDay);
         int employeeOnToDay = currentSolution.getEmployeeForDay(toDay);
 
-        if (employeeOnFromDay == -1 || employeeOnToDay == -1) {
+        if (employeeOnFromDay == Config.MISSING_EMPLOYEE || employeeOnToDay == Config.MISSING_EMPLOYEE) {
             return false;
         }
 
@@ -142,10 +142,10 @@ public class TabuSearch {
     }
 
     private boolean isAtLeastOneEmployeeFixed(Solution currentSolution, int day1, int day2) {
-        boolean isEmployeeFixedOnDay1 = input.getEmployeeOnFixedDay(day1) != -1
+        boolean isEmployeeFixedOnDay1 = input.getEmployeeOnFixedDay(day1) != Config.MISSING_EMPLOYEE
                 && currentSolution.getEmployeeForDay(day1) == input.getEmployeeOnFixedDay(day1);
 
-        boolean isEmployeeFixedOnDay2 = input.getEmployeeOnFixedDay(day2) != -1
+        boolean isEmployeeFixedOnDay2 = input.getEmployeeOnFixedDay(day2) != Config.MISSING_EMPLOYEE
                 && currentSolution.getEmployeeForDay(day2) == input.getEmployeeOnFixedDay(day2);
 
         return isEmployeeFixedOnDay1 || isEmployeeFixedOnDay2;
