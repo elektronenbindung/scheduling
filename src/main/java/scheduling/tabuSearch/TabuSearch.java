@@ -118,17 +118,15 @@ public class TabuSearch {
         int employeeOnFromDay = currentSolution.getEmployeeForDay(fromDay);
         int employeeOnToDay = currentSolution.getEmployeeForDay(toDay);
 
-        if (employeeOnFromDay == Config.MISSING_EMPLOYEE || employeeOnToDay == Config.MISSING_EMPLOYEE) {
-            return false;
-        }
-
         int numberOfFreeDaysForEmployeeOnFromDay = currentSolution.getNumberOfFreeDaysForEmployee(employeeOnFromDay);
         int numberOfFreeDaysForEmployeeOnToDay = currentSolution.getNumberOfFreeDaysForEmployee(employeeOnToDay);
 
-        boolean canFreeDayBeMovedFrom = numberOfFreeDaysForEmployeeOnFromDay > input
-                .getDaysToWorkAtFreeDayForEmployee(employeeOnFromDay);
-        boolean canFreeDayBeMovedTo = numberOfFreeDaysForEmployeeOnToDay < input
-                .getDaysToWorkAtFreeDayForEmployee(employeeOnToDay);
+        boolean canFreeDayBeMovedFrom = employeeOnFromDay == Config.MISSING_EMPLOYEE
+                || numberOfFreeDaysForEmployeeOnFromDay > input
+                        .getDaysToWorkAtFreeDayForEmployee(employeeOnFromDay);
+        boolean canFreeDayBeMovedTo = employeeOnToDay == Config.MISSING_EMPLOYEE
+                || numberOfFreeDaysForEmployeeOnToDay < input
+                        .getDaysToWorkAtFreeDayForEmployee(employeeOnToDay);
 
         return (!canFreeDayBeMovedFrom) && (!canFreeDayBeMovedTo);
     }
