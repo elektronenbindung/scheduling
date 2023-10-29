@@ -58,6 +58,9 @@ public class Solution {
     }
 
     public int getNumberOfFreeDaysForEmployee(int employee) {
+        if (employee == Config.MISSING_EMPLOYEE) {
+            return Config.MISSING_EMPLOYEE;
+        }
         return numberOfFreeDaysForEmployee[employee];
     }
 
