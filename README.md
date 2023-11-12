@@ -8,8 +8,6 @@ This is a software to schedule up to 30 employees in the so called "Arbeitgeberm
 
 * To generate the spreadsheet and to show the result LibreOffice is needed.
 
-* It is recommended to activate macros to use all features of the spreadsheet. Otherwise the 'Freizeit' tables will not work properly.
-
 ## Features
 Right now there are the following features:
 
