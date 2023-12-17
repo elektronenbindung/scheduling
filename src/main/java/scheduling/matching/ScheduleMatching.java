@@ -59,8 +59,8 @@ public class ScheduleMatching {
 
     private void addEmployeesToGraph() {
         for (int employee = 0; employee < Config.NUMBER_OF_EMPLOYEES; employee++) {
-            for (int shiftNumber = 0; shiftNumber < inputReader
-                    .getDaysToWorkInTotalForEmployee(employee); shiftNumber++) {
+            for (int shiftNumber = 0; shiftNumber < Math.floor(inputReader
+                    .getDaysToWorkInTotalForEmployee(employee)); shiftNumber++) {
                 Shift shift = new Shift(employee);
                 employeesSet.add(shift);
                 graph.addVertex(shift);

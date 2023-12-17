@@ -3,7 +3,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>com.github.elektronenbindung</groupId>
     <artifactId>scheduling</artifactId>
-    <version>3.2</version>
+    <version>3.3</version>
 <build>
         <plugins>
        <plugin>
@@ -46,7 +46,7 @@
 <dependency>
     <groupId>com.github.miachm.sods</groupId>
     <artifactId>SODS</artifactId>
-    <version>1.6.4</version>
+    <version>1.6.6</version>
 </dependency>
     </dependencies>
 </project>
