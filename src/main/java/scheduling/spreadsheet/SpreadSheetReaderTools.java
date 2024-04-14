@@ -3,6 +3,7 @@ package scheduling.spreadsheet;
 import java.time.LocalDate;
 import java.util.Arrays;
 import java.util.function.IntToDoubleFunction;
+import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 import com.github.miachm.sods.Range;
 
@@ -53,13 +54,17 @@ public class SpreadSheetReaderTools {
         return date.lengthOfMonth();
     }
 
-    public boolean[] calculateIsFreeDay() {
+    public Boolean[] calculateIsFreeDay() {
         int row = 1 + Config.LAST_ROW_OF_SCHEDULE;
-        return calculateDayProperty(row, Config.FREE_DAY);
+
+        return Arrays.stream(calculateDayProperty(row, Config.WORK_DAY))
+                .map(x -> !x)
+                .collect(Collectors.toList())
+                .toArray(new Boolean[0]);
     }
 
-    public boolean[] calculateIsSingleShiftAllowedOnDay() {
-        int row = 2 + Config.LAST_ROW_OF_SCHEDULE;
+    public Boolean[] calculateIsSingleShiftAllowedOnDay() {
+        int row = 3 + Config.LAST_ROW_OF_SCHEDULE;
         return calculateDayProperty(row, Config.SINGLE_SHIFT);
     }
 
@@ -100,8 +105,8 @@ public class SpreadSheetReaderTools {
                 .toArray();
     }
 
-    private boolean[] calculateDayProperty(int row, String property) {
-        boolean[] dayProperty = new boolean[reader.getLengthOfMonth()];
+    private Boolean[] calculateDayProperty(int row, String property) {
+        Boolean[] dayProperty = new Boolean[reader.getLengthOfMonth()];
         String a1Notation = "B" + row + ":AF" + row;
         Range range = reader.getSheet().getRange(a1Notation);
         Object[] objects = range.getValues()[0];

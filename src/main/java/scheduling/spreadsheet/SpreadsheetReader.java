@@ -15,8 +15,8 @@ public class SpreadsheetReader {
     private Sheet sheet;
     private int lengthOfMonth;
     private double[] maxLengthOfShiftPerEmployee;
-    private boolean[] isFreeDay;
-    private boolean[] isSingleSShiftAllowedOnDay;
+    private Boolean[] isFreeDay;
+    private Boolean[] isSingleSShiftAllowedOnDay;
     private Integer[] fixedEmployeeOnDay;
     private Boolean[][] isAvailablePerDay;
     private double[] daysToWorkInTotalPerEmployee;
