@@ -6,15 +6,15 @@ import com.github.miachm.sods.Sheet;
 import com.github.miachm.sods.SpreadSheet;
 
 import scheduling.common.Config;
-import scheduling.common.Controller;
+import scheduling.common.ThreadsController;
 import scheduling.common.Solution;
 
 public class SpreadsheetWriter {
     private SpreadsheetReader input;
     private Solution solution;
-    private Controller controller;
+    private ThreadsController controller;
 
-    public SpreadsheetWriter(SpreadsheetReader input, Solution solution, Controller controller) {
+    public SpreadsheetWriter(SpreadsheetReader input, Solution solution, ThreadsController controller) {
         this.input = input;
         this.solution = solution;
         this.controller = controller;

@@ -12,20 +12,20 @@ import org.jgrapht.graph.DefaultWeightedEdge;
 import org.jgrapht.graph.builder.GraphTypeBuilder;
 
 import scheduling.common.Config;
-import scheduling.common.Controller;
+import scheduling.common.SolutionController;
 import scheduling.common.Solution;
 import scheduling.spreadsheet.SpreadsheetReader;
 
 public class ScheduleMatching {
 
-    private Controller controller;
+    private SolutionController controller;
     private SpreadsheetReader inputReader;
     private Graph<Vertex, DefaultWeightedEdge> graph;
     private Set<Vertex> daysSet;
     private Set<Vertex> employeesSet;
     private Day[] days;
 
-    public ScheduleMatching(SpreadsheetReader inputReader, Controller controller) {
+    public ScheduleMatching(SpreadsheetReader inputReader, SolutionController controller) {
         this.controller = controller;
         this.inputReader = inputReader;
         graph = GraphTypeBuilder

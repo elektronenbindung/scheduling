@@ -2,6 +2,7 @@ package scheduling.common;
 
 public class Config {
     public final static int NUMBER_OF_EMPLOYEES = 30;
+    public final static int NUMBER_OF_PARALLEL_THREADS = 50;
     public final static int ROWS_OF_HEADER = 5;
     public final static int LAST_ROW_OF_SCHEDULE = ROWS_OF_HEADER + NUMBER_OF_EMPLOYEES;
     public final static String WORK_DAY = "A";
@@ -11,10 +12,10 @@ public class Config {
     public final static int WEIGHT_FOR_NORMAL_DAY = 1;
     public final static int WEIGHT_FOR_FIXED_DAY = 1000;
     public final static int WEIGHT_FOR_FREE_DAY = 32;
-    public final static int MAX_RETRIES_OF_TABU_SEARCH = 30000000;
+    public final static int MAX_RETRIES_OF_TABU_SEARCH = 300000;
     public final static int RETRIES_OF_INVALID_SOLUTION = 5;
     public final static int LENGTH_OF_TABU_LIST = 15;
-    public final static int MAX_RETRIES_OF_SOLUTION = 900000;
+    public final static int MAX_RETRIES_OF_SOLUTION = 9000;
     public final static int LENGTH_OF_SOLUTION_LIST = 30;
     public final static int DEFAULT_MAX_LENGTH_OF_SHIFT = 31;
     public final static int INTERVAL_FOR_ONE_DAY = 2;

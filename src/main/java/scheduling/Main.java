@@ -2,7 +2,7 @@ package scheduling;
 
 import java.io.File;
 
-import scheduling.common.Controller;
+import scheduling.common.ThreadsController;
 import scheduling.common.Config;
 
 public final class Main {
@@ -21,7 +21,7 @@ public final class Main {
                 System.exit(0);
             }
             File input = new File(args[0]);
-            Controller controller = new Controller(input, null);
+            ThreadsController controller = new ThreadsController(input, null);
             new Thread(controller).start();
             System.out.println("You can quit by typing '" + Config.QUIT + "'");
 

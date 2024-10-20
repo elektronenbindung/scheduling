@@ -3,7 +3,6 @@ package scheduling.tabuSearch;
 import java.util.Random;
 
 import scheduling.common.Config;
-import scheduling.common.Controller;
 import scheduling.common.Solution;
 import scheduling.spreadsheet.SpreadsheetReader;
 
@@ -11,15 +10,13 @@ public class TabuSearch {
     private TabuList tabuList;
     private SolutionList solutionList;
     private boolean stopped;
-    private Controller controller;
     private Random random;
     private SpreadsheetReader input;
 
-    public TabuSearch(Controller controller) {
+    public TabuSearch() {
         tabuList = new TabuList(Config.LENGTH_OF_TABU_LIST);
         solutionList = new SolutionList(Config.LENGTH_OF_SOLUTION_LIST);
         stopped = false;
-        this.controller = controller;
         random = new Random();
         input = null;
     }
@@ -27,7 +24,6 @@ public class TabuSearch {
     public Solution run(SpreadsheetReader reader, Solution initialSolution) {
         input = reader;
         Solution currentlyBestSolution = initialSolution;
-        controller.println("Initial costs of solution: " + currentlyBestSolution.getCosts());
         Solution currentSolution = currentlyBestSolution.createCopy();
         solutionList.add(currentlyBestSolution);
 
@@ -64,7 +60,6 @@ public class TabuSearch {
                 currentSolution.exchangeEmployeesOnDays(randomDay1, randomDay2);
 
                 if (currentSolution.getCosts() < currentlyBestSolution.getCosts()) {
-                    controller.println("Costs of solution: " + currentSolution.getCosts());
                     solutionList.add(currentSolution);
                     currentlyBestSolution = currentSolution;
                     numberOfUnsuccessfulRetry = 0;

@@ -11,14 +11,14 @@ import javax.swing.JFileChooser;
 import javax.swing.filechooser.FileNameExtensionFilter;
 import javax.swing.text.DefaultCaret;
 
-import scheduling.common.Controller;
+import scheduling.common.ThreadsController;
 
 /**
  *
  * @author christian
  */
 public class UI extends javax.swing.JFrame {
-    private Controller controller;
+    private ThreadsController controller;
     private final JFileChooser fileChooser;
 
     /**
@@ -230,7 +230,7 @@ public class UI extends javax.swing.JFrame {
             startButton.setEnabled(false);
             stopButton.setEnabled(true);
             File input = new File(inputFile.getText());
-            controller = new Controller(input, this);
+            controller = new ThreadsController(input, this);
             new Thread(controller).start();
             inputFile.requestFocus();
         }
