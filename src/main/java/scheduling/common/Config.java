@@ -17,6 +17,7 @@ public class Config {
     public final static int MAX_RETRIES_OF_SOLUTION = 900000;
     public final static int LENGTH_OF_SOLUTION_LIST = 30;
     public final static int DEFAULT_MAX_LENGTH_OF_SHIFT = 31;
+    public final static int INTERVAL_FOR_ONE_DAY = 2;
     public final static double PENALTY_FOR_FORBIDDEN_SHIFT = 10000;
     public final static double PENALTY_FOR_UNWANTED_SHIFT = 300;
     public final static String QUIT = ":q";

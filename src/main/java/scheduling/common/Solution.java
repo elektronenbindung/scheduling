@@ -142,7 +142,8 @@ public class Solution {
 
     private double calculatePenaltyForForbiddenShift(int employee, int interval) {
         if (input.getMaxLengthOfShiftPerEmployee(employee) != 1
-                && (interval <= lengthOfLastBlockShiftForEmployee[employee] || interval == 2)) {
+                && (interval <= lengthOfLastBlockShiftForEmployee[employee]
+                        || interval == Config.INTERVAL_FOR_ONE_DAY)) {
             return Config.PENALTY_FOR_FORBIDDEN_SHIFT;
         }
         return 0;
