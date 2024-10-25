@@ -11,7 +11,6 @@ import javax.swing.JFileChooser;
 import javax.swing.filechooser.FileNameExtensionFilter;
 import javax.swing.text.DefaultCaret;
 
-import scheduling.common.StopController;
 import scheduling.common.ThreadsController;
 
 /**
@@ -209,7 +208,7 @@ public class UI extends javax.swing.JFrame {
     private void stopButtonActionPerformed(java.awt.event.ActionEvent evt) {// GEN-FIRST:event_stopButtonActionPerformed
         if (controller != null) {
             stopButton.setEnabled(false);
-            new Thread(new StopController(controller)).start();
+            controller.stop();
             inputFile.requestFocus();
         }
 
