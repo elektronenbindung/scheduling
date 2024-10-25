@@ -11,19 +11,17 @@ public class ThreadsController implements Runnable {
     private SpreadsheetReader inputReader;
     private UI ui;
     private boolean inUIMode;
-    private SolutionController[] solutionControllers;
     private int numberOfFinishedSolutions;
     private Solution bestSolution;
-    private boolean allThreadsStarted;
+    private boolean stopped;
 
     public ThreadsController(File file, UI ui) {
         inputFile = file;
         this.ui = ui;
-        this.solutionControllers = new SolutionController[Config.NUMBER_OF_PARALLEL_THREADS];
         this.inUIMode = ui != null;
         numberOfFinishedSolutions = 0;
         bestSolution = null;
-        allThreadsStarted = false;
+        stopped = false;
     }
 
     public void run() {
@@ -35,10 +33,10 @@ public class ThreadsController implements Runnable {
                 inputReader.run();
                 println("Input file has been read successfully, computing solutions...");
                 for (int currentSolutionThread = 0; currentSolutionThread < Config.NUMBER_OF_PARALLEL_THREADS; currentSolutionThread++) {
-                    solutionControllers[currentSolutionThread] = new SolutionController(this);
-                    new Thread(solutionControllers[currentSolutionThread]).start();
+                    SolutionController currentSolutionController = new SolutionController(this);
+                    new Thread(currentSolutionController).start();
                 }
-                allThreadsStarted = true;
+
                 while (numberOfFinishedSolutions < Config.NUMBER_OF_PARALLEL_THREADS) {
                     Thread.sleep(100);
                 }
@@ -62,20 +60,16 @@ public class ThreadsController implements Runnable {
         }
     }
 
-    public SpreadsheetReader getInputReader() {
+    public synchronized SpreadsheetReader getInputReader() {
         return inputReader;
     }
 
     public synchronized void stop() {
-        while (!allThreadsStarted) {
-            try {
-                Thread.sleep(100);
-            } catch (InterruptedException e) {
-                println("Something went wrong during interruption of threads");
-            }
-        }
-        for (int currentSolutionThread = 0; currentSolutionThread < Config.NUMBER_OF_PARALLEL_THREADS; currentSolutionThread++)
-            solutionControllers[currentSolutionThread].stop();
+        stopped = true;
+    }
+
+    public synchronized boolean isStopped() {
+        return stopped;
     }
 
     public synchronized void setSolution(Solution solution) {

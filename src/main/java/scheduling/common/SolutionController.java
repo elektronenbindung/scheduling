@@ -7,25 +7,17 @@ import scheduling.tabuSearch.TabuSearch;
 public class SolutionController implements Runnable {
     private SpreadsheetReader inputReader;
     private ThreadsController threadsController;
-    private TabuSearch tabuSearch;
 
     public SolutionController(ThreadsController threadsController) {
-        tabuSearch = new TabuSearch();
         this.threadsController = threadsController;
         inputReader = threadsController.getInputReader();
     }
 
     public void run() {
-        Solution solution = new ScheduleMatching(inputReader, this).run();
+        Solution solution = new ScheduleMatching(inputReader, threadsController).run();
+        TabuSearch tabuSearch = new TabuSearch(threadsController);
         solution = tabuSearch.run(inputReader, solution);
         threadsController.setSolution(solution);
     }
 
-    public void println(String message) {
-        threadsController.println(message);
-    }
-
-    public void stop() {
-        tabuSearch.stop();
-    }
 }

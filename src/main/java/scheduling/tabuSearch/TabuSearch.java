@@ -4,21 +4,22 @@ import java.util.Random;
 
 import scheduling.common.Config;
 import scheduling.common.Solution;
+import scheduling.common.ThreadsController;
 import scheduling.spreadsheet.SpreadsheetReader;
 
 public class TabuSearch {
     private TabuList tabuList;
     private SolutionList solutionList;
-    private boolean stopped;
     private Random random;
     private SpreadsheetReader input;
+    private ThreadsController threadsController;
 
-    public TabuSearch() {
+    public TabuSearch(ThreadsController threadsController) {
         tabuList = new TabuList(Config.LENGTH_OF_TABU_LIST);
         solutionList = new SolutionList(Config.LENGTH_OF_SOLUTION_LIST);
-        stopped = false;
         random = new Random();
         input = null;
+        this.threadsController = threadsController;
     }
 
     public Solution run(SpreadsheetReader reader, Solution initialSolution) {
@@ -33,7 +34,7 @@ public class TabuSearch {
             int randomDay2 = 0;
 
             while (numberOfInvalidRetry < Config.RETRIES_OF_INVALID_SOLUTION) {
-                if (stopped || currentlyBestSolution.getCosts() == 0) {
+                if (threadsController.isStopped() || currentlyBestSolution.getCosts() == 0) {
                     return currentlyBestSolution;
                 }
                 numberOfInvalidRetry++;
@@ -69,10 +70,6 @@ public class TabuSearch {
             }
         }
         return currentlyBestSolution;
-    }
-
-    public void stop() {
-        stopped = true;
     }
 
     private int getRandomDay(int lengthOfMonth) {
