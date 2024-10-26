@@ -79,6 +79,7 @@ public class ThreadsController implements Runnable {
 
             if (solution.getCosts() == 0) {
                 stop();
+                numberOfFinishedSolutions = Config.NUMBER_OF_PARALLEL_THREADS;
             }
         }
         numberOfFinishedSolutions++;
