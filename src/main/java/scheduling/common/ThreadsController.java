@@ -8,7 +8,7 @@ import scheduling.spreadsheet.SpreadsheetWriter;
 
 public class ThreadsController implements Runnable {
     private File inputFile;
-    private SpreadsheetReader inputReader;
+    private SpreadsheetReader spreadsheetReader;
     private UI ui;
     private boolean inUIMode;
     private int numberOfFinishedSolutions;
@@ -31,8 +31,8 @@ public class ThreadsController implements Runnable {
             println("Error: The provided input file does not exist");
         } else {
             try {
-                inputReader = new SpreadsheetReader(inputFile);
-                inputReader.run();
+                spreadsheetReader = new SpreadsheetReader(inputFile);
+                spreadsheetReader.run();
                 println("Input file has been read successfully, computing solutions...");
                 for (int currentSolutionThread = 0; currentSolutionThread < Config.NUMBER_OF_PARALLEL_THREADS; currentSolutionThread++) {
                     SolutionController currentSolutionController = new SolutionController(this);
@@ -42,7 +42,7 @@ public class ThreadsController implements Runnable {
                 while (numberOfFinishedSolutions < Config.NUMBER_OF_PARALLEL_THREADS) {
                     Thread.sleep(100);
                 }
-                new SpreadsheetWriter(inputReader, bestSolution, this).run();
+                new SpreadsheetWriter(spreadsheetReader, bestSolution, this).run();
             } catch (Exception exception) {
                 println("Error: " + exception.getMessage());
             }
@@ -69,8 +69,8 @@ public class ThreadsController implements Runnable {
         }
     }
 
-    public synchronized SpreadsheetReader getInputReader() {
-        return inputReader;
+    public synchronized SpreadsheetReader getSpreadsheetReader() {
+        return spreadsheetReader;
     }
 
     public synchronized void stop() {

@@ -11,19 +11,18 @@ public class TabuSearch {
     private TabuList tabuList;
     private SolutionList solutionList;
     private Random random;
-    private SpreadsheetReader input;
+    private SpreadsheetReader spreadsheetReader;
     private ThreadsController threadsController;
 
-    public TabuSearch(ThreadsController threadsController) {
+    public TabuSearch(ThreadsController threadsController, SpreadsheetReader spreadsheetReader) {
         tabuList = new TabuList(Config.LENGTH_OF_TABU_LIST);
         solutionList = new SolutionList(Config.LENGTH_OF_SOLUTION_LIST);
         random = new Random();
-        input = null;
+        this.spreadsheetReader = spreadsheetReader;
         this.threadsController = threadsController;
     }
 
-    public Solution run(SpreadsheetReader reader, Solution initialSolution) {
-        input = reader;
+    public Solution run(Solution initialSolution) {
         Solution currentlyBestSolution = initialSolution;
         Solution currentSolution = currentlyBestSolution.createCopy();
         solutionList.add(currentlyBestSolution);
@@ -38,8 +37,8 @@ public class TabuSearch {
                     return currentlyBestSolution;
                 }
                 numberOfInvalidRetry++;
-                randomDay1 = getRandomDay(input.getLengthOfMonth());
-                randomDay2 = getRandomDay(input.getLengthOfMonth());
+                randomDay1 = getRandomDay(spreadsheetReader.getLengthOfMonth());
+                randomDay2 = getRandomDay(spreadsheetReader.getLengthOfMonth());
 
                 if (!isSwapOfShiftAllowed(currentSolution, randomDay1, randomDay2)) {
                     if (numberOfInvalidRetry == Config.RETRIES_OF_INVALID_SOLUTION) {
@@ -54,7 +53,7 @@ public class TabuSearch {
                     continue;
                 }
 
-                if (input.isFreeDay(randomDay1) != input.isFreeDay(randomDay2)) {
+                if (spreadsheetReader.isFreeDay(randomDay1) != spreadsheetReader.isFreeDay(randomDay2)) {
                     currentSolution.exchangeFreeDayBetweenEmployees(randomDay1, randomDay2);
                 }
 
@@ -99,11 +98,11 @@ public class TabuSearch {
     }
 
     private boolean areFreeDaysForbidden(int fromDay, int toDay, Solution currentSolution) {
-        if (input.isFreeDay(fromDay) == input.isFreeDay(toDay)) {
+        if (spreadsheetReader.isFreeDay(fromDay) == spreadsheetReader.isFreeDay(toDay)) {
             return false;
         }
 
-        if (input.isFreeDay(toDay)) {
+        if (spreadsheetReader.isFreeDay(toDay)) {
             return true;
         }
 
@@ -114,10 +113,10 @@ public class TabuSearch {
         int numberOfFreeDaysForEmployeeOnToDay = currentSolution.getNumberOfFreeDaysForEmployee(employeeOnToDay);
 
         boolean canFreeDayBeMovedFrom = employeeOnFromDay == Config.MISSING_EMPLOYEE
-                || numberOfFreeDaysForEmployeeOnFromDay > input
+                || numberOfFreeDaysForEmployeeOnFromDay > spreadsheetReader
                         .getDaysToWorkAtFreeDayForEmployee(employeeOnFromDay);
         boolean canFreeDayBeMovedTo = employeeOnToDay == Config.MISSING_EMPLOYEE
-                || numberOfFreeDaysForEmployeeOnToDay < input
+                || numberOfFreeDaysForEmployeeOnToDay < spreadsheetReader
                         .getDaysToWorkAtFreeDayForEmployee(employeeOnToDay);
 
         return (!canFreeDayBeMovedFrom) && (!canFreeDayBeMovedTo);
@@ -127,16 +126,16 @@ public class TabuSearch {
         int employee1 = currentSolution.getEmployeeForDay(day1);
         int employee2 = currentSolution.getEmployeeForDay(day2);
 
-        return !(input.getIsEmployeeAvailableOnDay(employee1, day2)
-                && input.getIsEmployeeAvailableOnDay(employee2, day1));
+        return !(spreadsheetReader.getIsEmployeeAvailableOnDay(employee1, day2)
+                && spreadsheetReader.getIsEmployeeAvailableOnDay(employee2, day1));
     }
 
     private boolean isAtLeastOneEmployeeFixed(Solution currentSolution, int day1, int day2) {
-        boolean isEmployeeFixedOnDay1 = input.getEmployeeOnFixedDay(day1) != Config.MISSING_EMPLOYEE
-                && currentSolution.getEmployeeForDay(day1) == input.getEmployeeOnFixedDay(day1);
+        boolean isEmployeeFixedOnDay1 = spreadsheetReader.getEmployeeOnFixedDay(day1) != Config.MISSING_EMPLOYEE
+                && currentSolution.getEmployeeForDay(day1) == spreadsheetReader.getEmployeeOnFixedDay(day1);
 
-        boolean isEmployeeFixedOnDay2 = input.getEmployeeOnFixedDay(day2) != Config.MISSING_EMPLOYEE
-                && currentSolution.getEmployeeForDay(day2) == input.getEmployeeOnFixedDay(day2);
+        boolean isEmployeeFixedOnDay2 = spreadsheetReader.getEmployeeOnFixedDay(day2) != Config.MISSING_EMPLOYEE
+                && currentSolution.getEmployeeForDay(day2) == spreadsheetReader.getEmployeeOnFixedDay(day2);
 
         return isEmployeeFixedOnDay1 || isEmployeeFixedOnDay2;
     }

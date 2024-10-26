@@ -19,15 +19,15 @@ import scheduling.spreadsheet.SpreadsheetReader;
 public class ScheduleMatching {
 
     private ThreadsController controller;
-    private SpreadsheetReader inputReader;
+    private SpreadsheetReader spreadsheetReader;
     private Graph<Vertex, DefaultWeightedEdge> graph;
     private Set<Vertex> daysSet;
     private Set<Vertex> employeesSet;
     private Day[] days;
 
-    public ScheduleMatching(SpreadsheetReader inputReader, ThreadsController controller) {
+    public ScheduleMatching(SpreadsheetReader spreadsheetReader, ThreadsController controller) {
         this.controller = controller;
-        this.inputReader = inputReader;
+        this.spreadsheetReader = spreadsheetReader;
         graph = GraphTypeBuilder
                 .undirected()
                 .allowingMultipleEdges(false)
@@ -38,7 +38,7 @@ public class ScheduleMatching {
                 .buildGraph();
         daysSet = new HashSet<Vertex>();
         employeesSet = new HashSet<Vertex>();
-        days = new Day[inputReader.getLengthOfMonth()];
+        days = new Day[spreadsheetReader.getLengthOfMonth()];
     }
 
     public Solution run() {
@@ -59,18 +59,18 @@ public class ScheduleMatching {
 
     private void addEmployeesToGraph() {
         for (int employee = 0; employee < Config.NUMBER_OF_EMPLOYEES; employee++) {
-            for (int shiftNumber = 0; shiftNumber < Math.floor(inputReader
+            for (int shiftNumber = 0; shiftNumber < Math.floor(spreadsheetReader
                     .getDaysToWorkInTotalForEmployee(employee)); shiftNumber++) {
                 Shift shift = new Shift(employee);
                 employeesSet.add(shift);
                 graph.addVertex(shift);
-                int weightForFreeDay = shiftNumber < inputReader.getDaysToWorkAtFreeDayForEmployee(employee)
+                int weightForFreeDay = shiftNumber < spreadsheetReader.getDaysToWorkAtFreeDayForEmployee(employee)
                         ? Config.WEIGHT_FOR_FREE_DAY
                         : Config.WEIGHT_FOR_NORMAL_DAY;
                 for (int day = 0; day < days.length; day++) {
-                    if (inputReader.getIsEmployeeAvailableOnDay(employee, day)) {
-                        int weight = inputReader.isFreeDay(day) ? weightForFreeDay : Config.WEIGHT_FOR_NORMAL_DAY;
-                        weight = inputReader.getEmployeeOnFixedDay(day) == employee
+                    if (spreadsheetReader.getIsEmployeeAvailableOnDay(employee, day)) {
+                        int weight = spreadsheetReader.isFreeDay(day) ? weightForFreeDay : Config.WEIGHT_FOR_NORMAL_DAY;
+                        weight = spreadsheetReader.getEmployeeOnFixedDay(day) == employee
                                 ? weight + Config.WEIGHT_FOR_FIXED_DAY
                                 : weight;
                         graph.addEdge(shift, days[day]);
@@ -96,7 +96,7 @@ public class ScheduleMatching {
 
     private Solution getSolutionFromMatching(Set<DefaultWeightedEdge> matchingResult) {
         Iterator<DefaultWeightedEdge> iterator = matchingResult.iterator();
-        int[] solution = new int[inputReader.getLengthOfMonth()];
+        int[] solution = new int[spreadsheetReader.getLengthOfMonth()];
 
         Arrays.fill(solution, Config.MISSING_EMPLOYEE);
 
@@ -109,14 +109,14 @@ public class ScheduleMatching {
             solution[dayNumber] = employee;
         }
         int[] numberOfFreeDaysForEmployee = getNumberOfFreeDaysForEmployee(solution);
-        return new Solution(solution, numberOfFreeDaysForEmployee, inputReader);
+        return new Solution(solution, numberOfFreeDaysForEmployee, spreadsheetReader);
     }
 
     private int[] getNumberOfFreeDaysForEmployee(int[] solution) {
         int[] numberOfFreeDaysForEmployee = new int[Config.NUMBER_OF_EMPLOYEES];
 
-        for (int day = 0; day < inputReader.getLengthOfMonth(); day++) {
-            if (inputReader.isFreeDay(day)) {
+        for (int day = 0; day < spreadsheetReader.getLengthOfMonth(); day++) {
+            if (spreadsheetReader.isFreeDay(day)) {
                 numberOfFreeDaysForEmployee[solution[day]]++;
             }
         }
