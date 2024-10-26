@@ -76,6 +76,10 @@ public class ThreadsController implements Runnable {
         if (this.bestSolution == null || solution.getCosts() < bestSolution.getCosts()) {
             bestSolution = solution;
             println("Costs of solution: " + bestSolution.getCosts());
+
+            if (solution.getCosts() == 0) {
+                stop();
+            }
         }
         numberOfFinishedSolutions++;
     }
