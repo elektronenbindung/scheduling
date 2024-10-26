@@ -88,7 +88,7 @@ public class ScheduleMatching {
         Matching<Vertex, DefaultWeightedEdge> result = matching.getMatching();
 
         if (!result.isPerfect()) {
-            controller.println("Warning: No perfect matching between shift and days has been found");
+            controller.warnForNonPerfectSolution();
         }
 
         return result.getEdges();
