@@ -54,6 +54,14 @@ public class ThreadsController implements Runnable {
         }
     }
 
+    public synchronized void warnForNonPerfectSolution() {
+        if (!warningForPerfectSolutionOccurred) {
+            warningForPerfectSolutionOccurred = true;
+            println("Warning: No perfect matching between shift and days has been found");
+        }
+    }
+
+
     public synchronized void println(String message) {
         if (inUIMode) {
             ui.println(message);
@@ -62,23 +70,17 @@ public class ThreadsController implements Runnable {
         }
     }
 
-    public synchronized void warnForNonPerfectSolution() {
-        if (!warningForPerfectSolutionOccurred) {
-            warningForPerfectSolutionOccurred = true;
-            println("Warning: No perfect matching between shift and days has been found");
-        }
-    }
-
-    public synchronized SpreadsheetReader getSpreadsheetReader() {
-        return spreadsheetReader;
-    }
-
     public synchronized void stop() {
         stopped = true;
     }
 
     public synchronized boolean isStopped() {
         return stopped;
+    }
+
+
+    public synchronized SpreadsheetReader getSpreadsheetReader() {
+        return spreadsheetReader;
     }
 
     public synchronized void setSolution(Solution solution) {
