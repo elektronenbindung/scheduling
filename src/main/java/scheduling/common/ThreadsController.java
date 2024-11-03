@@ -61,7 +61,7 @@ public class ThreadsController implements Runnable {
         }
     }
 
-    public synchronized void println(String message) {
+    public void println(String message) {
         if (inUIMode) {
             ui.println(message);
         } else {
