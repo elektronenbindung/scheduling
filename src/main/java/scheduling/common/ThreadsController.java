@@ -69,15 +69,15 @@ public class ThreadsController implements Runnable {
         }
     }
 
-    public synchronized void stop() {
+    public void stop() {
         stopped = true;
     }
 
-    public synchronized boolean isStopped() {
+    public boolean isStopped() {
         return stopped;
     }
 
-    public synchronized SpreadsheetReader getSpreadsheetReader() {
+    public SpreadsheetReader getSpreadsheetReader() {
         return spreadsheetReader;
     }
 
