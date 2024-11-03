@@ -21,15 +21,15 @@ public final class Main {
                 System.exit(0);
             }
             File input = new File(args[0]);
-            ThreadsController controller = new ThreadsController(input, null);
-            new Thread(controller).start();
+            ThreadsController threadsController = new ThreadsController(input, null);
+            new Thread(threadsController).start();
             System.out.println("You can quit by typing '" + Config.QUIT + "'");
 
             while (true) {
                 String line = System.console().readLine();
 
                 if (line.equals(Config.QUIT)) {
-                    controller.stop();
+                    threadsController.stop();
                 }
             }
         }

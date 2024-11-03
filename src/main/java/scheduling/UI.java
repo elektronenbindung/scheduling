@@ -18,7 +18,7 @@ import scheduling.common.ThreadsController;
  * @author christian
  */
 public class UI extends javax.swing.JFrame {
-    private ThreadsController controller;
+    private ThreadsController threadsController;
     private final JFileChooser fileChooser;
 
     /**
@@ -26,7 +26,7 @@ public class UI extends javax.swing.JFrame {
      */
     public UI(String version) {
         initComponents();
-        controller = null;
+        threadsController = null;
         this.setLocationRelativeTo(null);
         this.outputConsole.setEditable(false);
         stopButton.setEnabled(false);
@@ -40,7 +40,7 @@ public class UI extends javax.swing.JFrame {
         stopButton.setEnabled(false);
         inputFile.requestFocus();
         startButton.setEnabled(true);
-        controller = null;
+        threadsController = null;
     }
 
     public void println(String message) {
@@ -206,9 +206,9 @@ public class UI extends javax.swing.JFrame {
     }// GEN-LAST:event_startButtonActionPerformed
 
     private void stopButtonActionPerformed(java.awt.event.ActionEvent evt) {// GEN-FIRST:event_stopButtonActionPerformed
-        if (controller != null) {
+        if (threadsController != null) {
             stopButton.setEnabled(false);
-            controller.stop();
+            threadsController.stop();
             inputFile.requestFocus();
         }
 
@@ -225,13 +225,13 @@ public class UI extends javax.swing.JFrame {
     }// GEN-LAST:event_fileChooserButtonActionPerformed
 
     private void startButtonPressed() {
-        if (controller == null) {
+        if (threadsController == null) {
             outputConsole.setText(null);
             startButton.setEnabled(false);
             stopButton.setEnabled(true);
             File input = new File(inputFile.getText());
-            controller = new ThreadsController(input, this);
-            new Thread(controller).start();
+            threadsController = new ThreadsController(input, this);
+            new Thread(threadsController).start();
             inputFile.requestFocus();
         }
     }

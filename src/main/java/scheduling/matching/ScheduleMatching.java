@@ -17,14 +17,14 @@ import scheduling.common.Solution;
 
 public class ScheduleMatching {
 
-    private ThreadsController controller;
+    private ThreadsController threadsController;
     private Graph<Vertex, DefaultWeightedEdge> graph;
     private Set<Vertex> daysSet;
     private Set<Vertex> employeesSet;
     private Day[] days;
 
-    public ScheduleMatching(ThreadsController controller) {
-        this.controller = controller;
+    public ScheduleMatching(ThreadsController threadsController) {
+        this.threadsController = threadsController;
         graph = GraphTypeBuilder
                 .undirected()
                 .allowingMultipleEdges(false)
@@ -35,7 +35,7 @@ public class ScheduleMatching {
                 .buildGraph();
         daysSet = new HashSet<Vertex>();
         employeesSet = new HashSet<Vertex>();
-        days = new Day[controller.getSpreadsheetReader().getLengthOfMonth()];
+        days = new Day[threadsController.getSpreadsheetReader().getLengthOfMonth()];
     }
 
     public Solution run() {
@@ -56,20 +56,20 @@ public class ScheduleMatching {
 
     private void addEmployeesToGraph() {
         for (int employee = 0; employee < Config.NUMBER_OF_EMPLOYEES; employee++) {
-            for (int shiftNumber = 0; shiftNumber < Math.floor(controller.getSpreadsheetReader()
+            for (int shiftNumber = 0; shiftNumber < Math.floor(threadsController.getSpreadsheetReader()
                     .getDaysToWorkInTotalForEmployee(employee)); shiftNumber++) {
                 Shift shift = new Shift(employee);
                 employeesSet.add(shift);
                 graph.addVertex(shift);
-                int weightForFreeDay = shiftNumber < controller.getSpreadsheetReader()
+                int weightForFreeDay = shiftNumber < threadsController.getSpreadsheetReader()
                         .getDaysToWorkAtFreeDayForEmployee(employee)
                                 ? Config.WEIGHT_FOR_FREE_DAY
                                 : Config.WEIGHT_FOR_NORMAL_DAY;
                 for (int day = 0; day < days.length; day++) {
-                    if (controller.getSpreadsheetReader().getIsEmployeeAvailableOnDay(employee, day)) {
-                        int weight = controller.getSpreadsheetReader().isFreeDay(day) ? weightForFreeDay
+                    if (threadsController.getSpreadsheetReader().getIsEmployeeAvailableOnDay(employee, day)) {
+                        int weight = threadsController.getSpreadsheetReader().isFreeDay(day) ? weightForFreeDay
                                 : Config.WEIGHT_FOR_NORMAL_DAY;
-                        weight = controller.getSpreadsheetReader().getEmployeeOnFixedDay(day) == employee
+                        weight = threadsController.getSpreadsheetReader().getEmployeeOnFixedDay(day) == employee
                                 ? weight + Config.WEIGHT_FOR_FIXED_DAY
                                 : weight;
                         graph.addEdge(shift, days[day]);
@@ -87,7 +87,7 @@ public class ScheduleMatching {
         Matching<Vertex, DefaultWeightedEdge> result = matching.getMatching();
 
         if (!result.isPerfect()) {
-            controller.warnForNonPerfectSolution();
+            threadsController.warnForNonPerfectSolution();
         }
 
         return result.getEdges();
@@ -95,7 +95,7 @@ public class ScheduleMatching {
 
     private Solution getSolutionFromMatching(Set<DefaultWeightedEdge> matchingResult) {
         Iterator<DefaultWeightedEdge> iterator = matchingResult.iterator();
-        int[] solution = new int[controller.getSpreadsheetReader().getLengthOfMonth()];
+        int[] solution = new int[threadsController.getSpreadsheetReader().getLengthOfMonth()];
 
         Arrays.fill(solution, Config.MISSING_EMPLOYEE);
 
@@ -108,14 +108,14 @@ public class ScheduleMatching {
             solution[dayNumber] = employee;
         }
         int[] numberOfFreeDaysForEmployee = getNumberOfFreeDaysForEmployee(solution);
-        return new Solution(solution, numberOfFreeDaysForEmployee, controller.getSpreadsheetReader());
+        return new Solution(solution, numberOfFreeDaysForEmployee, threadsController.getSpreadsheetReader());
     }
 
     private int[] getNumberOfFreeDaysForEmployee(int[] solution) {
         int[] numberOfFreeDaysForEmployee = new int[Config.NUMBER_OF_EMPLOYEES];
 
-        for (int day = 0; day < controller.getSpreadsheetReader().getLengthOfMonth(); day++) {
-            if (controller.getSpreadsheetReader().isFreeDay(day)) {
+        for (int day = 0; day < threadsController.getSpreadsheetReader().getLengthOfMonth(); day++) {
+            if (threadsController.getSpreadsheetReader().isFreeDay(day)) {
                 numberOfFreeDaysForEmployee[solution[day]]++;
             }
         }
