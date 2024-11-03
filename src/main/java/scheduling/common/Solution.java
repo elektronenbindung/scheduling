@@ -8,7 +8,7 @@ public class Solution {
     private static final int UNKNOWN_COSTS = -1;
     private int[] solution;
     private double costs;
-    private SpreadsheetReader input;
+    private SpreadsheetReader spreadsheetReader;
     private int[] lastOccurrenceOfEmployee;
     private int[] lengthOfLastBlockShiftForEmployee;
     private int numberOfDirectFollowingShifts;
@@ -18,7 +18,7 @@ public class Solution {
     public Solution(int[] solution, int[] numberOfFreeDaysForEmployee, SpreadsheetReader input) {
         this.solution = solution;
         this.numberOfFreeDaysForEmployee = numberOfFreeDaysForEmployee;
-        this.input = input;
+        this.spreadsheetReader = input;
         costs = UNKNOWN_COSTS;
         numberOfRetries = 0;
         lastOccurrenceOfEmployee = new int[Config.NUMBER_OF_EMPLOYEES];
@@ -66,7 +66,7 @@ public class Solution {
 
     public Solution createCopy() {
         return new Solution(Arrays.copyOf(solution, solution.length),
-                Arrays.copyOf(numberOfFreeDaysForEmployee, numberOfFreeDaysForEmployee.length), input);
+                Arrays.copyOf(numberOfFreeDaysForEmployee, numberOfFreeDaysForEmployee.length), spreadsheetReader);
     }
 
     public double getCosts() {
@@ -125,7 +125,7 @@ public class Solution {
     }
 
     private double calculateCostsForMandatoryBlockShiftOnDay(int day) {
-        if ((!input.isSingleShiftAllowedOnDay(day)) && day < solution.length - 1
+        if ((!spreadsheetReader.isSingleShiftAllowedOnDay(day)) && day < solution.length - 1
                 && solution[day] != solution[day + 1]) {
             return Config.PENALTY_FOR_UNWANTED_SHIFT;
         }
@@ -134,14 +134,14 @@ public class Solution {
 
     private double calculatePenaltyForBlockShift(int employee) {
         numberOfDirectFollowingShifts++;
-        if (numberOfDirectFollowingShifts > input.getMaxLengthOfShiftPerEmployee(employee)) {
+        if (numberOfDirectFollowingShifts > spreadsheetReader.getMaxLengthOfShiftPerEmployee(employee)) {
             return Config.PENALTY_FOR_FORBIDDEN_SHIFT;
         }
         return 0;
     }
 
     private double calculatePenaltyForForbiddenShift(int employee, int interval) {
-        if (input.getMaxLengthOfShiftPerEmployee(employee) != 1
+        if (spreadsheetReader.getMaxLengthOfShiftPerEmployee(employee) != 1
                 && (interval <= lengthOfLastBlockShiftForEmployee[employee]
                         || interval == Config.INTERVAL_FOR_ONE_DAY)) {
             return Config.PENALTY_FOR_FORBIDDEN_SHIFT;
@@ -150,11 +150,13 @@ public class Solution {
     }
 
     private double calculateIntervalCosts(int interval, int employee) {
-        boolean hasIntervalCosts = input.getWishedLengthOfShiftForEmployee(employee) > 0 && (interval != 1
-                || numberOfDirectFollowingShifts > Math.ceil(input.getWishedLengthOfShiftForEmployee(employee)));
+        boolean hasIntervalCosts = spreadsheetReader.getWishedLengthOfShiftForEmployee(employee) > 0 && (interval != 1
+                || numberOfDirectFollowingShifts > Math
+                        .ceil(spreadsheetReader.getWishedLengthOfShiftForEmployee(employee)));
 
         if (hasIntervalCosts) {
-            double intervalCosts = Math.abs(interval - input.getExpectedDaysBetweenShiftsForEmployee(employee));
+            double intervalCosts = Math
+                    .abs(interval - spreadsheetReader.getExpectedDaysBetweenShiftsForEmployee(employee));
             return intervalCosts;
         }
         return 0;

@@ -10,22 +10,20 @@ import scheduling.common.ThreadsController;
 import scheduling.common.Solution;
 
 public class SpreadsheetWriter {
-    private SpreadsheetReader input;
     private Solution solution;
-    private ThreadsController controller;
+    private ThreadsController threadsController;
 
-    public SpreadsheetWriter(SpreadsheetReader input, Solution solution, ThreadsController controller) {
-        this.input = input;
+    public SpreadsheetWriter(Solution solution, ThreadsController threadsController) {
         this.solution = solution;
-        this.controller = controller;
+        this.threadsController = threadsController;
     }
 
     public void run() throws Exception {
-        File inputFile = input.getInputFile();
+        File inputFile = threadsController.getSpreadsheetReader().getInputFile();
         String pathToOutputFile = inputFile.getAbsoluteFile().getParent() + File.separator
                 + inputFile.getName().split("\\.")[0] + "_output.ods";
 
-        controller.println("output file: " + pathToOutputFile);
+        threadsController.println("output file: " + pathToOutputFile);
 
         String[][] output = getOutput();
         saveOutput(pathToOutputFile, output);
@@ -35,7 +33,7 @@ public class SpreadsheetWriter {
     private String[][] getOutput() {
         String[][] output = new String[Config.NUMBER_OF_EMPLOYEES][31];
 
-        for (int day = 0; day < input.getLengthOfMonth(); day++) {
+        for (int day = 0; day < threadsController.getSpreadsheetReader().getLengthOfMonth(); day++) {
             int employee = solution.getEmployeeForDay(day);
             if (employee != Config.MISSING_EMPLOYEE) {
                 output[employee][day] = Config.WORKING;
@@ -49,10 +47,10 @@ public class SpreadsheetWriter {
         if (outputFile.exists()) {
             throw new Exception("The output file already exists and will not be overwritten");
         }
-        Sheet sheet = input.getSheet();
+        Sheet sheet = threadsController.getSpreadsheetReader().getSheet();
         Range range = sheet.getRange("B6:AF" + Config.LAST_ROW_OF_SCHEDULE);
         range.setValues(output);
-        SpreadSheet spreadSheet = input.getSpreadSheet();
+        SpreadSheet spreadSheet = threadsController.getSpreadsheetReader().getSpreadSheet();
         spreadSheet.save(outputFile);
     }
 }

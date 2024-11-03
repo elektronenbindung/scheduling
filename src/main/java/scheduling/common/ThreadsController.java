@@ -42,7 +42,7 @@ public class ThreadsController implements Runnable {
                 while (numberOfFinishedSolutions < Config.NUMBER_OF_PARALLEL_THREADS) {
                     Thread.sleep(100);
                 }
-                new SpreadsheetWriter(spreadsheetReader, bestSolution, this).run();
+                new SpreadsheetWriter(bestSolution, this).run();
             } catch (Exception exception) {
                 println("Error: " + exception.getMessage());
             }
@@ -61,7 +61,6 @@ public class ThreadsController implements Runnable {
         }
     }
 
-
     public synchronized void println(String message) {
         if (inUIMode) {
             ui.println(message);
@@ -77,7 +76,6 @@ public class ThreadsController implements Runnable {
     public synchronized boolean isStopped() {
         return stopped;
     }
-
 
     public synchronized SpreadsheetReader getSpreadsheetReader() {
         return spreadsheetReader;
