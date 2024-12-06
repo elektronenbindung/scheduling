@@ -20,10 +20,10 @@ public final class Main {
                 System.out.println("version: " + getVersion());
                 System.exit(0);
             }
+            System.out.println("You can quit by typing '" + Config.QUIT + "'");
             File input = new File(args[0]);
             ThreadsController threadsController = new ThreadsController(input, null);
             new Thread(threadsController).start();
-            System.out.println("You can quit by typing '" + Config.QUIT + "'");
 
             while (true) {
                 String line = System.console().readLine();
