@@ -14,7 +14,6 @@ public class ThreadsController implements Runnable {
     private int numberOfFinishedSolutions;
     private Solution bestSolution;
     private boolean stopped;
-    private boolean warningForPerfectSolutionOccurred;
 
     public ThreadsController(File file, UI ui) {
         inputFile = file;
@@ -23,7 +22,6 @@ public class ThreadsController implements Runnable {
         numberOfFinishedSolutions = 0;
         bestSolution = null;
         stopped = false;
-        warningForPerfectSolutionOccurred = false;
     }
 
     public void run() {
@@ -35,7 +33,8 @@ public class ThreadsController implements Runnable {
                 spreadsheetReader.run();
                 println("Input file has been read successfully, computing solutions...");
                 for (int currentSolutionThread = 0; currentSolutionThread < Config.NUMBER_OF_PARALLEL_THREADS; currentSolutionThread++) {
-                    SolutionController currentSolutionController = new SolutionController(this);
+                    SolutionController currentSolutionController = new SolutionController(this,
+                            currentSolutionThread == 0);
                     new Thread(currentSolutionController).start();
                 }
 
@@ -54,9 +53,10 @@ public class ThreadsController implements Runnable {
         }
     }
 
-    public synchronized void warnForNonPerfectSolution() {
-        if (!warningForPerfectSolutionOccurred) {
-            warningForPerfectSolutionOccurred = true;
+    public void informAboutPerfectMatching(boolean isPerfect) {
+        if (isPerfect) {
+            println("Success: Perfect matching between shift and days has been found");
+        } else {
             println("Warning: No perfect matching between shift and days has been found");
         }
     }
