@@ -118,7 +118,7 @@ public class ScheduleMatching {
 
         for (int day = 0; day < threadsController.getSpreadsheetReader().getLengthOfMonth(); day++) {
             if (threadsController.getSpreadsheetReader().isFreeDay(day)) {
-                if (solution[day] != -1) {
+                if (solution[day] != Config.MISSING_EMPLOYEE) {
                     numberOfFreeDaysForEmployee[solution[day]]++;
                 }
             }
