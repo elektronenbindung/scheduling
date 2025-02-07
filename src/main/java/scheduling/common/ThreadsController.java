@@ -86,7 +86,7 @@ public class ThreadsController implements Runnable {
             bestSolution = solution;
             println("Costs of solution: " + bestSolution.getCosts());
 
-            if (solution.getCosts() == 0) {
+            if (solution.getCosts() == Config.OPTIMAL_SOLUTION) {
                 stop();
                 numberOfFinishedSolutions = Config.NUMBER_OF_PARALLEL_THREADS;
             }

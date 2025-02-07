@@ -30,7 +30,8 @@ public class TabuSearch {
             int randomDay2 = 0;
 
             while (numberOfInvalidRetry < Config.RETRIES_OF_INVALID_SOLUTION) {
-                if (threadsController.isStopped() || currentlyBestSolution.getCosts() == 0) {
+                if (threadsController.isStopped()
+                        || currentlyBestSolution.getCosts() == Config.OPTIMAL_SOLUTION) {
                     return currentlyBestSolution;
                 }
                 numberOfInvalidRetry++;
