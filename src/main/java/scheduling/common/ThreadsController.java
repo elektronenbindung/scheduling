@@ -42,6 +42,8 @@ public class ThreadsController implements Runnable {
                 }
             } catch (Exception exception) {
                 println("Error: " + exception.getMessage());
+                outputHasBeenWritten = true;
+                stop();
                 finished();
             }
         }
