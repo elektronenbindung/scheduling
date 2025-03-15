@@ -12,6 +12,7 @@ public class ThreadsController implements Runnable {
     private UI ui;
     private boolean inUIMode;
     private int numberOfFinishedSolutions;
+    private boolean outputHasBeenWritten;
     private Solution bestSolution;
     private boolean stopped;
 
@@ -20,6 +21,7 @@ public class ThreadsController implements Runnable {
         this.ui = ui;
         this.inUIMode = ui != null;
         numberOfFinishedSolutions = 0;
+        outputHasBeenWritten = false;
         bestSolution = null;
         stopped = false;
     }
@@ -27,6 +29,7 @@ public class ThreadsController implements Runnable {
     public void run() {
         if (!inputFile.exists()) {
             println("Error: The provided input file does not exist");
+            finished();
         } else {
             try {
                 spreadsheetReader = new SpreadsheetReader(inputFile);
@@ -37,19 +40,10 @@ public class ThreadsController implements Runnable {
                             currentSolutionThread == 0);
                     new Thread(currentSolutionController).start();
                 }
-
-                while (numberOfFinishedSolutions < Config.NUMBER_OF_PARALLEL_THREADS) {
-                    Thread.sleep(100);
-                }
-                new SpreadsheetWriter(bestSolution, this).run();
             } catch (Exception exception) {
                 println("Error: " + exception.getMessage());
+                finished();
             }
-        }
-        if (inUIMode) {
-            ui.finished();
-        } else {
-            System.exit(0);
         }
     }
 
@@ -92,5 +86,27 @@ public class ThreadsController implements Runnable {
             }
         }
         numberOfFinishedSolutions++;
+
+        if ((!outputHasBeenWritten) && numberOfFinishedSolutions >= Config.NUMBER_OF_PARALLEL_THREADS) {
+            writeOutput();
+            outputHasBeenWritten = true;
+            finished();
+        }
+    }
+
+    private void writeOutput() {
+        try {
+            new SpreadsheetWriter(bestSolution, this).run();
+        } catch (Exception exception) {
+            println("Error: " + exception.getMessage());
+        }
+    }
+
+    private void finished() {
+        if (inUIMode) {
+            ui.finished();
+        } else {
+            System.exit(0);
+        }
     }
 }
