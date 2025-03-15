@@ -108,7 +108,7 @@ public class Solution {
     }
 
     private void initializeForCalculationOfCosts() {
-        costs = 0;
+        costs = Config.OPTIMAL_SOLUTION;
         Arrays.fill(lastOccurrenceOfEmployee, Config.MISSING_EMPLOYEE);
 
         Arrays.fill(lengthOfLastBlockShiftForEmployee, 1);
