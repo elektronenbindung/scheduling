@@ -49,9 +49,9 @@ public class ThreadsController implements Runnable {
 
     public void informAboutPerfectMatching(boolean isPerfect) {
         if (isPerfect) {
-            println("Success: Perfect matching between shift and days has been found");
+            println("Success: This schedule is solvable");
         } else {
-            println("Warning: No perfect matching between shift and days has been found");
+            println("Warning: This schedule is not solvable");
         }
     }
 
