@@ -42,8 +42,6 @@ public class ThreadsController implements Runnable {
                 }
             } catch (Exception exception) {
                 println("Error: " + exception.getMessage());
-                outputHasBeenWritten = true;
-                stop();
                 finished();
             }
         }
@@ -91,7 +89,6 @@ public class ThreadsController implements Runnable {
 
         if ((!outputHasBeenWritten) && numberOfFinishedSolutions >= Config.NUMBER_OF_PARALLEL_THREADS) {
             writeOutput();
-            outputHasBeenWritten = true;
             finished();
         }
     }
@@ -105,6 +102,9 @@ public class ThreadsController implements Runnable {
     }
 
     private void finished() {
+        outputHasBeenWritten = true;
+        stop();
+
         if (inUIMode) {
             ui.finished();
         } else {
