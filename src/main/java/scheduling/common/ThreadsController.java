@@ -102,10 +102,9 @@ public class ThreadsController implements Runnable {
     }
 
     private void finished() {
-        outputHasBeenWritten = true;
-        stop();
-
         if (inUIMode) {
+            outputHasBeenWritten = true;
+            stop();
             ui.finished();
         } else {
             System.exit(0);
