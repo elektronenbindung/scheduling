@@ -101,7 +101,7 @@ public class ThreadsController implements Runnable {
         }
     }
 
-    private void finished() {
+    private synchronized void finished() {
         if (inUIMode) {
             outputHasBeenWritten = true;
             stop();
