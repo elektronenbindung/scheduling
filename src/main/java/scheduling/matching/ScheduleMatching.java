@@ -22,11 +22,9 @@ public class ScheduleMatching {
     private Set<Vertex> daysSet;
     private Set<Vertex> employeesSet;
     private Day[] days;
-    private boolean checkForPerfectMatching;
 
-    public ScheduleMatching(ThreadsController threadsController, boolean checkForPerfectMatching) {
+    public ScheduleMatching(ThreadsController threadsController) {
         this.threadsController = threadsController;
-        this.checkForPerfectMatching = checkForPerfectMatching;
         graph = GraphTypeBuilder
                 .undirected()
                 .allowingMultipleEdges(false)
@@ -88,9 +86,7 @@ public class ScheduleMatching {
 
         Matching<Vertex, DefaultWeightedEdge> result = matching.getMatching();
 
-        if (checkForPerfectMatching) {
-            threadsController.informAboutPerfectMatching(result.isPerfect());
-        }
+        threadsController.informAboutSolvableSchedule(result.isPerfect());
 
         return result.getEdges();
     }

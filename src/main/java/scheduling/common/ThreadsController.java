@@ -15,6 +15,7 @@ public class ThreadsController implements Runnable {
     private boolean outputHasBeenWritten;
     private Solution bestSolution;
     private boolean stopped;
+    private boolean informedAboutSolvableSchedule;
 
     public ThreadsController(File file, UI ui) {
         inputFile = file;
@@ -24,6 +25,7 @@ public class ThreadsController implements Runnable {
         outputHasBeenWritten = false;
         bestSolution = null;
         stopped = false;
+        informedAboutSolvableSchedule = false;
     }
 
     public void run() {
@@ -36,8 +38,7 @@ public class ThreadsController implements Runnable {
                 spreadsheetReader.run();
                 println("Input file has been read successfully, computing solutions...");
                 for (int currentSolutionThread = 0; currentSolutionThread < Config.NUMBER_OF_PARALLEL_THREADS; currentSolutionThread++) {
-                    SolutionController currentSolutionController = new SolutionController(this,
-                            currentSolutionThread == 0);
+                    SolutionController currentSolutionController = new SolutionController(this);
                     new Thread(currentSolutionController).start();
                 }
             } catch (Exception exception) {
@@ -47,11 +48,15 @@ public class ThreadsController implements Runnable {
         }
     }
 
-    public void informAboutPerfectMatching(boolean isPerfect) {
-        if (isPerfect) {
-            println("Success: This schedule is solvable");
-        } else {
-            println("Warning: This schedule is not solvable");
+    public synchronized void informAboutSolvableSchedule(boolean solvable) {
+        if (!informedAboutSolvableSchedule) {
+            informedAboutSolvableSchedule = true;
+
+            if (solvable) {
+                println("Success: This schedule is solvable");
+            } else {
+                println("Warning: This schedule is not solvable");
+            }
         }
     }
 
