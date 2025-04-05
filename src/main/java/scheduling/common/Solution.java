@@ -96,7 +96,7 @@ public class Solution {
             lastOccurrenceOfEmployee[employee] = day;
 
             if (interval == 1) {
-                costs = costs + calculatePenaltyForBlockShift(employee);
+                costs = costs + calculatePenaltyForTooLongBlockShift(employee);
             } else {
                 costs = costs + calculatePenaltyForForbiddenShift(employee, interval);
             }
@@ -132,7 +132,7 @@ public class Solution {
         return 0;
     }
 
-    private double calculatePenaltyForBlockShift(int employee) {
+    private double calculatePenaltyForTooLongBlockShift(int employee) {
         numberOfDirectFollowingShifts++;
         if (numberOfDirectFollowingShifts > spreadsheetReader.getMaxLengthOfShiftPerEmployee(employee)) {
             return Config.PENALTY_FOR_FORBIDDEN_SHIFT;

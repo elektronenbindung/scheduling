@@ -48,7 +48,7 @@ public class ThreadsController implements Runnable {
         }
     }
 
-    public synchronized void informAboutSolvableSchedule(boolean solvable) {
+    public synchronized void informAboutSolvabilityOfSchedule(boolean solvable) {
         if (!informedAboutSolvableSchedule) {
             informedAboutSolvableSchedule = true;
 

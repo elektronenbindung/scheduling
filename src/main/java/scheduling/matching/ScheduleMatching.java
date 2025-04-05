@@ -86,7 +86,7 @@ public class ScheduleMatching {
 
         Matching<Vertex, DefaultWeightedEdge> result = matching.getMatching();
 
-        threadsController.informAboutSolvableSchedule(result.isPerfect());
+        threadsController.informAboutSolvabilityOfSchedule(result.isPerfect());
 
         return result.getEdges();
     }
