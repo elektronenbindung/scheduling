@@ -151,8 +151,7 @@ public class Solution {
 
     private double calculateIntervalCosts(int interval, int employee) {
         boolean hasIntervalCosts = spreadsheetReader.getWishedLengthOfShiftForEmployee(employee) > 0 && (interval != 1
-                || numberOfDirectFollowingShifts > Math
-                        .ceil(spreadsheetReader.getWishedLengthOfShiftForEmployee(employee)));
+                || numberOfDirectFollowingShifts > spreadsheetReader.getMaxLengthOfShiftPerEmployee(employee));
 
         if (hasIntervalCosts) {
             double intervalCosts = Math
