@@ -220,6 +220,7 @@ public class UI extends javax.swing.JFrame {
 
             String fileName = fileChooser.getSelectedFile().getAbsolutePath();
             inputFile.setText(fileName);
+            startButtonPressed();
         }
         inputFile.requestFocus();
     }// GEN-LAST:event_fileChooserButtonActionPerformed
