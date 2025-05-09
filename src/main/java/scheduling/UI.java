@@ -38,9 +38,10 @@ public class UI extends javax.swing.JFrame {
 
     public void finished() {
         stopButton.setEnabled(false);
-        inputFile.requestFocus();
         startButton.setEnabled(true);
+        fileChooserButton.setEnabled(true);
         threadsController = null;
+        inputFile.requestFocus();
     }
 
     public void println(String message) {
@@ -230,6 +231,7 @@ public class UI extends javax.swing.JFrame {
             outputConsole.setText(null);
             startButton.setEnabled(false);
             stopButton.setEnabled(true);
+            fileChooserButton.setEnabled(false);
             File input = new File(inputFile.getText());
             threadsController = new ThreadsController(input, this);
             new Thread(threadsController).start();
