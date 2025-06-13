@@ -19,19 +19,15 @@ public class Solution {
 		this.solution = solution;
 		this.numberOfFreeDaysForEmployee = numberOfFreeDaysForEmployee;
 		this.spreadsheetReader = input;
-		costs = UNKNOWN_COSTS;
-		numberOfRetries = 0;
-		lastOccurrenceOfEmployee = new int[Config.NUMBER_OF_EMPLOYEES];
-		lengthOfLastBlockShiftForEmployee = new int[Config.NUMBER_OF_EMPLOYEES];
-		numberOfDirectFollowingShifts = 1;
+		this.costs = UNKNOWN_COSTS;
+		this.numberOfRetries = 0;
+		this.lastOccurrenceOfEmployee = new int[Config.NUMBER_OF_EMPLOYEES];
+		this.lengthOfLastBlockShiftForEmployee = new int[Config.NUMBER_OF_EMPLOYEES];
+		this.numberOfDirectFollowingShifts = 1;
 	}
 
 	public boolean canBeRetried() {
-		if (numberOfRetries < Config.MAX_RETRIES_OF_SOLUTION) {
-			numberOfRetries++;
-			return true;
-		}
-		return false;
+		return numberOfRetries++ < Config.MAX_RETRIES_OF_SOLUTION;
 	}
 
 	public int getEmployeeForDay(int day) {
@@ -40,9 +36,9 @@ public class Solution {
 
 	public void exchangeEmployeesOnDays(int day1, int day2) {
 		costs = UNKNOWN_COSTS;
-		int changedEmployee = solution[day1];
+		int temp = solution[day1];
 		solution[day1] = solution[day2];
-		solution[day2] = changedEmployee;
+		solution[day2] = temp;
 	}
 
 	public void exchangeFreeDayBetweenEmployees(int fromDay, int toDay) {
@@ -58,10 +54,7 @@ public class Solution {
 	}
 
 	public int getNumberOfFreeDaysForEmployee(int employee) {
-		if (employee == Config.MISSING_EMPLOYEE) {
-			return Config.MISSING_EMPLOYEE;
-		}
-		return numberOfFreeDaysForEmployee[employee];
+		return employee == Config.MISSING_EMPLOYEE ? Config.MISSING_EMPLOYEE : numberOfFreeDaysForEmployee[employee];
 	}
 
 	public Solution createCopy() {
@@ -74,7 +67,19 @@ public class Solution {
 			return costs;
 		}
 		initializeForCalculationOfCosts();
+		costs = calculateTotalCosts();
+		return costs;
+	}
 
+	private void initializeForCalculationOfCosts() {
+		costs = Config.OPTIMAL_SOLUTION;
+		Arrays.fill(lastOccurrenceOfEmployee, Config.MISSING_EMPLOYEE);
+		Arrays.fill(lengthOfLastBlockShiftForEmployee, 1);
+		numberOfDirectFollowingShifts = 1;
+	}
+
+	private double calculateTotalCosts() {
+		double totalCosts = 0;
 		for (int day = 0; day < solution.length; day++) {
 			int employee = solution[day];
 
@@ -85,7 +90,7 @@ public class Solution {
 				initializeNextBlockShift(day);
 			}
 
-			costs = costs + calculateCostsForMandatoryBlockShiftOnDay(day);
+			totalCosts += calculateCostsForMandatoryBlockShiftOnDay(day);
 
 			if (lastOccurrenceOfEmployee[employee] == Config.MISSING_EMPLOYEE) {
 				lastOccurrenceOfEmployee[employee] = day;
@@ -96,24 +101,14 @@ public class Solution {
 			lastOccurrenceOfEmployee[employee] = day;
 
 			if (interval == 1) {
-				costs = costs + calculatePenaltyForTooLongBlockShift(employee);
+				totalCosts += calculatePenaltyForTooLongBlockShift(employee);
 			} else {
-				costs = costs + calculatePenaltyForForbiddenShift(employee, interval);
+				totalCosts += calculatePenaltyForForbiddenShift(employee, interval);
 			}
 
-			costs = costs + calculateIntervalCosts(interval, employee);
+			totalCosts += calculateIntervalCosts(interval, employee);
 		}
-
-		return costs;
-	}
-
-	private void initializeForCalculationOfCosts() {
-		costs = Config.OPTIMAL_SOLUTION;
-		Arrays.fill(lastOccurrenceOfEmployee, Config.MISSING_EMPLOYEE);
-
-		Arrays.fill(lengthOfLastBlockShiftForEmployee, 1);
-
-		numberOfDirectFollowingShifts = 1;
+		return totalCosts;
 	}
 
 	private void initializeNextBlockShift(int day) {
@@ -125,37 +120,29 @@ public class Solution {
 	}
 
 	private double calculateCostsForMandatoryBlockShiftOnDay(int day) {
-		if ((!spreadsheetReader.isSingleShiftAllowedOnDay(day)) && day < solution.length - 1
-				&& solution[day] != solution[day + 1]) {
-			return Config.PENALTY_FOR_MANDATORY_BLOCK_SHIFT;
-		}
-		return 0;
+		return (!spreadsheetReader.isSingleShiftAllowedOnDay(day) && day < solution.length - 1
+				&& solution[day] != solution[day + 1]) ? Config.PENALTY_FOR_MANDATORY_BLOCK_SHIFT : 0;
 	}
 
 	private double calculatePenaltyForTooLongBlockShift(int employee) {
 		numberOfDirectFollowingShifts++;
-		if (numberOfDirectFollowingShifts > spreadsheetReader.getMaxLengthOfShiftPerEmployee(employee)) {
-			return Config.PENALTY_FOR_FORBIDDEN_SHIFT;
-		}
-		return 0;
+		return numberOfDirectFollowingShifts > spreadsheetReader.getMaxLengthOfShiftPerEmployee(employee)
+				? Config.PENALTY_FOR_FORBIDDEN_SHIFT
+				: 0;
 	}
 
 	private double calculatePenaltyForForbiddenShift(int employee, int interval) {
-		if (spreadsheetReader.getMaxLengthOfShiftPerEmployee(employee) != 1
-				&& (interval <= lengthOfLastBlockShiftForEmployee[employee]
-						|| interval == Config.INTERVAL_FOR_ONE_DAY)) {
-			return Config.PENALTY_FOR_FORBIDDEN_SHIFT;
-		}
-		return 0;
+		return (spreadsheetReader.getMaxLengthOfShiftPerEmployee(employee) != 1
+				&& (interval <= lengthOfLastBlockShiftForEmployee[employee] || interval == Config.INTERVAL_FOR_ONE_DAY))
+						? Config.PENALTY_FOR_FORBIDDEN_SHIFT
+						: 0;
 	}
 
 	private double calculateIntervalCosts(int interval, int employee) {
 		boolean hasIntervalCosts = spreadsheetReader.getWishedLengthOfShiftForEmployee(employee) > 0 && (interval != 1
 				|| numberOfDirectFollowingShifts > spreadsheetReader.getMaxLengthOfShiftPerEmployee(employee));
-
-		if (hasIntervalCosts) {
-			return Math.abs(interval - spreadsheetReader.getExpectedDaysBetweenShiftsForEmployee(employee));
-		}
-		return 0;
+		return hasIntervalCosts
+				? Math.abs(interval - spreadsheetReader.getExpectedDaysBetweenShiftsForEmployee(employee))
+				: 0;
 	}
 }
