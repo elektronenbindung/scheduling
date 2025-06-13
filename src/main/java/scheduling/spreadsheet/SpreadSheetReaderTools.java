@@ -3,15 +3,14 @@ package scheduling.spreadsheet;
 import java.time.LocalDate;
 import java.util.Arrays;
 import java.util.function.IntToDoubleFunction;
-import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 import com.github.miachm.sods.Range;
 
 import scheduling.common.Config;
 
 public class SpreadSheetReaderTools {
-  private SpreadsheetReader reader;
-  private SpreadsheetReaderToolsHelper helper;
+  private final SpreadsheetReader reader;
+  private final SpreadsheetReaderToolsHelper helper;
 
   public SpreadSheetReaderTools(SpreadsheetReader reader) {
     this.reader = reader;
@@ -57,9 +56,7 @@ public class SpreadSheetReaderTools {
     int row = 1 + Config.LAST_ROW_OF_SCHEDULE;
 
     return Arrays.stream(calculateDayProperty(row, Config.WORK_DAY))
-        .map(x -> !x)
-        .collect(Collectors.toList())
-        .toArray(new Boolean[0]);
+			.map(x -> !x).toArray(Boolean[]::new);
   }
 
   public Boolean[] calculateIsSingleShiftAllowedOnDay() {

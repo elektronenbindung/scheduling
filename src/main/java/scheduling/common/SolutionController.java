@@ -4,7 +4,7 @@ import scheduling.matching.ScheduleMatching;
 import scheduling.tabuSearch.TabuSearch;
 
 public class SolutionController implements Runnable {
-  private ThreadsController threadsController;
+  private final ThreadsController threadsController;
 
   public SolutionController(ThreadsController threadsController) {
     this.threadsController = threadsController;

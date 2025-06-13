@@ -9,8 +9,8 @@ import com.github.miachm.sods.SpreadSheet;
 import scheduling.common.Config;
 
 public class SpreadsheetReader {
-  private File input;
-  private SpreadSheetReaderTools tools;
+  private final File input;
+  private final SpreadSheetReaderTools tools;
   private SpreadSheet spreadSheet;
   private Sheet sheet;
   private int lengthOfMonth;

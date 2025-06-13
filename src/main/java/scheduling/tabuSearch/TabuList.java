@@ -4,7 +4,7 @@ import java.util.Arrays;
 
 public class TabuList {
   private int nextElement;
-  private Tuple[] tabuList;
+  private final Tuple[] tabuList;
 
   public TabuList(int length) {
     tabuList = new Tuple[length];

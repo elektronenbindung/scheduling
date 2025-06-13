@@ -7,10 +7,10 @@ import scheduling.common.Solution;
 import scheduling.common.ThreadsController;
 
 public class TabuSearch {
-  private TabuList tabuList;
-  private SolutionList solutionList;
-  private Random random;
-  private ThreadsController threadsController;
+  private final TabuList tabuList;
+  private final SolutionList solutionList;
+  private final Random random;
+  private final ThreadsController threadsController;
 
   public TabuSearch(ThreadsController threadsController) {
     tabuList = new TabuList(Config.LENGTH_OF_TABU_LIST);
@@ -28,8 +28,8 @@ public class TabuSearch {
         numberOfUnsuccessfulRetry < Config.MAX_RETRIES_OF_TABU_SEARCH;
         numberOfUnsuccessfulRetry++) {
       int numberOfInvalidRetry = 0;
-      int randomDay1 = 0;
-      int randomDay2 = 0;
+      int randomDay1;
+      int randomDay2;
 
       while (numberOfInvalidRetry < Config.RETRIES_OF_INVALID_SOLUTION) {
         if (threadsController.isStopped()
@@ -92,11 +92,9 @@ public class TabuSearch {
 
   private boolean areDaysForbidden(int day1, int day2, Tuple tuple, Solution currentSolution) {
 
-    boolean areDaysForbidden =
-        day1 == day2
-            || tabuList.contains(tuple)
-            || areFreeDaysForbidden(day1, day2, currentSolution);
-    return areDaysForbidden;
+	  return day1 == day2
+		  || tabuList.contains(tuple)
+		  || areFreeDaysForbidden(day1, day2, currentSolution);
   }
 
   private boolean areFreeDaysForbidden(int fromDay, int toDay, Solution currentSolution) {

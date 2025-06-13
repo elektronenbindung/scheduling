@@ -1,8 +1,9 @@
 package scheduling.tabuSearch;
 
 public class Tuple {
-  private int x, y;
+  private final int x, y;
 
+  @SuppressWarnings("SuspiciousNameCombination")
   public Tuple(int x, int y) {
     if (y < x) {
       this.x = y;

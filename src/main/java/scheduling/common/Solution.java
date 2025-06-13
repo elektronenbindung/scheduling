@@ -6,14 +6,14 @@ import scheduling.spreadsheet.SpreadsheetReader;
 
 public class Solution {
   private static final int UNKNOWN_COSTS = -1;
-  private int[] solution;
+  private final int[] solution;
   private double costs;
-  private SpreadsheetReader spreadsheetReader;
-  private int[] lastOccurrenceOfEmployee;
-  private int[] lengthOfLastBlockShiftForEmployee;
+  private final SpreadsheetReader spreadsheetReader;
+  private final int[] lastOccurrenceOfEmployee;
+  private final int[] lengthOfLastBlockShiftForEmployee;
   private int numberOfDirectFollowingShifts;
   private int numberOfRetries;
-  private int[] numberOfFreeDaysForEmployee;
+  private final int[] numberOfFreeDaysForEmployee;
 
   public Solution(int[] solution, int[] numberOfFreeDaysForEmployee, SpreadsheetReader input) {
     this.solution = solution;
@@ -161,9 +161,7 @@ public class Solution {
                     > spreadsheetReader.getMaxLengthOfShiftPerEmployee(employee));
 
     if (hasIntervalCosts) {
-      double intervalCosts =
-          Math.abs(interval - spreadsheetReader.getExpectedDaysBetweenShiftsForEmployee(employee));
-      return intervalCosts;
+		return Math.abs(interval - spreadsheetReader.getExpectedDaysBetweenShiftsForEmployee(employee));
     }
     return 0;
   }

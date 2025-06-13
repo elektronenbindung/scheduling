@@ -90,11 +90,7 @@ public class UI extends javax.swing.JFrame {
     startButton.setFont(startButton.getFont());
     startButton.setText("start");
     startButton.addActionListener(
-        new java.awt.event.ActionListener() {
-          public void actionPerformed(java.awt.event.ActionEvent evt) {
-            startButtonActionPerformed(evt);
-          }
-        });
+			this::startButtonActionPerformed);
 
     outputConsole.setColumns(20);
     outputConsole.setFont(outputConsole.getFont());

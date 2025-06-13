@@ -24,7 +24,8 @@ public final class Main {
       ThreadsController threadsController = new ThreadsController(input, null);
       new Thread(threadsController).start();
 
-      while (true) {
+		//noinspection InfiniteLoopStatement
+		while (true) {
         String line = System.console().readLine();
 
         if (line.equals(Config.QUIT)) {
@@ -36,7 +37,6 @@ public final class Main {
 
   private static String getVersion() {
     Package mainPackage = Main.class.getPackage();
-    String version = mainPackage.getImplementationVersion();
-    return version;
+	  return mainPackage.getImplementationVersion();
   }
 }

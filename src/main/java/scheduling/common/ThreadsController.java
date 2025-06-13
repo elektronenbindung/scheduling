@@ -7,10 +7,10 @@ import scheduling.spreadsheet.SpreadsheetReader;
 import scheduling.spreadsheet.SpreadsheetWriter;
 
 public class ThreadsController implements Runnable {
-  private File inputFile;
+  private final File inputFile;
   private SpreadsheetReader spreadsheetReader;
-  private UI ui;
-  private boolean inUIMode;
+  private final UI ui;
+  private final boolean inUIMode;
   private int numberOfFinishedSolutions;
   private boolean outputHasBeenWritten;
   private Solution bestSolution;

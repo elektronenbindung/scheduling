@@ -2,7 +2,7 @@ package scheduling.matching;
 
 public class Day implements Vertex {
 
-  private int dayNumber;
+  private final int dayNumber;
 
   public Day(int dayNumber) {
     this.dayNumber = dayNumber;

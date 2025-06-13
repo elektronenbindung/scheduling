@@ -10,8 +10,8 @@ import scheduling.common.ThreadsController;
 import scheduling.common.Solution;
 
 public class SpreadsheetWriter {
-  private Solution solution;
-  private ThreadsController threadsController;
+  private final Solution solution;
+  private final ThreadsController threadsController;
 
   public SpreadsheetWriter(Solution solution, ThreadsController threadsController) {
     this.solution = solution;

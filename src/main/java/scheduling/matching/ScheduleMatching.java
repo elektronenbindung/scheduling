@@ -17,11 +17,11 @@ import scheduling.common.Solution;
 
 public class ScheduleMatching {
 
-  private ThreadsController threadsController;
-  private Graph<Vertex, DefaultWeightedEdge> graph;
-  private Set<Vertex> daysSet;
-  private Set<Vertex> employeesSet;
-  private Day[] days;
+  private final ThreadsController threadsController;
+  private final Graph<Vertex, DefaultWeightedEdge> graph;
+  private final Set<Vertex> daysSet;
+  private final Set<Vertex> employeesSet;
+  private final Day[] days;
 
   public ScheduleMatching(ThreadsController threadsController) {
     this.threadsController = threadsController;
@@ -33,8 +33,8 @@ public class ScheduleMatching {
             .vertexClass(Vertex.class)
             .weighted(true)
             .buildGraph();
-    daysSet = new HashSet<Vertex>();
-    employeesSet = new HashSet<Vertex>();
+    daysSet = new HashSet<>();
+    employeesSet = new HashSet<>();
     days = new Day[threadsController.getSpreadsheetReader().getLengthOfMonth()];
   }
 
@@ -93,7 +93,7 @@ public class ScheduleMatching {
 
   private Set<DefaultWeightedEdge> performMatching() {
     MaximumWeightBipartiteMatching<Vertex, DefaultWeightedEdge> matching =
-        new MaximumWeightBipartiteMatching<Vertex, DefaultWeightedEdge>(
+        new MaximumWeightBipartiteMatching<>(
             graph, employeesSet, daysSet);
 
     Matching<Vertex, DefaultWeightedEdge> result = matching.getMatching();

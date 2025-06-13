@@ -3,7 +3,7 @@ package scheduling.tabuSearch;
 import scheduling.common.Solution;
 
 public class SolutionList {
-  private Solution[] solutionList;
+  private final Solution[] solutionList;
   private int nextElement;
 
   public SolutionList(int length) {

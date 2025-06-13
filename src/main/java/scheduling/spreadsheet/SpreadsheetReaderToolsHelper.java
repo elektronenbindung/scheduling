@@ -7,7 +7,7 @@ import scheduling.common.Config;
 
 public class SpreadsheetReaderToolsHelper {
 
-  private SpreadsheetReader reader;
+  private final SpreadsheetReader reader;
   private Integer[] fixedEmployeeOnDay;
 
   public SpreadsheetReaderToolsHelper(SpreadsheetReader reader) {
@@ -39,9 +39,8 @@ public class SpreadsheetReaderToolsHelper {
       getFunctionForCalculationOfAvailableEmployees() {
     return (Range range, Integer employee, Integer day) -> {
       Style[][] styles = range.getStyles();
-      boolean canWork = styles[employee][day].getBackgroundColor() == null;
 
-      return canWork;
+		return styles[employee][day].getBackgroundColor() == null;
     };
   }
 
