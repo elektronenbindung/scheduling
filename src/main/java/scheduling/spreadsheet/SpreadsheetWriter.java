@@ -10,49 +10,46 @@ import scheduling.common.ThreadsController;
 import scheduling.common.Solution;
 
 public class SpreadsheetWriter {
-  private final Solution solution;
-  private final ThreadsController threadsController;
+	private final Solution solution;
+	private final ThreadsController threadsController;
 
-  public SpreadsheetWriter(Solution solution, ThreadsController threadsController) {
-    this.solution = solution;
-    this.threadsController = threadsController;
-  }
+	public SpreadsheetWriter(Solution solution, ThreadsController threadsController) {
+		this.solution = solution;
+		this.threadsController = threadsController;
+	}
 
-  public void run() throws Exception {
-    File inputFile = threadsController.getSpreadsheetReader().getInputFile();
-    String pathToOutputFile =
-        inputFile.getAbsoluteFile().getParent()
-            + File.separator
-            + inputFile.getName().split("\\.")[0]
-            + "_output.ods";
+	public void run() throws Exception {
+		File inputFile = threadsController.getSpreadsheetReader().getInputFile();
+		String pathToOutputFile = inputFile.getAbsoluteFile().getParent() + File.separator
+				+ inputFile.getName().split("\\.")[0] + "_output.ods";
 
-    threadsController.println("output file: " + pathToOutputFile);
+		threadsController.println("output file: " + pathToOutputFile);
 
-    String[][] output = getOutput();
-    saveOutput(pathToOutputFile, output);
-  }
+		String[][] output = getOutput();
+		saveOutput(pathToOutputFile, output);
+	}
 
-  private String[][] getOutput() {
-    String[][] output = new String[Config.NUMBER_OF_EMPLOYEES][31];
+	private String[][] getOutput() {
+		String[][] output = new String[Config.NUMBER_OF_EMPLOYEES][31];
 
-    for (int day = 0; day < threadsController.getSpreadsheetReader().getLengthOfMonth(); day++) {
-      int employee = solution.getEmployeeForDay(day);
-      if (employee != Config.MISSING_EMPLOYEE) {
-        output[employee][day] = Config.WORKING;
-      }
-    }
-    return output;
-  }
+		for (int day = 0; day < threadsController.getSpreadsheetReader().getLengthOfMonth(); day++) {
+			int employee = solution.getEmployeeForDay(day);
+			if (employee != Config.MISSING_EMPLOYEE) {
+				output[employee][day] = Config.WORKING;
+			}
+		}
+		return output;
+	}
 
-  private void saveOutput(String pathToOutputFile, String[][] output) throws Exception {
-    File outputFile = new File(pathToOutputFile);
-    if (outputFile.exists()) {
-      throw new Exception("The output file already exists and will not be overwritten");
-    }
-    Sheet sheet = threadsController.getSpreadsheetReader().getSheet();
-    Range range = sheet.getRange("B6:AF" + Config.LAST_ROW_OF_SCHEDULE);
-    range.setValues(output);
-    SpreadSheet spreadSheet = threadsController.getSpreadsheetReader().getSpreadSheet();
-    spreadSheet.save(outputFile);
-  }
+	private void saveOutput(String pathToOutputFile, String[][] output) throws Exception {
+		File outputFile = new File(pathToOutputFile);
+		if (outputFile.exists()) {
+			throw new Exception("The output file already exists and will not be overwritten");
+		}
+		Sheet sheet = threadsController.getSpreadsheetReader().getSheet();
+		Range range = sheet.getRange("B6:AF" + Config.LAST_ROW_OF_SCHEDULE);
+		range.setValues(output);
+		SpreadSheet spreadSheet = threadsController.getSpreadsheetReader().getSpreadSheet();
+		spreadSheet.save(outputFile);
+	}
 }
