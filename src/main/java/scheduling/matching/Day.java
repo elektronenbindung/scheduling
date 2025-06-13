@@ -2,13 +2,13 @@ package scheduling.matching;
 
 public class Day implements Vertex {
 
-    private int dayNumber;
+  private int dayNumber;
 
-    public Day(int dayNumber) {
-        this.dayNumber = dayNumber;
-    }
+  public Day(int dayNumber) {
+    this.dayNumber = dayNumber;
+  }
 
-    public int getDayNumber() {
-        return this.dayNumber;
-    }
+  public int getDayNumber() {
+    return this.dayNumber;
+  }
 }

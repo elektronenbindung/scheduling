@@ -1,5 +1,3 @@
 package scheduling.matching;
 
-public interface Vertex {
-
-}
+public interface Vertex {}
