@@ -3,6 +3,7 @@ package scheduling;
 import java.io.File;
 
 import scheduling.common.ThreadsController;
+import scheduling.ui.UiApplication;
 import scheduling.common.Config;
 
 public final class Main {
@@ -14,7 +15,8 @@ public final class Main {
 		if (args.length != 1) {
 			System.out.println(
 					"Hint: Provide exactly one single parameter on console as an input file - Using UI instead");
-			new UI(getVersion()).setVisible(true);
+			// new UI(getVersion()).setVisible(true);
+			new UiApplication().show();
 		} else {
 			if (args[0].equals(Config.VERSION)) {
 				System.out.println("version: " + getVersion());

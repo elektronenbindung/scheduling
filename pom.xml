@@ -5,6 +5,14 @@
     <groupId>com.github.elektronenbindung</groupId>
     <artifactId>scheduling</artifactId>
     <version>4.5-SNAPSHOT</version>
+    <repositories>
+  <repository>
+    <id>charm-glisten</id>
+    <name>charm-glisten Repository</name>
+    <url>https://nexus.gluonhq.com/nexus/content/repositories/releases/</url>
+    <layout>default</layout>
+  </repository>
+</repositories>
     <build>
         <plugins>
             <plugin>
@@ -30,13 +38,22 @@
                     </descriptorRefs>
                 </configuration>
             </plugin>
-        </plugins>
+             <plugin>
+        <groupId>org.openjfx</groupId>
+        <artifactId>javafx-maven-plugin</artifactId>
+        <version>0.0.8</version>
+        <configuration>
+          <mainClass>scheduling.ui.UiApplication</mainClass>
+        </configuration>
+      </plugin>
+    </plugins>
     </build>
     <packaging>jar</packaging>
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <maven.compiler.source>11</maven.compiler.source>
-        <maven.compiler.target>11</maven.compiler.target>
+        <maven.compiler.source>17</maven.compiler.source>
+        <maven.compiler.target>17</maven.compiler.target>
+          <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     </properties>
     <dependencies>
         <dependency>
@@ -49,5 +66,20 @@
             <artifactId>SODS</artifactId>
             <version>1.6.8</version>
         </dependency>
+         <dependency>
+      <groupId>org.openjfx</groupId>
+      <artifactId>javafx-controls</artifactId>
+      <version>21</version>
+    </dependency>
+    <dependency>
+    <groupId>com.gluonhq</groupId>
+    <artifactId>charm-glisten</artifactId>
+    <version>6.2.3</version>
+</dependency>
+    <dependency>
+    <groupId>org.openjfx</groupId>
+    <artifactId>javafx-fxml</artifactId>
+    <version>23.0.2</version>
+</dependency>
     </dependencies>
 </project>
