@@ -39,9 +39,8 @@ public class TabuSearch {
 				numberOfInvalidRetry++;
 				randomDay1 = getRandomDay(spreadsheetReader.getLengthOfMonth());
 				randomDay2 = getRandomDay(spreadsheetReader.getLengthOfMonth());
-				Tuple tuple = new Tuple(randomDay1, randomDay2);
 
-				if (isSwapOfShiftForbidden(currentSolution, randomDay1, randomDay2, tuple)) {
+				if (isSwapOfShiftForbidden(currentSolution, randomDay1, randomDay2)) {
 					if (numberOfInvalidRetry == Config.RETRIES_OF_INVALID_SOLUTION) {
 						currentSolution = solutionList.getPreviousSolution();
 						if (currentSolution == null) {
@@ -76,14 +75,14 @@ public class TabuSearch {
 		return random.nextInt(lengthOfMonth);
 	}
 
-	private boolean isSwapOfShiftForbidden(Solution currentSolution, int day1, int day2, Tuple tuple) {
-		return (areDaysForbidden(day1, day2, tuple, currentSolution)
+	private boolean isSwapOfShiftForbidden(Solution currentSolution, int day1, int day2) {
+		return (areDaysForbidden(day1, day2, currentSolution)
 				|| isAtLeastOneEmployeeUnavailable(currentSolution, day1, day2)
 				|| isAtLeastOneEmployeeFixed(currentSolution, day1, day2));
 	}
 
-	private boolean areDaysForbidden(int day1, int day2, Tuple tuple, Solution currentSolution) {
-		return day1 == day2 || tabuList.contains(tuple) || areFreeDaysForbidden(day1, day2, currentSolution);
+	private boolean areDaysForbidden(int day1, int day2, Solution currentSolution) {
+		return day1 == day2 || tabuList.contains(day1, day2) || areFreeDaysForbidden(day1, day2, currentSolution);
 	}
 
 	private boolean areFreeDaysForbidden(int fromDay, int toDay, Solution currentSolution) {

@@ -11,12 +11,13 @@ public class TabuList {
 		nextElement = 0;
 	}
 
-	public void add(Tuple tuple) {
-		tabuList[nextElement] = tuple;
+	public void add(int day1, int day2) {
+		tabuList[nextElement] = new Tuple(day1, day2);
 		nextElement = (nextElement + 1) % tabuList.length;
 	}
 
-	public boolean contains(Tuple tuple) {
+	public boolean contains(int day1, int day2) {
+		Tuple tuple = new Tuple(day1, day2);
 		return Arrays.stream(tabuList).anyMatch(t -> t != null && t.equals(tuple));
 	}
 
