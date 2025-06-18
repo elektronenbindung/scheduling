@@ -9,10 +9,10 @@
 <AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="742.0" prefWidth="970.0" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="scheduling.ui.UiController">
    <children>
       <Label layoutX="29.0" layoutY="26.0" text="input file" />
-      <TextField layoutX="97.0" layoutY="22.0" prefHeight="26.0" prefWidth="748.0" />
-      <Button layoutX="857.0" layoutY="22.0" mnemonicParsing="false" onMouseClicked="#selectFileClicked" prefHeight="26.0" prefWidth="71.0" text="..." />
-      <Button layoutX="327.0" layoutY="63.0" mnemonicParsing="false" onMouseClicked="#startClicked" prefHeight="30.0" prefWidth="102.0" text="start" />
-      <Button layoutX="486.0" layoutY="63.0" mnemonicParsing="false" onMouseClicked="#stopClicked" prefHeight="30.0" prefWidth="102.0" text="stop" />
-      <TextArea disable="true" editable="false" layoutX="21.0" layoutY="111.0" prefHeight="617.0" prefWidth="914.0" />
+      <TextField layoutX="97.0" layoutY="22.0" fx:id="inputField" prefHeight="26.0" prefWidth="748.0" />
+      <Button layoutX="857.0" layoutY="22.0" fx:id="selectFileButton" mnemonicParsing="false" onMouseClicked="#selectFileClicked" prefHeight="26.0" prefWidth="71.0" text="..." />
+      <Button layoutX="327.0" layoutY="63.0" fx:id="startButton" mnemonicParsing="false" onMouseClicked="#startClicked" prefHeight="30.0" prefWidth="102.0" text="start" />
+      <Button layoutX="486.0" layoutY="63.0" fx:id="stopButton" mnemonicParsing="false" onMouseClicked="#stopClicked" prefHeight="30.0" prefWidth="102.0" text="stop" />
+      <TextArea editable="false" fx:id="outputConsole" layoutX="21.0" layoutY="111.0" prefHeight="617.0" prefWidth="914.0" />
    </children>
 </AnchorPane>

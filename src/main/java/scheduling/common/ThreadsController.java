@@ -2,14 +2,14 @@ package scheduling.common;
 
 import java.io.File;
 
-import scheduling.UI;
 import scheduling.spreadsheet.SpreadsheetReader;
 import scheduling.spreadsheet.SpreadsheetWriter;
+import scheduling.ui.UiController;
 
 public class ThreadsController implements Runnable {
 	private final File inputFile;
 	private SpreadsheetReader spreadsheetReader;
-	private final UI ui;
+	private final UiController ui;
 	private final boolean inUIMode;
 	private int numberOfFinishedSolutions;
 	private boolean outputHasBeenWritten;
@@ -17,7 +17,7 @@ public class ThreadsController implements Runnable {
 	private boolean stopped;
 	private boolean informedAboutSolvableSchedule;
 
-	public ThreadsController(File file, UI ui) {
+	public ThreadsController(File file, UiController ui) {
 		inputFile = file;
 		this.ui = ui;
 		this.inUIMode = ui != null;
