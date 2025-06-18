@@ -15,8 +15,7 @@ public final class Main {
 		if (args.length != 1) {
 			System.out.println(
 					"Hint: Provide exactly one single parameter on console as an input file - Using UI instead");
-			// new UI(getVersion()).setVisible(true);
-			new UiApplication().show();
+			new UiApplication().show(getVersion());
 		} else {
 			if (args[0].equals(Config.VERSION)) {
 				System.out.println("version: " + getVersion());
