@@ -2,12 +2,11 @@ package scheduling.ui;
 
 import java.io.File;
 
-import com.gluonhq.charm.glisten.control.TextField;
-
 import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.TextArea;
+import javafx.scene.control.TextField;
 import javafx.scene.input.MouseEvent;
 import javafx.stage.FileChooser;
 import scheduling.common.ThreadsController;
@@ -70,7 +69,6 @@ public class UiController {
         if (threadsController != null) {
             stopButton.setDisable(true);
             threadsController.stop();
-            inputField.requestFocus();
         }
 
     }
