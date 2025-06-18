@@ -9,7 +9,7 @@ import scheduling.ui.UiController;
 public class ThreadsController implements Runnable {
 	private final File inputFile;
 	private SpreadsheetReader spreadsheetReader;
-	private final UiController ui;
+	private final UiController uiController;
 	private final boolean inUIMode;
 	private int numberOfFinishedSolutions;
 	private boolean outputHasBeenWritten;
@@ -17,10 +17,10 @@ public class ThreadsController implements Runnable {
 	private boolean stopped;
 	private boolean informedAboutSolvableSchedule;
 
-	public ThreadsController(File file, UiController ui) {
+	public ThreadsController(File file, UiController uiController) {
 		inputFile = file;
-		this.ui = ui;
-		this.inUIMode = ui != null;
+		this.uiController = uiController;
+		this.inUIMode = uiController != null;
 		numberOfFinishedSolutions = 0;
 		outputHasBeenWritten = false;
 		bestSolution = null;
@@ -62,7 +62,7 @@ public class ThreadsController implements Runnable {
 
 	public void println(String message) {
 		if (inUIMode) {
-			ui.println(message);
+			uiController.println(message);
 		} else {
 			System.out.println(message);
 		}
@@ -110,7 +110,7 @@ public class ThreadsController implements Runnable {
 		if (inUIMode) {
 			outputHasBeenWritten = true;
 			stop();
-			ui.finished();
+			uiController.finished();
 		} else {
 			System.exit(0);
 		}

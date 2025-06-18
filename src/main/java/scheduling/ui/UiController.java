@@ -41,7 +41,7 @@ public class UiController {
 
     @FXML
     void selectFileClicked(MouseEvent event) {
-        File selectedFile = fileChooser.showOpenDialog(null);
+        File selectedFile = fileChooser.showOpenDialog(inputField.getScene().getWindow());
         if (selectedFile != null) {
             String fileName = selectedFile.getAbsolutePath();
             inputField.setText(fileName);

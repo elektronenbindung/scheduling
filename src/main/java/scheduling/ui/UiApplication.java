@@ -8,9 +8,6 @@ import javafx.fxml.FXMLLoader;
 
 public class UiApplication extends Application {
 
-    public UiApplication() {
-    }
-
     public void show(String version) {
         if (version == null) {
             version = "dev";
