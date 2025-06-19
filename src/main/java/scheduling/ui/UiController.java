@@ -52,6 +52,13 @@ public class UiController {
     }
 
     @FXML
+    void handleOnKeyReleased(KeyEvent event) {
+        if (event.getCode() == KeyCode.ENTER) {
+            startClicked(null);
+        }
+    }
+
+    @FXML
     void startClicked(MouseEvent event) {
         if (threadsController == null) {
             outputConsole.setText("");
@@ -64,13 +71,6 @@ public class UiController {
             inputField.requestFocus();
         }
 
-    }
-
-    @FXML
-    void handleOnKeyReleased(KeyEvent event) {
-        if (event.getCode() == KeyCode.ENTER) {
-            startClicked(null);
-        }
     }
 
     @FXML

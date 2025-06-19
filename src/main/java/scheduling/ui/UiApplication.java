@@ -9,10 +9,7 @@ import javafx.fxml.FXMLLoader;
 public class UiApplication extends Application {
 
     public void show(String version) {
-        if (version == null) {
-            version = "dev";
-        }
-        launch(version);
+        launch(version != null ? version : "dev");
     }
 
     @Override
