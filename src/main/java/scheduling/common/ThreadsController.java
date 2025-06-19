@@ -1,6 +1,7 @@
 package scheduling.common;
 
 import java.io.File;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 import scheduling.spreadsheet.SpreadsheetReader;
 import scheduling.spreadsheet.SpreadsheetWriter;
@@ -15,7 +16,7 @@ public class ThreadsController implements Runnable {
 	private boolean outputHasBeenWritten;
 	private Solution bestSolution;
 	private boolean stopped;
-	private boolean informedAboutSolvableSchedule;
+	private AtomicBoolean informedAboutSolvableSchedule;
 
 	public ThreadsController(File file, UiController uiController) {
 		inputFile = file;
@@ -25,7 +26,7 @@ public class ThreadsController implements Runnable {
 		outputHasBeenWritten = false;
 		bestSolution = null;
 		stopped = false;
-		informedAboutSolvableSchedule = false;
+		informedAboutSolvableSchedule = new AtomicBoolean(false);
 	}
 
 	public void run() {
@@ -48,10 +49,8 @@ public class ThreadsController implements Runnable {
 		}
 	}
 
-	public synchronized void informAboutSolvabilityOfSchedule(boolean solvable) {
-		if (!informedAboutSolvableSchedule) {
-			informedAboutSolvableSchedule = true;
-
+	public void informAboutSolvabilityOfSchedule(boolean solvable) {
+		if (informedAboutSolvableSchedule.compareAndSet(false, true)) {
 			if (solvable) {
 				println("Success: This schedule is solvable");
 			} else {
