@@ -2,6 +2,7 @@ package scheduling.common;
 
 import java.io.File;
 import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.concurrent.locks.ReentrantLock;
 
 import scheduling.spreadsheet.SpreadsheetReader;
 import scheduling.spreadsheet.SpreadsheetWriter;
@@ -17,6 +18,7 @@ public class ThreadsController implements Runnable {
 	private Solution bestSolution;
 	private boolean stopped;
 	private AtomicBoolean informedAboutSolvableSchedule;
+	private final ReentrantLock setSolutionLock;
 
 	public ThreadsController(File file, UiController uiController) {
 		inputFile = file;
@@ -27,6 +29,7 @@ public class ThreadsController implements Runnable {
 		bestSolution = null;
 		stopped = false;
 		informedAboutSolvableSchedule = new AtomicBoolean(false);
+		setSolutionLock = new ReentrantLock();
 	}
 
 	public void run() {
@@ -79,21 +82,27 @@ public class ThreadsController implements Runnable {
 		return spreadsheetReader;
 	}
 
-	public synchronized void setSolution(Solution solution) {
-		if (this.bestSolution == null || solution.getCosts() < bestSolution.getCosts()) {
-			bestSolution = solution;
-			println("Costs of solution: " + bestSolution.getCosts());
+	public void setSolution(Solution solution) {
+		setSolutionLock.lock();
+		try {
+			if (this.bestSolution == null || solution.getCosts() < bestSolution.getCosts()) {
+				bestSolution = solution;
+				println("Costs of solution: " + bestSolution.getCosts());
 
-			if (solution.getCosts() == Config.OPTIMAL_SOLUTION) {
-				stop();
-				numberOfFinishedSolutions = Config.NUMBER_OF_PARALLEL_THREADS;
+				if (solution.getCosts() == Config.OPTIMAL_SOLUTION) {
+					stop();
+					numberOfFinishedSolutions = Config.NUMBER_OF_PARALLEL_THREADS;
+				}
 			}
-		}
-		numberOfFinishedSolutions++;
+			numberOfFinishedSolutions++;
 
-		if ((!outputHasBeenWritten) && numberOfFinishedSolutions >= Config.NUMBER_OF_PARALLEL_THREADS) {
-			writeOutput();
-			finished();
+			if ((!outputHasBeenWritten) && numberOfFinishedSolutions >= Config.NUMBER_OF_PARALLEL_THREADS) {
+				outputHasBeenWritten = true;
+				writeOutput();
+				finished();
+			}
+		} finally {
+			setSolutionLock.unlock();
 		}
 	}
 
@@ -105,9 +114,8 @@ public class ThreadsController implements Runnable {
 		}
 	}
 
-	private synchronized void finished() {
+	private void finished() {
 		if (inUIMode) {
-			outputHasBeenWritten = true;
 			stop();
 			uiController.finished();
 		} else {
