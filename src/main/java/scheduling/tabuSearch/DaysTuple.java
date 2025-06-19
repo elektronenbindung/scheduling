@@ -3,16 +3,16 @@ package scheduling.tabuSearch;
 public class DaysTuple {
 	private final int fromDay, toDay;
 
-	public DaysTuple(int day1, int day2) {
-		this.fromDay = day1;
-		this.toDay = day2;
+	public DaysTuple(int fromDay, int toDay) {
+		this.fromDay = fromDay;
+		this.toDay = toDay;
 	}
 
-	public int getFromDay() {
+	public int fromDay() {
 		return fromDay;
 	}
 
-	public int getToDay() {
+	public int toDay() {
 		return toDay;
 	}
 
