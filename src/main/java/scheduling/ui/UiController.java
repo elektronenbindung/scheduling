@@ -7,6 +7,8 @@ import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
+import javafx.scene.input.KeyCode;
+import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
 import javafx.stage.FileChooser;
 import scheduling.common.ThreadsController;
@@ -62,6 +64,13 @@ public class UiController {
             inputField.requestFocus();
         }
 
+    }
+
+    @FXML
+    void handleOnKeyReleased(KeyEvent event) {
+        if (event.getCode() == KeyCode.ENTER) {
+            startClicked(null);
+        }
     }
 
     @FXML
