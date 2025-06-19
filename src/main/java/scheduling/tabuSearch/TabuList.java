@@ -4,21 +4,20 @@ import java.util.Arrays;
 
 public class TabuList {
 	private int nextElement;
-	private final Tuple[] tabuList;
+	private final DaysTuple[] tabuList;
 
 	public TabuList(int length) {
-		tabuList = new Tuple[length];
+		tabuList = new DaysTuple[length];
 		nextElement = 0;
 	}
 
-	public void add(int day1, int day2) {
-		tabuList[nextElement] = new Tuple(day1, day2);
+	public void add(DaysTuple daysTuple) {
+		tabuList[nextElement] = daysTuple;
 		nextElement = (nextElement + 1) % tabuList.length;
 	}
 
-	public boolean contains(int day1, int day2) {
-		Tuple tuple = new Tuple(day1, day2);
-		return Arrays.stream(tabuList).anyMatch(t -> t != null && t.equals(tuple));
+	public boolean contains(DaysTuple daysTuple) {
+		return Arrays.stream(tabuList).anyMatch(t -> t != null && t.equals(daysTuple));
 	}
 
 	public void reset() {
