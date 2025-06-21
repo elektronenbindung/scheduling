@@ -13,12 +13,15 @@
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <maven.compiler.source>21</maven.compiler.source>
-        <maven.compiler.target>21</maven.compiler.target>
+        <maven.compiler.release>21</maven.compiler.release>
         <jgrapht.version>1.5.2</jgrapht.version>
         <sods.version>1.6.8</sods.version>
         <javafx.version>21</javafx.version>
         <javafx-maven-plugin.version>0.0.8</javafx-maven-plugin.version>
+
+        <!-- Properties for jlink and non-modular JAR handling -->
+        <jlink.image.name>scheduling-app-image</jlink.image.name>
+        <jgrapht.jar.name>jgrapht-core-${jgrapht.version}.jar</jgrapht.jar.name>
     </properties>
 
     <dependencies>
@@ -31,6 +34,16 @@
             <groupId>com.github.miachm.sods</groupId>
             <artifactId>SODS</artifactId>
             <version>${sods.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.openjfx</groupId>
+            <artifactId>javafx-base</artifactId>
+            <version>${javafx.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.openjfx</groupId>
+            <artifactId>javafx-graphics</artifactId>
+            <version>${javafx.version}</version>
         </dependency>
         <dependency>
             <groupId>org.openjfx</groupId>
@@ -47,9 +60,28 @@
     <build>
         <plugins>
             <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <version>3.11.0</version>
+                <configuration>
+                    <release>${maven.compiler.release}</release>
+                    <compilerArgs>
+                        <!-- explizites Hinzufügen aller benötigten Module -->
+                        <arg>--add-modules</arg>
+                        <arg>javafx.controls,javafx.fxml,javafx.graphics,javafx.base,com.github.miachm.sods</arg>
+                        <!-- Erlaubt Ihrem Modul, von Paketen in unbenannten Modulen zu lesen (wo jgrapht-core residiert) -->
+                        <arg>--add-reads</arg>
+                        <arg>com.github.elektronenbindung.scheduling=ALL-UNNAMED</arg>
+                    </compilerArgs>
+                </configuration>
+            </plugin>
+
+            <plugin>
                 <artifactId>maven-assembly-plugin</artifactId>
+                <version>3.6.0</version>
                 <executions>
                     <execution>
+                        <id>make-assembly</id>
                         <phase>package</phase>
                         <goals>
                             <goal>single</goal>
@@ -69,13 +101,76 @@
                     </descriptorRefs>
                 </configuration>
             </plugin>
+
+            <!-- Plugin to copy non-modular JARs into the jlink image's lib directory -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-dependency-plugin</artifactId>
+                <version>3.6.1</version>
+                <executions>
+                    <execution>
+                        <id>copy-jgrapht</id>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>copy</goal>
+                        </goals>
+                        <configuration>
+                            <artifactItems>
+                                <artifactItem>
+                                    <groupId>org.jgrapht</groupId>
+                                    <artifactId>jgrapht-core</artifactId>
+                                    <version>${jgrapht.version}</version>
+                                    <type>jar</type>
+                                    <destFileName>${jgrapht.jar.name}</destFileName>
+                                </artifactItem>
+                            </artifactItems>
+                            <outputDirectory>${project.build.directory}/${jlink.image.name}/lib</outputDirectory>
+                            <overWriteReleases>true</overWriteReleases>
+                            <overWriteSnapshots>true</overWriteSnapshots>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+
             <plugin>
                 <groupId>org.openjfx</groupId>
                 <artifactId>javafx-maven-plugin</artifactId>
                 <version>${javafx-maven-plugin.version}</version>
                 <configuration>
                     <mainClass>scheduling.ui.UiApplication</mainClass>
+                    <stripDebug>true</stripDebug>
+                    <noHeaderFiles>true</noHeaderFiles>
+                    <noManPages>true</noManPages>
+                    <compress>2</compress>
+                    <launcher>SchedulingApp</launcher>
+                    <jlinkImageName>${jlink.image.name}</jlinkImageName>
+                    <!-- Add jgrapht-core to the classpath of the launcher script -->
+                    <options>
+                        <option>-cp</option>
+                        <option>../lib/${jgrapht.jar.name}</option>
+                    </options>
+                    <module>com.github.elektronenbindung.scheduling/scheduling.ui.UiApplication</module>
+                    <platforms>
+                        <platform>linux</platform>
+                        <platform>win</platform>
+                        <platform>mac</platform>
+                    </platforms>
                 </configuration>
+                <executions>
+                    <execution>
+                        <id>default-cli</id>
+                        <configuration>
+                            <mainClass>scheduling.ui.UiApplication</mainClass>
+                        </configuration>
+                    </execution>
+                    <execution>
+                        <id>jlink</id>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>jlink</goal>
+                        </goals>
+                    </execution>
+                </executions>
             </plugin>
         </plugins>
     </build>
