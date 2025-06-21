@@ -15,7 +15,7 @@ public final class Main {
 		if (args.length != 1) {
 			System.out.println(
 					"Hint: Provide exactly one single parameter on console as an input file - Using UI instead");
-			new UiApplication().show(getVersion());
+			new UiApplication().show();
 		} else {
 			if (args[0].equals(Config.VERSION)) {
 				System.out.println("version: " + getVersion());
@@ -37,8 +37,9 @@ public final class Main {
 		}
 	}
 
-	private static String getVersion() {
+	public static String getVersion() {
 		Package mainPackage = Main.class.getPackage();
-		return mainPackage.getImplementationVersion();
+		String version = mainPackage.getImplementationVersion();
+		return version != null ? version : "dev";
 	}
 }
