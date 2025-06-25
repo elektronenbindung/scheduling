@@ -15,10 +15,10 @@ public final class Main {
 		if (args.length != 1) {
 			System.out.println(
 					"Hint: Provide exactly one single parameter on console as an input file - Using UI instead");
-			new UiApplication().show(getVersion());
+			UiApplication.launch(UiApplication.class, args);
 		} else {
 			if (args[0].equals(Config.VERSION)) {
-				System.out.println("version: " + getVersion());
+				System.out.println("version: " + AppVersion.getVersion());
 				System.exit(0);
 			}
 			System.out.println("You can quit by typing '" + Config.QUIT + "'");
@@ -37,8 +37,4 @@ public final class Main {
 		}
 	}
 
-	private static String getVersion() {
-		Package mainPackage = Main.class.getPackage();
-		return mainPackage.getImplementationVersion();
-	}
 }
