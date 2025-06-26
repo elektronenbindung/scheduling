@@ -6,14 +6,19 @@
 <?import javafx.scene.control.TextField?>
 <?import javafx.scene.layout.AnchorPane?>
 
-<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="742.0" prefWidth="970.0" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="scheduling.ui.UiController">
-   <children>
-      <Label layoutX="29.0" layoutY="26.0" text="input file" />
-      <TextField fx:id="inputField" layoutX="97.0" layoutY="22.0" onKeyReleased="#handleOnKeyReleased" prefHeight="26.0" prefWidth="748.0" />
-      <Button fx:id="selectFileButton" layoutX="857.0" layoutY="22.0" mnemonicParsing="false" onMouseClicked="#selectFileClicked" prefHeight="26.0" prefWidth="71.0" text="..." />
-      <Button fx:id="startButton" layoutX="327.0" layoutY="63.0" mnemonicParsing="false" onMouseClicked="#startClicked" prefHeight="30.0" prefWidth="102.0" text="start" />
-      <Button fx:id="stopButton" layoutX="486.0" layoutY="63.0" mnemonicParsing="false" onMouseClicked="#stopClicked" prefHeight="30.0" prefWidth="102.0" text="stop" />
-      <TextArea fx:id="outputConsole" editable="false" layoutX="21.0" layoutY="134.0" prefHeight="594.0" prefWidth="914.0" />
-      <Label layoutX="29.0" layoutY="110.0" text="console" />
-   </children>
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="742.0"
+            prefWidth="970.0" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="scheduling.ui.UiController">
+   <Label layoutX="29.0" layoutY="26.0" text="input file"/>
+   <TextField fx:id="inputField" layoutX="97.0" layoutY="22.0" onKeyReleased="#handleOnKeyReleased" prefHeight="26.0"
+              prefWidth="748.0"/>
+   <Button fx:id="selectFileButton" layoutX="857.0" layoutY="22.0" mnemonicParsing="false"
+           onMouseClicked="#selectFileClicked" prefHeight="26.0" prefWidth="71.0" text="..."/>
+   <Button fx:id="startButton" layoutX="327.0" layoutY="63.0" mnemonicParsing="false" onMouseClicked="#startClicked"
+           prefHeight="30.0" prefWidth="102.0" text="start"/>
+   <Button fx:id="stopButton" layoutX="486.0" layoutY="63.0" mnemonicParsing="false" onMouseClicked="#stopClicked"
+           prefHeight="30.0" prefWidth="102.0" text="stop"/>
+   <TextArea fx:id="outputConsole" editable="false" layoutX="21.0" layoutY="134.0" prefHeight="594.0"
+             prefWidth="914.0"/>
+   <Label layoutX="29.0" layoutY="110.0" text="console"/>
 </AnchorPane>

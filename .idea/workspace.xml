@@ -4,10 +4,15 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="62dab032-9d15-4405-a891-cf67f9f087b9" name="Changes" comment="Refactoring">
-      <change afterPath="$PROJECT_DIR$/src/main/java/scheduling/AppVersion.java" afterDir="false" />
+    <list default="true" id="62dab032-9d15-4405-a891-cf67f9f087b9" name="Changes" comment="Intellij config">
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/scheduling/Main.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/scheduling/Main.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/scheduling/ui/UiApplication.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/scheduling/ui/UiApplication.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/scheduling/matching/Day.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/scheduling/matching/Day.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/scheduling/matching/ScheduleMatching.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/scheduling/matching/ScheduleMatching.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/scheduling/matching/Shift.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/scheduling/matching/Shift.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/scheduling/tabuSearch/DaysTuple.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/scheduling/tabuSearch/DaysTuple.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/scheduling/ui/UiController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/scheduling/ui/UiController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/UI.fxml" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/UI.fxml" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -49,6 +54,8 @@
   </component>
   <component name="PropertiesComponent">{
   &quot;keyToString&quot;: {
+    &quot;Application.Main.executor&quot;: &quot;Run&quot;,
+    &quot;Application.UiApplication.executor&quot;: &quot;Run&quot;,
     &quot;ModuleVcsDetector.initialDetectionPerformed&quot;: &quot;true&quot;,
     &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
     &quot;RunOnceActivity.git.unshallow&quot;: &quot;true&quot;,
@@ -156,7 +163,8 @@
       <workItem from="1749823281645" duration="48000" />
       <workItem from="1749823342192" duration="612000" />
       <workItem from="1749823986310" duration="5043000" />
-      <workItem from="1750872730743" duration="779000" />
+      <workItem from="1750872730743" duration="1153000" />
+      <workItem from="1750954871111" duration="372000" />
     </task>
     <task id="LOCAL-00001" summary="Use google code style">
       <option name="closed" value="true" />
@@ -214,7 +222,31 @@
       <option name="project" value="LOCAL" />
       <updated>1749827582509</updated>
     </task>
-    <option name="localTasksCounter" value="8" />
+    <task id="LOCAL-00008" summary="Refactoring">
+      <option name="closed" value="true" />
+      <created>1750873631295</created>
+      <option name="number" value="00008" />
+      <option name="presentableId" value="LOCAL-00008" />
+      <option name="project" value="LOCAL" />
+      <updated>1750873631295</updated>
+    </task>
+    <task id="LOCAL-00009" summary="Refactoring">
+      <option name="closed" value="true" />
+      <created>1750873653984</created>
+      <option name="number" value="00009" />
+      <option name="presentableId" value="LOCAL-00009" />
+      <option name="project" value="LOCAL" />
+      <updated>1750873653984</updated>
+    </task>
+    <task id="LOCAL-00010" summary="Intellij config">
+      <option name="closed" value="true" />
+      <created>1750873679837</created>
+      <option name="number" value="00010" />
+      <option name="presentableId" value="LOCAL-00010" />
+      <option name="project" value="LOCAL" />
+      <updated>1750873679837</updated>
+    </task>
+    <option name="localTasksCounter" value="11" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -237,6 +269,7 @@
     <MESSAGE value="Use eclipse formatting" />
     <MESSAGE value="Use readhat codestyle" />
     <MESSAGE value="Refactoring" />
-    <option name="LAST_COMMIT_MESSAGE" value="Refactoring" />
+    <MESSAGE value="Intellij config" />
+    <option name="LAST_COMMIT_MESSAGE" value="Intellij config" />
   </component>
 </project>

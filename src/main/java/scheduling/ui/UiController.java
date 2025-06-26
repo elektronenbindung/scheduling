@@ -32,7 +32,7 @@ public class UiController {
 
     private ThreadsController threadsController;
 
-    private FileChooser fileChooser;
+    private final FileChooser fileChooser;
 
     public UiController() {
         fileChooser = new FileChooser();

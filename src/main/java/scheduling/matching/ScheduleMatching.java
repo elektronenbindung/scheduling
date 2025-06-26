@@ -96,8 +96,8 @@ public class ScheduleMatching {
 			DefaultWeightedEdge edge = iterator.next();
 			Shift shift = (Shift) graph.getEdgeSource(edge);
 			Day day = (Day) graph.getEdgeTarget(edge);
-			int employee = shift.getEmployee();
-			int dayNumber = day.getDayNumber();
+			int employee = shift.employee();
+			int dayNumber = day.dayNumber();
 			solution[dayNumber] = employee;
 		}
 		int[] numberOfFreeDaysForEmployee = getNumberOfFreeDaysForEmployee(solution);

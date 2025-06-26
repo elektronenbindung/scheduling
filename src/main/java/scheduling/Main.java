@@ -18,7 +18,7 @@ public final class Main {
 			UiApplication.launch(UiApplication.class, args);
 		} else {
 			if (args[0].equals(Config.VERSION)) {
-				System.out.println("version: " + AppVersion.getVersion());
+				System.out.println(AppVersion.getVersion());
 				System.exit(0);
 			}
 			System.out.println("You can quit by typing '" + Config.QUIT + "'");
