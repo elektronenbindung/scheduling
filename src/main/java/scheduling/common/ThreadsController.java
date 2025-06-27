@@ -17,7 +17,7 @@ public class ThreadsController implements Runnable {
 	private boolean outputHasBeenWritten;
 	private Solution bestSolution;
 	private boolean stopped;
-	private AtomicBoolean informedAboutSolvableSchedule;
+	private final AtomicBoolean informedAboutSolvableSchedule;
 	private final ReentrantLock setSolutionLock;
 
 	public ThreadsController(File file, UiController uiController) {
