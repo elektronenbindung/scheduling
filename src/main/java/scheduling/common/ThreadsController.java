@@ -52,8 +52,10 @@ public class ThreadsController implements Runnable {
 			executorService = Executors.newFixedThreadPool(Config.NUMBER_OF_PARALLEL_THREADS);
 
 			for (int currentSolutionThread = 0; currentSolutionThread < Config.NUMBER_OF_PARALLEL_THREADS; currentSolutionThread++) {
-				SolutionController currentSolutionController = new SolutionController(this);
-				executorService.submit(currentSolutionController);
+				if (!stopped) {
+					SolutionController currentSolutionController = new SolutionController(this);
+					executorService.submit(currentSolutionController);
+				}
 			}
 
 			executorService.shutdown();
