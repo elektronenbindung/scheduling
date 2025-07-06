@@ -48,6 +48,8 @@ public class UiController {
             String fileName = selectedFile.getAbsolutePath();
             inputField.setText(fileName);
             startClicked(event);
+        } else {
+            inputField.requestFocus();
         }
     }
 
