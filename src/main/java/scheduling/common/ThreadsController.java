@@ -95,9 +95,6 @@ public class ThreadsController implements Runnable {
 
 	public void stop() {
 		stopped = true;
-		if (executorService != null && !executorService.isShutdown()) {
-			executorService.shutdownNow();
-		}
 	}
 
 	public boolean isStopped() {
