@@ -10,18 +10,19 @@ import scheduling.ui.UiController;
 
 public class ThreadsController implements Runnable {
 	private final File inputFile;
-	private SpreadsheetReader spreadsheetReader;
+	private final SpreadsheetReader spreadsheetReader;
 	private final UiController uiController;
 	private final boolean inUIMode;
 	private int numberOfFinishedSolutions;
 	private boolean outputHasBeenWritten;
 	private Solution bestSolution;
-	private boolean stopped;
+	private volatile boolean stopped;
 	private final AtomicBoolean informedAboutSolvableSchedule;
 	private final ReentrantLock setSolutionLock;
 
 	public ThreadsController(File file, UiController uiController) {
 		inputFile = file;
+		spreadsheetReader = new SpreadsheetReader(inputFile);
 		this.uiController = uiController;
 		this.inUIMode = uiController != null;
 		numberOfFinishedSolutions = 0;
@@ -38,7 +39,6 @@ public class ThreadsController implements Runnable {
 			finished();
 		} else {
 			try {
-				spreadsheetReader = new SpreadsheetReader(inputFile);
 				spreadsheetReader.run();
 				println("Input file has been read successfully, computing solutions...");
 				for (int currentSolutionThread = 0; currentSolutionThread < Config.NUMBER_OF_PARALLEL_THREADS; currentSolutionThread++) {
