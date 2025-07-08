@@ -1,9 +1,6 @@
 package scheduling.common;
 
 import java.io.File;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.locks.ReentrantLock;
 
@@ -13,20 +10,18 @@ import scheduling.ui.UiController;
 
 public class ThreadsController implements Runnable {
 	private final File inputFile;
-	private final SpreadsheetReader spreadsheetReader;
+	private SpreadsheetReader spreadsheetReader;
 	private final UiController uiController;
 	private final boolean inUIMode;
 	private int numberOfFinishedSolutions;
 	private boolean outputHasBeenWritten;
 	private Solution bestSolution;
-	private volatile boolean stopped;
+	private boolean stopped;
 	private final AtomicBoolean informedAboutSolvableSchedule;
 	private final ReentrantLock setSolutionLock;
-	private ExecutorService executorService;
 
 	public ThreadsController(File file, UiController uiController) {
 		inputFile = file;
-		spreadsheetReader = new SpreadsheetReader(inputFile);
 		this.uiController = uiController;
 		this.inUIMode = uiController != null;
 		numberOfFinishedSolutions = 0;
@@ -37,40 +32,22 @@ public class ThreadsController implements Runnable {
 		setSolutionLock = new ReentrantLock();
 	}
 
-	@Override
 	public void run() {
 		if (!inputFile.exists()) {
 			println("Error: The provided input file does not exist");
 			finished();
-			return;
-		}
-
-		try {
-			spreadsheetReader.run();
-			println("Input file has been read successfully, computing solutions...");
-
-			executorService = Executors.newFixedThreadPool(Config.NUMBER_OF_PARALLEL_THREADS);
-
-			for (int currentSolutionThread = 0; currentSolutionThread < Config.NUMBER_OF_PARALLEL_THREADS; currentSolutionThread++) {
-				SolutionController currentSolutionController = new SolutionController(this);
-				executorService.submit(currentSolutionController);
-			}
-
-			executorService.shutdown();
-
+		} else {
 			try {
-				executorService.awaitTermination(Long.MAX_VALUE, TimeUnit.NANOSECONDS);
-			} catch (InterruptedException e) {
-				println("Warning: Thread pool interrupted while waiting for tasks to complete.");
-				Thread.currentThread().interrupt();
-			}
-
-		} catch (Exception exception) {
-			println("Error: " + exception.getMessage());
-			finished();
-		} finally {
-			if (executorService != null && !executorService.isShutdown()) {
-				executorService.shutdownNow();
+				spreadsheetReader = new SpreadsheetReader(inputFile);
+				spreadsheetReader.run();
+				println("Input file has been read successfully, computing solutions...");
+				for (int currentSolutionThread = 0; currentSolutionThread < Config.NUMBER_OF_PARALLEL_THREADS; currentSolutionThread++) {
+					SolutionController currentSolutionController = new SolutionController(this);
+					new Thread(currentSolutionController).start();
+				}
+			} catch (Exception exception) {
+				println("Error: " + exception.getMessage());
+				finished();
 			}
 		}
 	}
@@ -133,7 +110,7 @@ public class ThreadsController implements Runnable {
 		try {
 			new SpreadsheetWriter(bestSolution, this).run();
 		} catch (Exception exception) {
-			println("Error writing output: " + exception.getMessage());
+			println("Error: " + exception.getMessage());
 		}
 	}
 
