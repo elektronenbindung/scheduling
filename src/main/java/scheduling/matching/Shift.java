@@ -1,14 +1,5 @@
 package scheduling.matching;
 
-public class Shift implements Vertex {
+public record Shift(int employee, int shiftNumber) implements Vertex {
 
-	private final int employee;
-
-	public Shift(int employee) {
-		this.employee = employee;
-	}
-
-	public int getEmployee() {
-		return employee;
-	}
 }

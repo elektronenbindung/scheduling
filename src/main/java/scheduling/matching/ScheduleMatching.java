@@ -52,7 +52,7 @@ public class ScheduleMatching {
 		for (int employee = 0; employee < Config.NUMBER_OF_EMPLOYEES; employee++) {
 			for (int shiftNumber = 0; shiftNumber < Math.floor(threadsController.getSpreadsheetReader()
 					.getDaysToWorkInTotalForEmployee(employee)); shiftNumber++) {
-				Shift shift = new Shift(employee);
+				Shift shift = new Shift(employee, shiftNumber);
 				employeesSet.add(shift);
 				graph.addVertex(shift);
 				int weightForFreeDay = shiftNumber < threadsController.getSpreadsheetReader()
@@ -96,8 +96,8 @@ public class ScheduleMatching {
 			DefaultWeightedEdge edge = iterator.next();
 			Shift shift = (Shift) graph.getEdgeSource(edge);
 			Day day = (Day) graph.getEdgeTarget(edge);
-			int employee = shift.getEmployee();
-			int dayNumber = day.getDayNumber();
+			int employee = shift.employee();
+			int dayNumber = day.dayNumber();
 			solution[dayNumber] = employee;
 		}
 		int[] numberOfFreeDaysForEmployee = getNumberOfFreeDaysForEmployee(solution);
