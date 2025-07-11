@@ -33,6 +33,7 @@ public class ThreadsController implements Runnable {
 		setSolutionLock = new ReentrantLock();
 	}
 
+	@Override
 	public void run() {
 		if (!inputFile.exists()) {
 			println("Error: The provided input file does not exist");
@@ -41,10 +42,7 @@ public class ThreadsController implements Runnable {
 			try {
 				spreadsheetReader.run();
 				println("Input file has been read successfully, computing solutions...");
-				for (int currentSolutionThread = 0; currentSolutionThread < Config.NUMBER_OF_PARALLEL_THREADS; currentSolutionThread++) {
-					SolutionController currentSolutionController = new SolutionController(this);
-					new Thread(currentSolutionController).start();
-				}
+				startSolutionThreads();
 			} catch (Exception exception) {
 				println("Error: " + exception.getMessage());
 				finished();
@@ -54,11 +52,7 @@ public class ThreadsController implements Runnable {
 
 	public void informAboutSolvabilityOfSchedule(boolean solvable) {
 		if (informedAboutSolvableSchedule.compareAndSet(false, true)) {
-			if (solvable) {
-				println("Success: This schedule is solvable");
-			} else {
-				println("Warning: This schedule is not solvable");
-			}
+			println(solvable ? "Success: This schedule is solvable" : "Warning: This schedule is not solvable");
 		}
 	}
 
@@ -85,18 +79,18 @@ public class ThreadsController implements Runnable {
 	public void setSolution(Solution solution) {
 		setSolutionLock.lock();
 		try {
-			if (this.bestSolution == null || solution.getCosts() < bestSolution.getCosts()) {
+			if (isBetterSolution(solution)) {
 				bestSolution = solution;
 				println("Costs of solution: " + bestSolution.getCosts());
 
-				if (solution.getCosts() == Config.OPTIMAL_SOLUTION) {
+				if (isOptimalSolution(solution)) {
 					stop();
 					numberOfFinishedSolutions = Config.NUMBER_OF_PARALLEL_THREADS;
 				}
 			}
 			numberOfFinishedSolutions++;
 
-			if ((!outputHasBeenWritten) && numberOfFinishedSolutions >= Config.NUMBER_OF_PARALLEL_THREADS) {
+			if (shouldWriteOutput()) {
 				outputHasBeenWritten = true;
 				writeOutput();
 				finished();
@@ -104,6 +98,25 @@ public class ThreadsController implements Runnable {
 		} finally {
 			setSolutionLock.unlock();
 		}
+	}
+
+	private void startSolutionThreads() {
+		for (int i = 0; i < Config.NUMBER_OF_PARALLEL_THREADS; i++) {
+			SolutionController solutionController = new SolutionController(this);
+			new Thread(solutionController).start();
+		}
+	}
+
+	private boolean isBetterSolution(Solution solution) {
+		return bestSolution == null || solution.getCosts() < bestSolution.getCosts();
+	}
+
+	private boolean isOptimalSolution(Solution solution) {
+		return solution.getCosts() == Config.OPTIMAL_SOLUTION;
+	}
+
+	private boolean shouldWriteOutput() {
+		return !outputHasBeenWritten && numberOfFinishedSolutions >= Config.NUMBER_OF_PARALLEL_THREADS;
 	}
 
 	private void writeOutput() {
