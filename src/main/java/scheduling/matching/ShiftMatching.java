@@ -2,7 +2,6 @@ package scheduling.matching;
 
 import java.util.Arrays;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.Set;
 
 import org.jgrapht.Graph;
@@ -15,7 +14,7 @@ import scheduling.common.Config;
 import scheduling.common.ThreadsController;
 import scheduling.common.Solution;
 
-public class ScheduleMatching {
+public class ShiftMatching {
 
 	private final ThreadsController threadsController;
 	private final Graph<Vertex, DefaultWeightedEdge> graph;
@@ -23,7 +22,7 @@ public class ScheduleMatching {
 	private final Set<Vertex> employeesSet;
 	private final Day[] days;
 
-	public ScheduleMatching(ThreadsController threadsController) {
+	public ShiftMatching(ThreadsController threadsController) {
 		this.threadsController = threadsController;
 		graph = GraphTypeBuilder.undirected().allowingMultipleEdges(false).allowingSelfLoops(false)
 				.edgeClass(DefaultWeightedEdge.class).vertexClass(Vertex.class).weighted(true).buildGraph();
@@ -33,7 +32,6 @@ public class ScheduleMatching {
 	}
 
 	public Solution run() {
-
 		addDaysToGraph();
 		addEmployeesToGraph();
 		Set<DefaultWeightedEdge> matchingResult = performMatching();
@@ -50,29 +48,46 @@ public class ScheduleMatching {
 
 	private void addEmployeesToGraph() {
 		for (int employee = 0; employee < Config.NUMBER_OF_EMPLOYEES; employee++) {
-			for (int shiftNumber = 0; shiftNumber < Math.floor(threadsController.getSpreadsheetReader()
-					.getDaysToWorkInTotalForEmployee(employee)); shiftNumber++) {
-				Shift shift = new Shift(employee, shiftNumber);
-				employeesSet.add(shift);
-				graph.addVertex(shift);
-				int weightForFreeDay = shiftNumber < threadsController.getSpreadsheetReader()
-						.getDaysToWorkAtFreeDayForEmployee(employee)
-								? Config.WEIGHT_FOR_FREE_DAY
-								: Config.WEIGHT_FOR_NORMAL_DAY;
-				for (int day = 0; day < days.length; day++) {
-					if (threadsController.getSpreadsheetReader().getIsEmployeeAvailableOnDay(employee, day)) {
-						int weight = threadsController.getSpreadsheetReader().isFreeDay(day)
-								? weightForFreeDay
-								: Config.WEIGHT_FOR_NORMAL_DAY;
-						weight = threadsController.getSpreadsheetReader().getEmployeeOnFixedDay(day) == employee
-								? weight + Config.WEIGHT_FOR_FIXED_DAY
-								: weight;
-						graph.addEdge(shift, days[day]);
-						graph.setEdgeWeight(shift, days[day], weight);
-					}
-				}
+			addEmployeeToGraph(employee);
+		}
+	}
+
+	private void addEmployeeToGraph(int employee) {
+		for (int shiftNumber = 0; shiftNumber < Math.floor(threadsController.getSpreadsheetReader()
+				.getDaysToWorkInTotalForEmployee(employee)); shiftNumber++) {
+			Shift shift = new Shift(employee, shiftNumber);
+			employeesSet.add(shift);
+			graph.addVertex(shift);
+			addEdgesForShift(shift, employee, shiftNumber);
+		}
+	}
+
+	private void addEdgesForShift(Shift shift, int employee, int shiftNumber) {
+		int weightForFreeDay = getWeightForFreeDay(shiftNumber, employee);
+		for (int day = 0; day < days.length; day++) {
+			if (threadsController.getSpreadsheetReader().getIsEmployeeAvailableOnDay(employee, day)) {
+				int edgeWeight = getEdgeWeight(weightForFreeDay, day, employee);
+				graph.addEdge(shift, days[day]);
+				graph.setEdgeWeight(shift, days[day], edgeWeight);
 			}
 		}
+	}
+
+	private int getWeightForFreeDay(int shiftNumber, int employee) {
+		return shiftNumber < threadsController.getSpreadsheetReader()
+				.getDaysToWorkAtFreeDayForEmployee(employee)
+				? Config.WEIGHT_FOR_FREE_DAY
+				: Config.WEIGHT_FOR_NORMAL_DAY;
+	}
+
+	private int getEdgeWeight(int weightForFreeDay, int day, int employee) {
+		int edgeWeight = threadsController.getSpreadsheetReader().isFreeDay(day)
+				? weightForFreeDay
+				: Config.WEIGHT_FOR_NORMAL_DAY;
+		edgeWeight = threadsController.getSpreadsheetReader().getEmployeeOnFixedDay(day) == employee
+				? edgeWeight + Config.WEIGHT_FOR_FIXED_DAY
+				: edgeWeight;
+		return edgeWeight;
 	}
 
 	private Set<DefaultWeightedEdge> performMatching() {
@@ -87,19 +102,17 @@ public class ScheduleMatching {
 	}
 
 	private Solution getSolutionFromMatching(Set<DefaultWeightedEdge> matchingResult) {
-		Iterator<DefaultWeightedEdge> iterator = matchingResult.iterator();
 		int[] solution = new int[threadsController.getSpreadsheetReader().getLengthOfMonth()];
-
 		Arrays.fill(solution, Config.MISSING_EMPLOYEE);
 
-		while (iterator.hasNext()) {
-			DefaultWeightedEdge edge = iterator.next();
+		matchingResult.forEach(edge -> {
 			Shift shift = (Shift) graph.getEdgeSource(edge);
 			Day day = (Day) graph.getEdgeTarget(edge);
 			int employee = shift.employee();
 			int dayNumber = day.dayNumber();
 			solution[dayNumber] = employee;
-		}
+		});
+
 		int[] numberOfFreeDaysForEmployee = getNumberOfFreeDaysForEmployee(solution);
 		return new Solution(solution, numberOfFreeDaysForEmployee, threadsController.getSpreadsheetReader());
 	}

@@ -1,6 +1,6 @@
 package scheduling.common;
 
-import scheduling.matching.ScheduleMatching;
+import scheduling.matching.ShiftMatching;
 import scheduling.tabuSearch.TabuSearch;
 
 public class SolutionController implements Runnable {
@@ -11,7 +11,7 @@ public class SolutionController implements Runnable {
 	}
 
 	public void run() {
-		Solution solution = new ScheduleMatching(threadsController).run();
+		Solution solution = new ShiftMatching(threadsController).run();
 		TabuSearch tabuSearch = new TabuSearch(threadsController);
 		solution = tabuSearch.run(solution);
 		threadsController.setSolution(solution);
