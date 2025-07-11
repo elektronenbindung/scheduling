@@ -10,10 +10,19 @@ public class SolutionController implements Runnable {
 		this.threadsController = threadsController;
 	}
 
+	@Override
 	public void run() {
-		Solution solution = new ShiftMatching(threadsController).run();
-		TabuSearch tabuSearch = new TabuSearch(threadsController);
-		solution = tabuSearch.run(solution);
+		Solution solution = executeShiftMatching();
+		solution = executeTabuSearch(solution);
 		threadsController.setSolution(solution);
+	}
+
+	private Solution executeShiftMatching() {
+		return new ShiftMatching(threadsController).run();
+	}
+
+	private Solution executeTabuSearch(Solution solution) {
+		TabuSearch tabuSearch = new TabuSearch(threadsController);
+		return tabuSearch.run(solution);
 	}
 }
