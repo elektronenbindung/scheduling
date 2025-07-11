@@ -130,7 +130,7 @@ public class SpreadSheetReaderTools {
 	}
 
 	private <T> void calculatePropertyForEmployeeOnDays(T[] result, int employee,
-			ThreeFunction<Range, Integer, Integer, T> function) {
+			TriFunction<Range, Integer, Integer, T> function) {
 		String a1Notation = "B6:AF" + Config.LAST_ROW_OF_SCHEDULE;
 		Range range = reader.getSheet().getRange(a1Notation);
 
