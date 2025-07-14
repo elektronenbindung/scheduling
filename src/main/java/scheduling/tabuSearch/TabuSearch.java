@@ -50,6 +50,7 @@ public class TabuSearch {
 					}
 					continue;
 				}
+				tabuList.add(daysTuple);
 
 				if (spreadsheetReader.isFreeDay(daysTuple.fromDay()) != spreadsheetReader
 						.isFreeDay(daysTuple.toDay())) {
