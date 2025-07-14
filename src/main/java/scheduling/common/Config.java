@@ -16,7 +16,7 @@ public class Config {
 	public static final int RETRIES_OF_INVALID_SOLUTION = 5;
 	public static final int LENGTH_OF_TABU_LIST = 15;
 	public static final int MAX_RETRIES_OF_SOLUTION = 20000;
-	public static final int LENGTH_OF_SOLUTION_LIST = 30;
+	public static final int LENGTH_OF_SOLUTION_LIST = 20;
 	public static final int DEFAULT_MAX_LENGTH_OF_SHIFT = 31;
 	public static final int INTERVAL_FOR_ONE_DAY = 2;
 	public static final double PENALTY_FOR_FORBIDDEN_SHIFT = 10000;
