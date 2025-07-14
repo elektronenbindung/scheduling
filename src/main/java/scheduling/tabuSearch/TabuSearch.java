@@ -27,16 +27,15 @@ public class TabuSearch {
 		Solution currentSolution = currentlyBestSolution.createCopy();
 		solutionList.add(currentlyBestSolution);
 
-		for (int numberOfUnsuccessfulRetry = 0; numberOfUnsuccessfulRetry < Config.MAX_RETRIES_OF_TABU_SEARCH; numberOfUnsuccessfulRetry++) {
+		for (int retriesWithoutImprovement = 0; retriesWithoutImprovement < Config.MAX_RETRIES_OF_TABU_SEARCH; retriesWithoutImprovement++) {
 			int numberOfInvalidRetry = 0;
 
 			while (numberOfInvalidRetry < Config.RETRIES_OF_INVALID_SOLUTION) {
-				if (threadsController.isStopped() || currentlyBestSolution.getCosts() == Config.OPTIMAL_SOLUTION) {
+				if (isSearchFinished(currentlyBestSolution)) {
 					return currentlyBestSolution;
 				}
 				numberOfInvalidRetry++;
-				DaysTuple daysTuple = new DaysTuple(getRandomDay(spreadsheetReader.getLengthOfMonth()),
-						getRandomDay(spreadsheetReader.getLengthOfMonth()));
+				DaysTuple daysTuple = getRandomDayTuple();
 
 				if (isSwapOfShiftForbidden(currentSolution, daysTuple)) {
 					if (numberOfInvalidRetry == Config.RETRIES_OF_INVALID_SOLUTION) {
@@ -52,8 +51,7 @@ public class TabuSearch {
 				}
 				tabuList.add(daysTuple);
 
-				if (spreadsheetReader.isFreeDay(daysTuple.fromDay()) != spreadsheetReader
-						.isFreeDay(daysTuple.toDay())) {
+				if (isFreeDayAndWorkdayExchanged(daysTuple)) {
 					currentSolution.exchangeFreeDayBetweenEmployees(daysTuple.fromDay(), daysTuple.toDay());
 				}
 
@@ -62,7 +60,7 @@ public class TabuSearch {
 				if (currentSolution.getCosts() < currentlyBestSolution.getCosts()) {
 					solutionList.add(currentSolution);
 					currentlyBestSolution = currentSolution;
-					numberOfUnsuccessfulRetry = 0;
+					retriesWithoutImprovement = 0;
 					currentSolution = currentlyBestSolution.createCopy();
 				}
 				break;
@@ -71,8 +69,18 @@ public class TabuSearch {
 		return currentlyBestSolution;
 	}
 
-	private int getRandomDay(int lengthOfMonth) {
-		return random.nextInt(lengthOfMonth);
+	private boolean isFreeDayAndWorkdayExchanged(DaysTuple daysTuple) {
+		return spreadsheetReader.isFreeDay(daysTuple.fromDay()) != spreadsheetReader
+				.isFreeDay(daysTuple.toDay());
+	}
+
+	private boolean isSearchFinished(Solution currentlyBestSolution) {
+		return threadsController.isStopped() || currentlyBestSolution.getCosts() == Config.OPTIMAL_SOLUTION;
+	}
+
+	private DaysTuple getRandomDayTuple() {
+		int lengthOfMonth = spreadsheetReader.getLengthOfMonth();
+		return new DaysTuple(random.nextInt(lengthOfMonth), random.nextInt(lengthOfMonth));
 	}
 
 	private boolean isSwapOfShiftForbidden(Solution currentSolution, DaysTuple daysTuple) {
