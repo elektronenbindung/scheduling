@@ -1,34 +1,43 @@
 package scheduling.tabuSearch;
 
 import scheduling.common.Solution;
+import java.util.ArrayDeque;
+import java.util.Deque;
+import java.util.Iterator;
 
 public class SolutionList {
-	private final Solution[] solutionList;
-	private int nextElement;
+
+	private final Deque<Solution> solutions;
+	private final int capacity;
 
 	public SolutionList(int length) {
-		solutionList = new Solution[length];
-		nextElement = 0;
+		this.solutions = new ArrayDeque<>(length);
+		this.capacity = length;
 	}
 
 	public void add(Solution solution) {
-		solutionList[nextElement] = solution;
-		nextElement = (nextElement + 1) % solutionList.length;
+		if (capacity == 0) {
+			return;
+		}
+		if (solutions.size() >= capacity) {
+			solutions.removeFirst();
+		}
+		solutions.addLast(solution);
 	}
 
 	public Solution getPreviousSolution() {
-		int currentSolution = getNextPointer(nextElement);
+		Iterator<Solution> descendingIterator = solutions.descendingIterator();
 
-		while (currentSolution != nextElement && solutionList[currentSolution] != null) {
-			if (solutionList[currentSolution].canBeRetried()) {
-				return solutionList[currentSolution];
+		while (descendingIterator.hasNext()) {
+			Solution solution = descendingIterator.next();
+			if (solution != null && solution.canBeRetried()) {
+				return solution;
 			}
-			currentSolution = getNextPointer(currentSolution);
 		}
 		return null;
 	}
 
-	private int getNextPointer(int pointer) {
-		return ((pointer - 1) % solutionList.length + solutionList.length) % solutionList.length;
+	public void reset() {
+		solutions.clear();
 	}
 }
