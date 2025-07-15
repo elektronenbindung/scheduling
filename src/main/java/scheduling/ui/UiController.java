@@ -34,11 +34,16 @@ public class UiController {
 
     private final FileChooser fileChooser;
 
+    private static final String ODS_EXTENSION_DESCRIPTION = "ODS Files";
+    private static final String ODS_EXTENSION = "*.ods";
+    private static final String OTS_EXTENSION_DESCRIPTION = "OTS Files";
+    private static final String OTS_EXTENSION = "*.ots";
+
     public UiController() {
         fileChooser = new FileChooser();
         fileChooser.getExtensionFilters().addAll(
-                new FileChooser.ExtensionFilter("ods Files", "*.ods"),
-                new FileChooser.ExtensionFilter("ots Files", "*.ots"));
+                new FileChooser.ExtensionFilter(ODS_EXTENSION_DESCRIPTION, ODS_EXTENSION),
+                new FileChooser.ExtensionFilter(OTS_EXTENSION_DESCRIPTION, OTS_EXTENSION));
     }
 
     @FXML
@@ -47,9 +52,10 @@ public class UiController {
         if (selectedFile != null) {
             String fileName = selectedFile.getAbsolutePath();
             inputField.setText(fileName);
-            startClicked(event);
+            startClicked(null);
         } else {
             inputField.requestFocus();
+            println("No file selected. Please choose a valid spreadsheet file.");
         }
     }
 
@@ -64,15 +70,12 @@ public class UiController {
     void startClicked(MouseEvent event) {
         if (threadsController == null) {
             outputConsole.setText("");
-            startButton.setDisable(true);
-            stopButton.setDisable(false);
-            selectFileButton.setDisable(true);
+            setUiStateOnStart();
             File input = new File(inputField.getText());
             threadsController = new ThreadsController(input, this);
             new Thread(threadsController).start();
             inputField.requestFocus();
         }
-
     }
 
     @FXML
@@ -81,22 +84,32 @@ public class UiController {
             stopButton.setDisable(true);
             threadsController.stop();
         }
-
     }
 
     public void finished() {
-        stopButton.setDisable(true);
-        startButton.setDisable(false);
-        selectFileButton.setDisable(false);
-        threadsController = null;
-        Platform.runLater(() -> inputField.requestFocus());
+        Platform.runLater(() -> {
+            setUiStateOnFinish();
+        });
     }
 
     public void println(String message) {
         Platform.runLater(() -> {
-            String currentText = outputConsole.getText();
-            outputConsole.setText(currentText + message + "\n");
+            outputConsole.appendText(message + "\n");
+            outputConsole.setScrollTop(Double.MAX_VALUE);
         });
+    }
 
+    private void setUiStateOnStart() {
+        startButton.setDisable(true);
+        stopButton.setDisable(false);
+        selectFileButton.setDisable(true);
+    }
+
+    private void setUiStateOnFinish() {
+        stopButton.setDisable(true);
+        startButton.setDisable(false);
+        selectFileButton.setDisable(false);
+        threadsController = null;
+        inputField.requestFocus();
     }
 }
