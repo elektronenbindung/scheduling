@@ -2,6 +2,7 @@ package scheduling.spreadsheet;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.Objects;
 
 import com.github.miachm.sods.Sheet;
 import com.github.miachm.sods.SpreadSheet;
@@ -25,8 +26,8 @@ public class SpreadsheetReader {
 	private double[] expectedDaysBetweenShiftsPerEmployee;
 
 	public SpreadsheetReader(File inpFile) {
-		input = inpFile;
-		tools = new SpreadSheetReaderTools(this);
+		this.input = Objects.requireNonNull(inpFile, "Input file must not be null");
+		this.tools = new SpreadSheetReaderTools(this);
 	}
 
 	public SpreadSheet getSpreadSheet() {
