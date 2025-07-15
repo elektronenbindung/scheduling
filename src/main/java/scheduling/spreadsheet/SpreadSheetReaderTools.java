@@ -6,13 +6,11 @@ import java.util.Objects;
 import java.util.function.IntToDoubleFunction;
 import java.util.stream.IntStream;
 import com.github.miachm.sods.Range;
-
 import scheduling.common.Config;
 
 public class SpreadSheetReaderTools {
 	private final SpreadsheetReader reader;
 	private final SpreadsheetReaderToolsHelper helper;
-
 	private static final String MAX_LENGTH_OF_SHIFT_COLUMN = "AK";
 	private static final String DAYS_TO_WORK_IN_TOTAL_COLUMN = "AH";
 	private static final String DAYS_TO_WORK_AT_FREE_DAY_COLUMN = "AI";
@@ -20,7 +18,6 @@ public class SpreadSheetReaderTools {
 	private static final String DATE_CELL = "L1";
 	private static final String SCHEDULE_DATA_START_COLUMN = "B";
 	private static final String SCHEDULE_DATA_END_COLUMN = "AF";
-
 	private static final int FREE_DAY_ROW_OFFSET = 1;
 	private static final int SINGLE_SHIFT_ALLOWED_ROW_OFFSET = 3;
 	private static final int SCHEDULE_DATA_START_ROW = 6;
@@ -36,7 +33,6 @@ public class SpreadSheetReaderTools {
 			double maxLengthOfShift = result[employee] > 0 ? result[employee] : Config.DEFAULT_MAX_LENGTH_OF_SHIFT;
 			return Math.min(maxLengthOfShift, reader.getDaysToWorkInTotalForEmployee(employee));
 		};
-
 		return IntStream.range(0, result.length).mapToDouble(function).toArray();
 	}
 
@@ -53,7 +49,6 @@ public class SpreadSheetReaderTools {
 						/ reader.getDaysToWorkInTotalForEmployee(employee);
 			}
 		}
-
 		return expectedDaysBetweenShiftsPerEmployee;
 	}
 
@@ -123,7 +118,6 @@ public class SpreadSheetReaderTools {
 			String str = String.valueOf(objects[index]);
 			dayProperty[index] = str.equals(property);
 		}
-
 		return dayProperty;
 	}
 
