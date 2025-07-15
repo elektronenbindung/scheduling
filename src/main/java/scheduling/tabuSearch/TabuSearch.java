@@ -1,13 +1,14 @@
 package scheduling.tabuSearch;
 
-import java.util.Random;
-
 import scheduling.common.Config;
 import scheduling.common.Solution;
 import scheduling.common.ThreadsController;
 import scheduling.spreadsheet.SpreadsheetReader;
 
+import java.util.Random;
+
 public class TabuSearch {
+
 	private final TabuList tabuList;
 	private final SolutionList solutionList;
 	private final Random random;
@@ -15,130 +16,132 @@ public class TabuSearch {
 	private final SpreadsheetReader spreadsheetReader;
 
 	public TabuSearch(ThreadsController threadsController) {
-		tabuList = new TabuList(Config.LENGTH_OF_TABU_LIST);
-		solutionList = new SolutionList(Config.LENGTH_OF_SOLUTION_LIST);
-		random = new Random();
+		this.tabuList = new TabuList(Config.LENGTH_OF_TABU_LIST);
+		this.solutionList = new SolutionList(Config.LENGTH_OF_SOLUTION_LIST);
+		this.random = new Random();
 		this.threadsController = threadsController;
-		spreadsheetReader = threadsController.getSpreadsheetReader();
+		this.spreadsheetReader = threadsController.getSpreadsheetReader();
 	}
 
 	public Solution run(Solution initialSolution) {
-		Solution currentlyBestSolution = initialSolution;
-		Solution currentSolution = currentlyBestSolution.createCopy();
-		solutionList.add(currentlyBestSolution);
+		Solution bestSolution = initialSolution;
+		Solution currentSolution = bestSolution.createCopy();
+		solutionList.add(bestSolution);
 
 		for (int retriesWithoutImprovement = 0; retriesWithoutImprovement < Config.MAX_RETRIES_OF_TABU_SEARCH; retriesWithoutImprovement++) {
-			int numberOfInvalidRetry = 0;
+			int invalidRetries = 0;
 
-			while (numberOfInvalidRetry < Config.RETRIES_OF_INVALID_SOLUTION) {
-				if (isSearchFinished(currentlyBestSolution)) {
-					return currentlyBestSolution;
+			while (invalidRetries < Config.RETRIES_OF_INVALID_SOLUTION) {
+				if (isSearchFinished(bestSolution)) {
+					return bestSolution;
 				}
-				numberOfInvalidRetry++;
-				DaysTuple daysTuple = getRandomDayTuple();
+				invalidRetries++;
+				DaysTuple move = generateRandomMove();
 
-				if (isSwapOfShiftForbidden(currentSolution, daysTuple)) {
-					if (numberOfInvalidRetry == Config.RETRIES_OF_INVALID_SOLUTION) {
+				if (isSwapOfShiftForbidden(currentSolution, move)) {
+					if (invalidRetries == Config.RETRIES_OF_INVALID_SOLUTION) {
 						currentSolution = solutionList.getPreviousSolution();
 						if (currentSolution == null) {
-							return currentlyBestSolution;
-						} else {
-							currentSolution = currentSolution.createCopy();
-							tabuList.reset();
+							return bestSolution;
 						}
+						currentSolution = currentSolution.createCopy();
+						tabuList.reset();
 					}
 					continue;
 				}
-				tabuList.add(daysTuple);
 
-				if (isFreeDayAndWorkdayExchanged(daysTuple)) {
-					currentSolution.exchangeFreeDayBetweenEmployees(daysTuple.fromDay(), daysTuple.toDay());
-				}
+				applyMove(currentSolution, move);
 
-				currentSolution.exchangeEmployeesOnDays(daysTuple.fromDay(), daysTuple.toDay());
-
-				if (currentSolution.getCosts() < currentlyBestSolution.getCosts()) {
+				if (currentSolution.getCosts() < bestSolution.getCosts()) {
 					solutionList.add(currentSolution);
-					currentlyBestSolution = currentSolution;
+					bestSolution = currentSolution;
 					retriesWithoutImprovement = 0;
-					currentSolution = currentlyBestSolution.createCopy();
+					currentSolution = bestSolution.createCopy();
 				}
 				break;
 			}
 		}
-		return currentlyBestSolution;
+		return bestSolution;
 	}
 
-	private boolean isFreeDayAndWorkdayExchanged(DaysTuple daysTuple) {
-		return spreadsheetReader.isFreeDay(daysTuple.fromDay()) != spreadsheetReader
-				.isFreeDay(daysTuple.toDay());
-	}
+	private void applyMove(Solution solution, DaysTuple move) {
+		tabuList.add(move);
 
-	private boolean isSearchFinished(Solution currentlyBestSolution) {
-		return threadsController.isStopped() || currentlyBestSolution.getCosts() == Config.OPTIMAL_SOLUTION;
-	}
-
-	private DaysTuple getRandomDayTuple() {
-		int lengthOfMonth = spreadsheetReader.getLengthOfMonth();
-		return new DaysTuple(random.nextInt(lengthOfMonth), random.nextInt(lengthOfMonth));
-	}
-
-	private boolean isSwapOfShiftForbidden(Solution currentSolution, DaysTuple daysTuple) {
-		return (areDaysForbidden(daysTuple, currentSolution)
-				|| isAtLeastOneEmployeeUnavailable(currentSolution, daysTuple)
-				|| isAtLeastOneEmployeeFixed(currentSolution, daysTuple));
-	}
-
-	private boolean areDaysForbidden(DaysTuple daysTuple, Solution currentSolution) {
-		return daysTuple.fromDay() == daysTuple.toDay() || tabuList.contains(daysTuple)
-				|| areFreeDaysForbidden(daysTuple, currentSolution);
-	}
-
-	private boolean areFreeDaysForbidden(DaysTuple daysTuple, Solution currentSolution) {
-		if (spreadsheetReader.isFreeDay(daysTuple.fromDay()) == spreadsheetReader.isFreeDay(daysTuple.toDay())) {
-			return false;
+		if (spreadsheetReader.isFreeDay(move.fromDay()) != spreadsheetReader.isFreeDay(move.toDay())) {
+			solution.exchangeFreeDayBetweenEmployees(move.fromDay(), move.toDay());
 		}
 
-		if (spreadsheetReader.isFreeDay(daysTuple.toDay())) {
+		solution.exchangeEmployeesOnDays(move.fromDay(), move.toDay());
+	}
+
+	private boolean isSearchFinished(Solution bestSolution) {
+		return threadsController.isStopped() || bestSolution.getCosts() == Config.OPTIMAL_SOLUTION;
+	}
+
+	private DaysTuple generateRandomMove() {
+		int lengthOfMonth = spreadsheetReader.getLengthOfMonth();
+		int fromDay = random.nextInt(lengthOfMonth);
+		int toDay = random.nextInt(lengthOfMonth);
+		return new DaysTuple(fromDay, toDay);
+	}
+
+	private boolean isSwapOfShiftForbidden(Solution currentSolution, DaysTuple move) {
+		if (move.fromDay() == move.toDay() || tabuList.contains(move)) {
 			return true;
 		}
 
-		int employeeOnFromDay = currentSolution.getEmployeeForDay(daysTuple.fromDay());
-		int employeeOnToDay = currentSolution.getEmployeeForDay(daysTuple.toDay());
-
-		int numberOfFreeDaysForEmployeeOnFromDay = currentSolution.getNumberOfFreeDaysForEmployee(employeeOnFromDay);
-		int numberOfFreeDaysForEmployeeOnToDay = currentSolution.getNumberOfFreeDaysForEmployee(employeeOnToDay);
-
-		boolean canFreeDayBeMovedFrom = employeeOnFromDay == Config.MISSING_EMPLOYEE
-				|| numberOfFreeDaysForEmployeeOnFromDay > spreadsheetReader
-						.getDaysToWorkAtFreeDayForEmployee(employeeOnFromDay);
-
-		boolean canFreeDayBeMovedTo = employeeOnToDay == Config.MISSING_EMPLOYEE
-				|| numberOfFreeDaysForEmployeeOnToDay < spreadsheetReader
-						.getDaysToWorkAtFreeDayForEmployee(employeeOnToDay);
-
-		return (!canFreeDayBeMovedFrom) && (!canFreeDayBeMovedTo);
+		return areFreeDaysForbidden(currentSolution, move)
+				|| isAtLeastOneEmployeeUnavailable(currentSolution, move)
+				|| isAtLeastOneEmployeeFixed(currentSolution, move);
 	}
 
-	private boolean isAtLeastOneEmployeeUnavailable(Solution currentSolution, DaysTuple daysTuple) {
-		int employee1 = currentSolution.getEmployeeForDay(daysTuple.fromDay());
-		int employee2 = currentSolution.getEmployeeForDay(daysTuple.toDay());
+	private boolean areFreeDaysForbidden(Solution currentSolution, DaysTuple move) {
+		boolean isFromDayFree = spreadsheetReader.isFreeDay(move.fromDay());
+		boolean isToDayFree = spreadsheetReader.isFreeDay(move.toDay());
 
-		return !(spreadsheetReader.getIsEmployeeAvailableOnDay(employee1, daysTuple.toDay())
-				&& spreadsheetReader.getIsEmployeeAvailableOnDay(employee2, daysTuple.fromDay()));
+		if (isFromDayFree == isToDayFree) {
+			return false;
+		}
+
+		if (isToDayFree) {
+			return true;
+		}
+
+		int employeeOnFromDay = currentSolution.getEmployeeForDay(move.fromDay());
+		int employeeOnToDay = currentSolution.getEmployeeForDay(move.toDay());
+
+		int freeDaysForEmployeeOnFrom = currentSolution.getNumberOfFreeDaysForEmployee(employeeOnFromDay);
+		int freeDaysForEmployeeOnTo = currentSolution.getNumberOfFreeDaysForEmployee(employeeOnToDay);
+
+		boolean canMoveFrom = (employeeOnFromDay == Config.MISSING_EMPLOYEE)
+				|| (freeDaysForEmployeeOnFrom > spreadsheetReader.getDaysToWorkAtFreeDayForEmployee(employeeOnFromDay));
+
+		boolean canMoveTo = (employeeOnToDay == Config.MISSING_EMPLOYEE)
+				|| (freeDaysForEmployeeOnTo < spreadsheetReader.getDaysToWorkAtFreeDayForEmployee(employeeOnToDay));
+
+		return !canMoveFrom && !canMoveTo;
 	}
 
-	private boolean isAtLeastOneEmployeeFixed(Solution currentSolution, DaysTuple daysTuple) {
-		boolean isEmployeeFixedOnFromDay = spreadsheetReader
-				.getEmployeeOnFixedDay(daysTuple.fromDay()) != Config.MISSING_EMPLOYEE
-				&& currentSolution.getEmployeeForDay(daysTuple.fromDay()) == spreadsheetReader
-						.getEmployeeOnFixedDay(daysTuple.fromDay());
+	private boolean isAtLeastOneEmployeeUnavailable(Solution currentSolution, DaysTuple move) {
+		int employee1 = currentSolution.getEmployeeForDay(move.fromDay());
+		int employee2 = currentSolution.getEmployeeForDay(move.toDay());
 
-		boolean isEmployeeFixedOnToDay = spreadsheetReader
-				.getEmployeeOnFixedDay(daysTuple.toDay()) != Config.MISSING_EMPLOYEE
-				&& currentSolution.getEmployeeForDay(daysTuple.toDay()) == spreadsheetReader
-						.getEmployeeOnFixedDay(daysTuple.toDay());
+		boolean employee1AvailableAtToDay = spreadsheetReader.getIsEmployeeAvailableOnDay(employee1, move.toDay());
+		boolean employee2AvailableAtFromDay = spreadsheetReader.getIsEmployeeAvailableOnDay(employee2, move.fromDay());
 
-		return isEmployeeFixedOnFromDay || isEmployeeFixedOnToDay;
+		return !(employee1AvailableAtToDay && employee2AvailableAtFromDay);
+	}
+
+	private boolean isAtLeastOneEmployeeFixed(Solution currentSolution, DaysTuple move) {
+		return isEmployeeFixedOnDay(currentSolution, move.fromDay())
+				|| isEmployeeFixedOnDay(currentSolution, move.toDay());
+	}
+
+	private boolean isEmployeeFixedOnDay(Solution currentSolution, int day) {
+		int fixedEmployee = spreadsheetReader.getEmployeeOnFixedDay(day);
+		if (fixedEmployee == Config.MISSING_EMPLOYEE) {
+			return false;
+		}
+		return currentSolution.getEmployeeForDay(day) == fixedEmployee;
 	}
 }
