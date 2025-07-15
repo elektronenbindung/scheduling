@@ -1,27 +1,41 @@
 package scheduling.tabuSearch;
 
-import java.util.Arrays;
+import java.util.ArrayDeque;
+import java.util.HashSet;
+import java.util.Queue;
+import java.util.Set;
 
 public class TabuList {
-	private int nextElement;
-	private final DaysTuple[] tabuList;
+	private final int capacity;
+	private final Queue<DaysTuple> moveQueue;
+	private final Set<DaysTuple> moveSet;
 
 	public TabuList(int length) {
-		tabuList = new DaysTuple[length];
-		nextElement = 0;
+		this.capacity = length;
+		this.moveQueue = new ArrayDeque<>(length);
+		this.moveSet = new HashSet<>(length);
 	}
 
 	public void add(DaysTuple daysTuple) {
-		tabuList[nextElement] = daysTuple;
-		nextElement = (nextElement + 1) % tabuList.length;
+		if (capacity == 0) {
+			return;
+		}
+
+		if (moveQueue.size() >= capacity) {
+			DaysTuple oldestMove = moveQueue.poll();
+			moveSet.remove(oldestMove);
+		}
+
+		moveQueue.add(daysTuple);
+		moveSet.add(daysTuple);
 	}
 
 	public boolean contains(DaysTuple daysTuple) {
-		return Arrays.stream(tabuList).anyMatch(t -> t != null && t.equals(daysTuple));
+		return moveSet.contains(daysTuple);
 	}
 
 	public void reset() {
-		Arrays.fill(tabuList, null);
-		nextElement = 0;
+		moveQueue.clear();
+		moveSet.clear();
 	}
 }
