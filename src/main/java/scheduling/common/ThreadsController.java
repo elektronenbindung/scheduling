@@ -35,8 +35,8 @@ public class ThreadsController implements Runnable {
 
 	@Override
 	public void run() {
-		if (!inputFile.exists()) {
-			println("Error: The provided input file does not exist");
+		if (!inputFile.exists() || !inputFile.isFile()) {
+			println("Error: The provided input file does not exist or is not a file");
 			finished();
 		} else {
 			try {
