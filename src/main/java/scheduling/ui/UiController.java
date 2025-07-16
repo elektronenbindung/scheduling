@@ -54,8 +54,8 @@ public class UiController {
             inputField.setText(fileName);
             startClicked(null);
         } else {
-            inputField.requestFocus();
             println("No file selected. Please choose a valid spreadsheet file.");
+            inputField.requestFocus();
         }
     }
 
