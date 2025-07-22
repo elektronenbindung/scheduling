@@ -1,6 +1,8 @@
 package scheduling.common;
 
 import java.io.File;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.locks.ReentrantLock;
 
@@ -19,6 +21,7 @@ public class ThreadsController implements Runnable {
 	private volatile boolean stopped;
 	private final AtomicBoolean informedAboutSolvableSchedule;
 	private final ReentrantLock setSolutionLock;
+	private ExecutorService executorService;
 
 	public ThreadsController(File file, UiController uiController) {
 		inputFile = file;
@@ -31,6 +34,7 @@ public class ThreadsController implements Runnable {
 		stopped = false;
 		informedAboutSolvableSchedule = new AtomicBoolean(false);
 		setSolutionLock = new ReentrantLock();
+		executorService = Executors.newFixedThreadPool(Runtime.getRuntime().availableProcessors());
 	}
 
 	@Override
@@ -46,6 +50,10 @@ public class ThreadsController implements Runnable {
 			} catch (Exception exception) {
 				println("Error: " + exception.getMessage());
 				finished();
+			} finally {
+				if (executorService != null && !executorService.isShutdown()) {
+					executorService.shutdown();
+				}
 			}
 		}
 	}
@@ -103,7 +111,7 @@ public class ThreadsController implements Runnable {
 	private void startSolutionThreads() {
 		for (int i = 0; i < Config.NUMBER_OF_PARALLEL_THREADS; i++) {
 			SolutionController solutionController = new SolutionController(this);
-			new Thread(solutionController).start();
+			executorService.submit(solutionController);
 		}
 	}
 
