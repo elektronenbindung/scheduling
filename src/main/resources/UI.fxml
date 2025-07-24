@@ -16,7 +16,7 @@
            onMouseClicked="#selectFileClicked" prefHeight="26.0" prefWidth="71.0" text="..."/>
    <Button fx:id="startButton" layoutX="327.0" layoutY="63.0" mnemonicParsing="false" onMouseClicked="#startClicked"
            prefHeight="30.0" prefWidth="102.0" text="start"/>
-   <Button fx:id="stopButton" layoutX="486.0" layoutY="63.0" mnemonicParsing="false" onMouseClicked="#stopClicked"
+   <Button fx:id="stopButton" disable="true" layoutX="486.0" layoutY="63.0" mnemonicParsing="false" onMouseClicked="#stopClicked"
            prefHeight="30.0" prefWidth="102.0" text="stop"/>
    <TextArea fx:id="outputConsole" editable="false" layoutX="21.0" layoutY="134.0" prefHeight="594.0"
              prefWidth="914.0"/>
