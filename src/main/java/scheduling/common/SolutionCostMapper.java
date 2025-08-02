@@ -120,7 +120,7 @@ public class SolutionCostMapper {
         return 0;
     }
 
-    private class CalculationState {
+    private static class CalculationState {
         final int[] lastOccurrenceOfEmployee;
         final int[] lengthOfLastBlockShift;
         int currentConsecutiveShifts;
