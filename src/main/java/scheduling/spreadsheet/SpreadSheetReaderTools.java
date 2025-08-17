@@ -67,9 +67,9 @@ public class SpreadSheetReaderTools {
 		return Arrays.stream(calculateDayProperty(row, Config.WORK_DAY)).map(x -> !x).toArray(Boolean[]::new);
 	}
 
-	public Boolean[] calculateIsSingleShiftAllowedOnDay() {
+	public Boolean[] calculateIsSingleShiftForbiddenOnDay() {
 		int row = Config.LAST_ROW_OF_SCHEDULE + SINGLE_SHIFT_ALLOWED_ROW_OFFSET;
-		return calculateDayProperty(row, Config.SINGLE_SHIFT);
+		return Arrays.stream(calculateDayProperty(row, Config.SINGLE_SHIFT)).map(x -> !x).toArray(Boolean[]::new);
 	}
 
 	public Integer[] calculateFixedEmployees() {

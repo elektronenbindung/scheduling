@@ -5,31 +5,31 @@ import scheduling.spreadsheet.SpreadsheetReader;
 
 public class SolutionCostMapper {
 
-    private final int[] solution;
+    private final Solution solution;
     private final SpreadsheetReader spreadsheetReader;
 
-    public SolutionCostMapper(int[] solution, SpreadsheetReader input) {
+    public SolutionCostMapper(Solution solution, SpreadsheetReader input) {
         this.solution = solution;
         this.spreadsheetReader = input;
     }
 
     public double calculateTotalCosts() {
-        if (solution == null || solution.length == 0) {
+        if (solution == null) {
             return 0.0;
         }
 
         CalculationState state = new CalculationState();
         double totalCosts = Config.OPTIMAL_SOLUTION;
 
-        for (int day = 0; day < solution.length; day++) {
-            int currentEmployee = solution[day];
+        for (int day = 0; day < spreadsheetReader.getLengthOfMonth(); day++) {
+            int currentEmployee = solution.getEmployeeForDay(day);
 
             if (currentEmployee == Config.MISSING_EMPLOYEE) {
                 continue;
             }
 
-            if (day > 0 && currentEmployee != solution[day - 1]) {
-                handleShiftTransition(solution[day - 1], state);
+            if (day > 0 && currentEmployee != solution.getEmployeeForDay(day - 1)) {
+                handleShiftTransition(solution.getEmployeeForDay(day - 1), state);
             }
 
             totalCosts += calculateDailyPenalties(day, currentEmployee, state);
@@ -75,9 +75,9 @@ public class SolutionCostMapper {
     }
 
     private double calculatePenaltyForMandatoryBlockShift(int day) {
-        boolean isViolation = !spreadsheetReader.isSingleShiftAllowedOnDay(day)
-                && day < solution.length - 1
-                && solution[day] != solution[day + 1];
+        boolean isViolation = spreadsheetReader.isSingleShiftForbiddenOnDay(day)
+                && day < spreadsheetReader.getLengthOfMonth() - 1
+                && solution.getEmployeeForDay(day) != solution.getEmployeeForDay(day + 1);
         return isViolation ? Config.PENALTY_FOR_MANDATORY_BLOCK_SHIFT : 0;
     }
 

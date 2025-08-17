@@ -19,7 +19,7 @@ public class Solution {
 		this.spreadsheetReader = input;
 		this.costs = UNKNOWN_COSTS;
 		this.numberOfRetries = 0;
-		this.solutionCostMapper = new SolutionCostMapper(solution, input);
+		this.solutionCostMapper = new SolutionCostMapper(this, input);
 	}
 
 	public boolean canBeRetried() {
