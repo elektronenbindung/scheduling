@@ -15,7 +15,7 @@ public class SolutionCostMapper {
 
     public double calculateTotalCosts() {
         if (solution == null) {
-            return 0.0;
+            return Config.OPTIMAL_SOLUTION;
         }
 
         CalculationState state = new CalculationState();
