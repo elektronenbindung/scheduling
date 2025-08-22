@@ -11,7 +11,7 @@ public class Solution {
 	private int numberOfRetries;
 	private final int[] numberOfFreeDaysForEmployee;
 	private double costs;
-	private SolutionCostMapper solutionCostMapper;
+	private final SolutionCostMapper solutionCostMapper;
 
 	public Solution(int[] solution, int[] numberOfFreeDaysForEmployee, SpreadsheetReader input) {
 		this.solution = solution;

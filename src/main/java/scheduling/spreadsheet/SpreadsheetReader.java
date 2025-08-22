@@ -66,7 +66,7 @@ public class SpreadsheetReader {
 		return fixedEmployeeOnDay[day];
 	}
 
-	public boolean getIsEmployeeAvailableOnDay(int employee, int day) {
+	public boolean isEmployeeAvailableOnDay(int employee, int day) {
 		if (employee == Config.MISSING_EMPLOYEE) {
 			return true;
 		}

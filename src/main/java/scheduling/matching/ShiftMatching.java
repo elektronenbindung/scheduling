@@ -65,7 +65,7 @@ public class ShiftMatching {
 	private void addEdgesForShift(Shift shift, int employee, int shiftNumber) {
 		int weightForFreeDay = getWeightForFreeDay(shiftNumber, employee);
 		for (int day = 0; day < days.length; day++) {
-			if (threadsController.getSpreadsheetReader().getIsEmployeeAvailableOnDay(employee, day)) {
+			if (threadsController.getSpreadsheetReader().isEmployeeAvailableOnDay(employee, day)) {
 				int edgeWeight = getEdgeWeight(weightForFreeDay, day, employee);
 				graph.addEdge(shift, days[day]);
 				graph.setEdgeWeight(shift, days[day], edgeWeight);

@@ -22,9 +22,7 @@ public class SpreadsheetReaderToolsHelper {
 					"fixedEmployeeOnDay must be set before calling getFunctionForCalculationOfFixedEmployees.");
 		}
 
-		return (range, employee, day) -> {
-			return calculateFixedEmployeeInternal(range, employee, day);
-		};
+		return this::calculateFixedEmployeeInternal;
 	}
 
 	public TriFunction<Range, Integer, Integer, Boolean> getFunctionForCalculationOfAvailableEmployees() {
@@ -40,7 +38,7 @@ public class SpreadsheetReaderToolsHelper {
 		int date = day + 1;
 		Object[][] values = range.getValues();
 		boolean isWorking = String.valueOf(values[employee][day]).equals(Config.WORKING);
-		boolean canWork = reader.getIsEmployeeAvailableOnDay(employee, day);
+		boolean canWork = reader.isEmployeeAvailableOnDay(employee, day);
 
 		validateEmployeeAvailability(isWorking, canWork, date);
 		validateSingleEmployeePerDay(isWorking, day);

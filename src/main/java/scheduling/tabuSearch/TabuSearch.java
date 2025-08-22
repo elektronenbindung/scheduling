@@ -126,8 +126,8 @@ public class TabuSearch {
 		int employee1 = currentSolution.getEmployeeForDay(move.fromDay());
 		int employee2 = currentSolution.getEmployeeForDay(move.toDay());
 
-		boolean employee1AvailableAtToDay = spreadsheetReader.getIsEmployeeAvailableOnDay(employee1, move.toDay());
-		boolean employee2AvailableAtFromDay = spreadsheetReader.getIsEmployeeAvailableOnDay(employee2, move.fromDay());
+		boolean employee1AvailableAtToDay = spreadsheetReader.isEmployeeAvailableOnDay(employee1, move.toDay());
+		boolean employee2AvailableAtFromDay = spreadsheetReader.isEmployeeAvailableOnDay(employee2, move.fromDay());
 
 		return !(employee1AvailableAtToDay && employee2AvailableAtFromDay);
 	}
