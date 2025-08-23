@@ -7,8 +7,8 @@ import java.util.Set;
 
 public class TabuList {
 	private final int capacity;
-	private final Queue<DaysTuple> moveQueue;
-	private final Set<DaysTuple> moveSet;
+	private final Queue<Move> moveQueue;
+	private final Set<Move> moveSet;
 
 	private static final float LOAD_FACTOR = 0.5f;
 
@@ -19,13 +19,13 @@ public class TabuList {
 		this.moveSet = new HashSet<>(capacityOfSet, LOAD_FACTOR);
 	}
 
-	public void add(DaysTuple daysTuple) {
+	public void add(Move daysTuple) {
 		if (capacity == 0) {
 			return;
 		}
 
 		if (moveQueue.size() >= capacity) {
-			DaysTuple oldestMove = moveQueue.poll();
+			Move oldestMove = moveQueue.poll();
 			moveSet.remove(oldestMove);
 		}
 
@@ -33,7 +33,7 @@ public class TabuList {
 		moveSet.add(daysTuple);
 	}
 
-	public boolean contains(DaysTuple daysTuple) {
+	public boolean contains(Move daysTuple) {
 		return moveSet.contains(daysTuple);
 	}
 

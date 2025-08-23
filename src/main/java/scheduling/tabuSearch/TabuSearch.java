@@ -29,42 +29,62 @@ public class TabuSearch {
 		solutionList.add(bestSolution);
 
 		for (int retriesWithoutImprovement = 0; retriesWithoutImprovement < Config.MAX_RETRIES_OF_TABU_SEARCH; retriesWithoutImprovement++) {
-			int invalidRetries = 0;
+			if (isSearchFinished(bestSolution)) {
+				return bestSolution;
+			}
 
-			while (invalidRetries < Config.RETRIES_OF_INVALID_SOLUTION) {
-				if (isSearchFinished(bestSolution)) {
+			Move bestMove = findBestNeighborMove(currentSolution, bestSolution);
+
+			if (bestMove == null) {
+				currentSolution = solutionList.getPreviousSolution();
+				if (currentSolution == null) {
 					return bestSolution;
 				}
-				invalidRetries++;
-				DaysTuple move = generateRandomMove();
+				currentSolution = currentSolution.createCopy();
+				tabuList.reset();
+				continue;
+			}
 
-				if (isSwapOfShiftForbidden(currentSolution, move)) {
-					if (invalidRetries == Config.RETRIES_OF_INVALID_SOLUTION) {
-						currentSolution = solutionList.getPreviousSolution();
-						if (currentSolution == null) {
-							return bestSolution;
-						}
-						currentSolution = currentSolution.createCopy();
-						tabuList.reset();
-					}
-					continue;
-				}
+			applyMove(currentSolution, bestMove);
 
-				applyMove(currentSolution, move);
-
-				if (currentSolution.getCosts() < bestSolution.getCosts()) {
-					solutionList.add(currentSolution);
-					bestSolution = currentSolution;
-					retriesWithoutImprovement = 0;
-					currentSolution = bestSolution.createCopy();
-				}
-				break;
+			if (currentSolution.getCosts() < bestSolution.getCosts()) {
+				bestSolution = currentSolution.createCopy();
+				solutionList.add(bestSolution);
+				retriesWithoutImprovement = 0;
 			}
 		}
 		return bestSolution;
 	}
 
-	private void applyMove(Solution solution, DaysTuple move) {
+	private Move findBestNeighborMove(Solution currentSolution, Solution bestSolution) {
+		Move bestMove = null;
+		double bestMoveCost = Double.MAX_VALUE;
+
+		for (int i = 0; i < Config.TABU_SEARCH_NEIGHBORHOOD_SAMPLE_SIZE; i++) {
+			Move potentialMove = generateRandomMove();
+
+			Solution neighborSolution = currentSolution.createCopy();
+			neighborSolution.exchangeEmployeesOnDays(potentialMove.fromDay(), potentialMove.toDay());
+			if (spreadsheetReader.isFreeDay(potentialMove.fromDay()) != spreadsheetReader
+					.isFreeDay(potentialMove.toDay())) {
+				neighborSolution.exchangeFreeDayBetweenEmployees(potentialMove.fromDay(), potentialMove.toDay());
+			}
+			double neighborCost = neighborSolution.getCosts();
+
+			boolean isAspirationCriterionMet = tabuList.contains(potentialMove)
+					&& neighborCost < bestSolution.getCosts();
+
+			if (!isSwapOfShiftForbidden(currentSolution, potentialMove) || isAspirationCriterionMet) {
+				if (neighborCost < bestMoveCost) {
+					bestMoveCost = neighborCost;
+					bestMove = potentialMove;
+				}
+			}
+		}
+		return bestMove;
+	}
+
+	private void applyMove(Solution solution, Move move) {
 		tabuList.add(move);
 
 		if (spreadsheetReader.isFreeDay(move.fromDay()) != spreadsheetReader.isFreeDay(move.toDay())) {
@@ -78,15 +98,20 @@ public class TabuSearch {
 		return threadsController.isStopped() || bestSolution.getCosts() == Config.OPTIMAL_SOLUTION;
 	}
 
-	private DaysTuple generateRandomMove() {
+	private Move generateRandomMove() {
 		int lengthOfMonth = spreadsheetReader.getLengthOfMonth();
-		int fromDay = random.nextInt(lengthOfMonth);
-		int toDay = random.nextInt(lengthOfMonth);
-		return new DaysTuple(fromDay, toDay);
+		int fromDay;
+		int toDay;
+		do {
+			fromDay = random.nextInt(lengthOfMonth);
+			toDay = random.nextInt(lengthOfMonth);
+		} while (fromDay == toDay);
+
+		return new Move(fromDay, toDay);
 	}
 
-	private boolean isSwapOfShiftForbidden(Solution currentSolution, DaysTuple move) {
-		if (move.fromDay() == move.toDay() || tabuList.contains(move)) {
+	private boolean isSwapOfShiftForbidden(Solution currentSolution, Move move) {
+		if (move.fromDay() == move.toDay()) {
 			return true;
 		}
 
@@ -95,7 +120,7 @@ public class TabuSearch {
 				|| isAtLeastOneEmployeeFixed(currentSolution, move);
 	}
 
-	private boolean areFreeDaysForbidden(Solution currentSolution, DaysTuple move) {
+	private boolean areFreeDaysForbidden(Solution currentSolution, Move move) {
 		boolean isFromDayFree = spreadsheetReader.isFreeDay(move.fromDay());
 		boolean isToDayFree = spreadsheetReader.isFreeDay(move.toDay());
 
@@ -122,7 +147,7 @@ public class TabuSearch {
 		return !canMoveFrom && !canMoveTo;
 	}
 
-	private boolean isAtLeastOneEmployeeUnavailable(Solution currentSolution, DaysTuple move) {
+	private boolean isAtLeastOneEmployeeUnavailable(Solution currentSolution, Move move) {
 		int employee1 = currentSolution.getEmployeeForDay(move.fromDay());
 		int employee2 = currentSolution.getEmployeeForDay(move.toDay());
 
@@ -132,7 +157,7 @@ public class TabuSearch {
 		return !(employee1AvailableAtToDay && employee2AvailableAtFromDay);
 	}
 
-	private boolean isAtLeastOneEmployeeFixed(Solution currentSolution, DaysTuple move) {
+	private boolean isAtLeastOneEmployeeFixed(Solution currentSolution, Move move) {
 		return isEmployeeFixedOnDay(currentSolution, move.fromDay())
 				|| isEmployeeFixedOnDay(currentSolution, move.toDay());
 	}

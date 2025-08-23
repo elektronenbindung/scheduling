@@ -2,7 +2,7 @@ package scheduling.tabuSearch;
 
 import java.util.Objects;
 
-public record DaysTuple(int fromDay, int toDay) {
+public record Move(int fromDay, int toDay) {
 
 	@Override
 	public boolean equals(Object o) {
@@ -10,7 +10,7 @@ public record DaysTuple(int fromDay, int toDay) {
 			return true;
 		if (o == null || getClass() != o.getClass())
 			return false;
-		DaysTuple daysTuple = (DaysTuple) o;
+		Move daysTuple = (Move) o;
 		return (fromDay == daysTuple.fromDay && toDay == daysTuple.toDay) ||
 				(fromDay == daysTuple.toDay && toDay == daysTuple.fromDay);
 	}
