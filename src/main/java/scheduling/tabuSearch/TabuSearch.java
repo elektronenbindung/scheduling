@@ -63,12 +63,13 @@ public class TabuSearch {
 		for (int i = 0; i < Config.TABU_SEARCH_NEIGHBORHOOD_SAMPLE_SIZE; i++) {
 			Move potentialMove = generateRandomMove();
 
+			if (isSwapOfShiftForbidden(currentSolution, potentialMove)) {
+				continue;
+			}
+
 			Solution neighborSolution = currentSolution.createCopy();
 			neighborSolution.exchangeEmployeesOnDays(potentialMove.fromDay(), potentialMove.toDay());
-			if (spreadsheetReader.isFreeDay(potentialMove.fromDay()) != spreadsheetReader
-					.isFreeDay(potentialMove.toDay())) {
-				neighborSolution.exchangeFreeDayBetweenEmployees(potentialMove.fromDay(), potentialMove.toDay());
-			}
+
 			double neighborCost = neighborSolution.getCosts();
 
 			boolean isAspirationCriterionMet = tabuList.contains(potentialMove)
