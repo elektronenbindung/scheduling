@@ -19,7 +19,7 @@ public class TabuList {
 		this.moveSet = new HashSet<>(capacityOfSet, LOAD_FACTOR);
 	}
 
-	public void add(Move daysTuple) {
+	public void add(Move move) {
 		if (capacity == 0) {
 			return;
 		}
@@ -29,12 +29,12 @@ public class TabuList {
 			moveSet.remove(oldestMove);
 		}
 
-		moveQueue.add(daysTuple);
-		moveSet.add(daysTuple);
+		moveQueue.add(move);
+		moveSet.add(move);
 	}
 
-	public boolean contains(Move daysTuple) {
-		return moveSet.contains(daysTuple);
+	public boolean contains(Move move) {
+		return moveSet.contains(move);
 	}
 
 	public void reset() {

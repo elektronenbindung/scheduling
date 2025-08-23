@@ -10,9 +10,9 @@ public record Move(int fromDay, int toDay) {
 			return true;
 		if (o == null || getClass() != o.getClass())
 			return false;
-		Move daysTuple = (Move) o;
-		return (fromDay == daysTuple.fromDay && toDay == daysTuple.toDay) ||
-				(fromDay == daysTuple.toDay && toDay == daysTuple.fromDay);
+		Move move = (Move) o;
+		return (fromDay == move.fromDay && toDay == move.toDay) ||
+				(fromDay == move.toDay && toDay == move.fromDay);
 	}
 
 	@Override
