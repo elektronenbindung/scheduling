@@ -72,14 +72,13 @@ public class TabuSearch {
 
 			double neighborCost = neighborSolution.getCosts();
 
-			boolean isAspirationCriterionMet = tabuList.contains(potentialMove)
-					&& neighborCost < bestSolution.getCosts();
+			if (tabuList.contains(potentialMove) && neighborCost >= bestSolution.getCosts()) {
+				continue;
+			}
 
-			if (!isSwapOfShiftForbidden(currentSolution, potentialMove) || isAspirationCriterionMet) {
-				if (neighborCost < bestMoveCost) {
-					bestMoveCost = neighborCost;
-					bestMove = potentialMove;
-				}
+			if (neighborCost < bestMoveCost) {
+				bestMoveCost = neighborCost;
+				bestMove = potentialMove;
 			}
 		}
 		return bestMove;
