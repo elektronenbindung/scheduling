@@ -12,10 +12,10 @@ public class Config {
 	public static final int WEIGHT_FOR_NORMAL_DAY = 1;
 	public static final int WEIGHT_FOR_FIXED_DAY = 1000;
 	public static final int WEIGHT_FOR_FREE_DAY = 32;
-	public static final int MAX_RETRIES_OF_TABU_SEARCH = 300000;
-	public static final int TABU_SEARCH_NEIGHBORHOOD_SAMPLE_SIZE = 10;
+	public static final int MAX_RETRIES_OF_TABU_SEARCH = 30000;
+	public static final int TABU_SEARCH_NEIGHBORHOOD_SAMPLE_SIZE = 100;
 	public static final int LENGTH_OF_TABU_LIST = 15;
-	public static final int MAX_RETRIES_OF_SOLUTION = 20000;
+	public static final int MAX_RETRIES_OF_SOLUTION = 2000;
 	public static final int LENGTH_OF_SOLUTION_LIST = 20;
 	public static final int DEFAULT_MAX_LENGTH_OF_SHIFT = 31;
 	public static final int INTERVAL_FOR_ONE_DAY = 2;
