@@ -63,7 +63,7 @@ public class TabuSearch {
 		for (int i = 0; i < Config.TABU_SEARCH_NEIGHBORHOOD_SAMPLE_SIZE; i++) {
 			Move potentialMove = generateRandomMove();
 
-			if (isSwapOfShiftForbidden(currentSolution, potentialMove)) {
+			if (isMoveForbidden(currentSolution, potentialMove)) {
 				continue;
 			}
 
@@ -110,7 +110,7 @@ public class TabuSearch {
 		return new Move(fromDay, toDay);
 	}
 
-	private boolean isSwapOfShiftForbidden(Solution currentSolution, Move move) {
+	private boolean isMoveForbidden(Solution currentSolution, Move move) {
 		if (move.fromDay() == move.toDay()) {
 			return true;
 		}
