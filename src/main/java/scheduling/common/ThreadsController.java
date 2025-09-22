@@ -21,7 +21,7 @@ public class ThreadsController implements Runnable {
 	private volatile boolean stopped;
 	private final AtomicBoolean informedAboutSolvableSchedule;
 	private final ReentrantLock setSolutionLock;
-	private ExecutorService executorService;
+	private final ExecutorService executorService;
 
 	public ThreadsController(File file, UiController uiController) {
 		inputFile = file;
