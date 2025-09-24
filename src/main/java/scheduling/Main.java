@@ -40,6 +40,7 @@ public final class Main {
 		Thread controllerThread = new Thread(threadsController);
 		controllerThread.start();
 
+		//noinspection finally
 		try {
 			while (true) {
 				String line = console.readLine();
