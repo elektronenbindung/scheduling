@@ -41,7 +41,6 @@ public final class Main {
 		controllerThread.start();
 
 		try {
-			// noinspection InfiniteLoopStatement
 			while (true) {
 				String line = console.readLine();
 
