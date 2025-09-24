@@ -40,23 +40,13 @@ public class Solution {
 	public void exchangeFreeDayBetweenEmployees(int fromDay, int toDay) {
 		int fromEmployee = getEmployeeForDay(fromDay);
 		int toEmployee = getEmployeeForDay(toDay);
-		boolean isFromDayAFreeDay = spreadsheetReader.isFreeDay(fromDay);
+		int direction = spreadsheetReader.isFreeDay(fromDay) ? 1 : -1;
 
-		if (isFromDayAFreeDay) {
-
-			if (fromEmployee != Config.MISSING_EMPLOYEE) {
-				numberOfFreeDaysForEmployee[fromEmployee]--;
-			}
-			if (toEmployee != Config.MISSING_EMPLOYEE) {
-				numberOfFreeDaysForEmployee[toEmployee]++;
-			}
-		} else {
-			if (fromEmployee != Config.MISSING_EMPLOYEE) {
-				numberOfFreeDaysForEmployee[fromEmployee]++;
-			}
-			if (toEmployee != Config.MISSING_EMPLOYEE) {
-				numberOfFreeDaysForEmployee[toEmployee]--;
-			}
+		if (fromEmployee != Config.MISSING_EMPLOYEE) {
+			numberOfFreeDaysForEmployee[fromEmployee] -= direction;
+		}
+		if (toEmployee != Config.MISSING_EMPLOYEE) {
+			numberOfFreeDaysForEmployee[toEmployee] += direction;
 		}
 	}
 
