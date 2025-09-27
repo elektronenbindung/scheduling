@@ -5,15 +5,13 @@ import scheduling.spreadsheet.SpreadsheetReader;
 
 public class SolutionCostMapper {
 
-    private final Solution solution;
     private final SpreadsheetReader spreadsheetReader;
 
-    public SolutionCostMapper(Solution solution, SpreadsheetReader input) {
-        this.solution = solution;
+    public SolutionCostMapper(SpreadsheetReader input) {
         this.spreadsheetReader = input;
     }
 
-    public double calculateTotalCosts() {
+    public double calculateTotalCosts(Solution solution) {
         if (solution == null) {
             return Config.OPTIMAL_SOLUTION;
         }
@@ -32,9 +30,9 @@ public class SolutionCostMapper {
                 handleShiftTransition(solution.getEmployeeForDay(day - 1), state);
             }
 
-            totalCosts += calculateDailyPenalties(day, currentEmployee, state);
+            totalCosts += calculateDailyPenalties(solution, day, state);
 
-            updateEmployeeState(day, currentEmployee, state);
+            updateEmployeeState(solution, day, state);
         }
 
         return totalCosts;
@@ -47,10 +45,11 @@ public class SolutionCostMapper {
         state.currentConsecutiveShifts = 1;
     }
 
-    private double calculateDailyPenalties(int day, int employee, CalculationState state) {
+    private double calculateDailyPenalties(Solution solution, int day, CalculationState state) {
         double dailyCosts = 0.0;
+        int employee = solution.getEmployeeForDay(day);
 
-        dailyCosts += calculatePenaltyForMandatoryBlockShift(day);
+        dailyCosts += calculatePenaltyForMandatoryBlockShift(solution, day);
 
         if (state.lastOccurrenceOfEmployee[employee] == Config.MISSING_EMPLOYEE) {
             return dailyCosts;
@@ -70,11 +69,11 @@ public class SolutionCostMapper {
         return dailyCosts;
     }
 
-    private void updateEmployeeState(int day, int employee, CalculationState state) {
-        state.lastOccurrenceOfEmployee[employee] = day;
+    private void updateEmployeeState(Solution solution, int day, CalculationState state) {
+        state.lastOccurrenceOfEmployee[solution.getEmployeeForDay(day)] = day;
     }
 
-    private double calculatePenaltyForMandatoryBlockShift(int day) {
+    private double calculatePenaltyForMandatoryBlockShift(Solution solution, int day) {
         boolean isViolation = spreadsheetReader.isSingleShiftForbiddenOnDay(day)
                 && day < spreadsheetReader.getLengthOfMonth() - 1
                 && solution.getEmployeeForDay(day) != solution.getEmployeeForDay(day + 1);
