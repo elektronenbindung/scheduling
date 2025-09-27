@@ -7,12 +7,12 @@ import static scheduling.common.Config.UNKNOWN_SOLUTION_COSTS;
 public final class Move {
 	private final int fromDay;
 	private final int toDay;
-	private double costs;
+	private double solutionCosts;
 
 	public Move(int fromDay, int toDay) {
 		this.fromDay = fromDay;
 		this.toDay = toDay;
-		this.costs = UNKNOWN_SOLUTION_COSTS;
+		this.solutionCosts = UNKNOWN_SOLUTION_COSTS;
 	}
 
 	@Override
@@ -38,12 +38,12 @@ public final class Move {
 		return toDay;
 	}
 
-	public void setCosts(double costs) {
-		this.costs = costs;
+	public void setSolutionCosts(double solutionCosts) {
+		this.solutionCosts = solutionCosts;
 	}
 
-	public double getCosts() {
-		return costs;
+	public double getSolutionCosts() {
+		return solutionCosts;
 	}
 
 }
