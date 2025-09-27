@@ -57,6 +57,7 @@ public class TabuSearch {
 	private Move findBestNeighborMove(Solution currentSolution, Solution bestSolution) {
 		Move bestMove = null;
 		double bestMoveCost = Double.MAX_VALUE;
+		Solution copiedSolution = currentSolution.createCopy();
 
 		for (int i = 0; i < Config.TABU_SEARCH_NEIGHBORHOOD_SAMPLE_SIZE; i++) {
 			Move potentialMove = generateRandomMove();
@@ -65,9 +66,9 @@ public class TabuSearch {
 				continue;
 			}
 
-			Solution neighborSolution = currentSolution.createCopy();
-			neighborSolution.exchangeEmployeesOnDays(potentialMove.fromDay(), potentialMove.toDay());
-			double neighborCost = neighborSolution.getCosts();
+			copiedSolution.exchangeEmployeesOnDays(potentialMove.fromDay(), potentialMove.toDay());
+			double neighborCost = copiedSolution.getCosts();
+			copiedSolution.exchangeEmployeesOnDays(potentialMove.fromDay(), potentialMove.toDay());
 
 			boolean isTabu = tabuList.contains(potentialMove);
 			if (isTabu && neighborCost >= bestSolution.getCosts()) {
