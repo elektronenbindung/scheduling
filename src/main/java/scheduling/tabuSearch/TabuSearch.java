@@ -77,6 +77,7 @@ public class TabuSearch {
 			if (neighborCost < bestMoveCost) {
 				bestMoveCost = neighborCost;
 				bestMove = potentialMove;
+				bestMove.setCosts(neighborCost);
 			}
 		}
 		return bestMove;
@@ -90,6 +91,7 @@ public class TabuSearch {
 		}
 
 		solution.exchangeEmployeesOnDays(move.fromDay(), move.toDay());
+		solution.setSolutionCosts(move.getCosts());
 	}
 
 	private Solution handleSearchStagnation() {

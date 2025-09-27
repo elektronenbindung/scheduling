@@ -4,8 +4,9 @@ import java.util.Arrays;
 
 import scheduling.spreadsheet.SpreadsheetReader;
 
+import static scheduling.common.Config.UNKNOWN_SOLUTION_COSTS;
+
 public class Solution {
-	static final int UNKNOWN_COSTS = -1;
 	private final int[] solution;
 	private final SpreadsheetReader spreadsheetReader;
 	private int numberOfRetries;
@@ -17,7 +18,7 @@ public class Solution {
 		this.solution = solution;
 		this.numberOfFreeDaysForEmployee = numberOfFreeDaysForEmployee;
 		this.spreadsheetReader = input;
-		this.costs = UNKNOWN_COSTS;
+		this.costs = UNKNOWN_SOLUTION_COSTS;
 		this.numberOfRetries = 0;
 		this.solutionCostMapper = new SolutionCostMapper(this, input);
 	}
@@ -31,7 +32,7 @@ public class Solution {
 	}
 
 	public void exchangeEmployeesOnDays(int day1, int day2) {
-		costs = UNKNOWN_COSTS;
+		costs = UNKNOWN_SOLUTION_COSTS;
 		int temp = solution[day1];
 		solution[day1] = solution[day2];
 		solution[day2] = temp;
@@ -59,8 +60,12 @@ public class Solution {
 				Arrays.copyOf(numberOfFreeDaysForEmployee, numberOfFreeDaysForEmployee.length), spreadsheetReader);
 	}
 
+	public void setSolutionCosts(double costs) {
+		this.costs = costs;
+	}
+
 	public double getCosts() {
-		if (costs != UNKNOWN_COSTS) {
+		if (costs != UNKNOWN_SOLUTION_COSTS) {
 			return costs;
 		}
 		costs = solutionCostMapper.calculateTotalCosts();
