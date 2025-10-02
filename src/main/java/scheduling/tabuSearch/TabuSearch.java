@@ -5,9 +5,12 @@ import scheduling.common.Solution;
 import scheduling.common.ThreadsController;
 import scheduling.spreadsheet.SpreadsheetReader;
 
+import java.util.Optional;
 import java.util.concurrent.ThreadLocalRandom;
 
 public class TabuSearch {
+
+	private record EvaluatedMove(Optional<Move> move, double solutionCosts) {}
 
 	private final TabuList tabuList;
 	private final SolutionList solutionList;
@@ -34,9 +37,9 @@ public class TabuSearch {
 				return bestSolution;
 			}
 
-			Move bestMove = findBestNeighborMove(currentSolution, bestSolution);
+			EvaluatedMove bestEvaluatedMove = findBestNeighborMove(currentSolution, bestSolution);
 
-			if (bestMove == null) {
+			if (bestEvaluatedMove.move().isEmpty()) {
 				currentSolution = handleSearchStagnation();
 				if (currentSolution == null) {
 					return bestSolution;
@@ -45,7 +48,7 @@ public class TabuSearch {
 				continue;
 			}
 
-			applyMove(currentSolution, bestMove);
+			applyMove(currentSolution, bestEvaluatedMove);
 
 			if (currentSolution.getCosts() < bestSolution.getCosts()) {
 				bestSolution = currentSolution.createCopy();
@@ -58,7 +61,7 @@ public class TabuSearch {
 		return bestSolution;
 	}
 
-	private Move findBestNeighborMove(Solution currentSolution, Solution bestSolution) {
+	private EvaluatedMove findBestNeighborMove(Solution currentSolution, Solution bestSolution) {
 		Move bestMove = null;
 		double originalCost = currentSolution.getCosts();
 		double bestMoveCost = Double.MAX_VALUE;
@@ -82,22 +85,24 @@ public class TabuSearch {
 			if (neighborCost < bestMoveCost) {
 				bestMoveCost = neighborCost;
 				bestMove = potentialMove;
-				bestMove.setSolutionCosts(neighborCost);
 			}
 		}
 		currentSolution.setSolutionCosts(originalCost);
-		return bestMove;
+		return new EvaluatedMove(Optional.ofNullable(bestMove), bestMoveCost);
 	}
 
-	private void applyMove(Solution solution, Move move) {
-		tabuList.add(move);
+	private void applyMove(Solution solution, EvaluatedMove evaluatedMove) {
+		if(evaluatedMove.move().isPresent()) {
+			Move move = evaluatedMove.move().get();
+			tabuList.add(move);
 
-		if (spreadsheetReader.isFreeDay(move.fromDay()) != spreadsheetReader.isFreeDay(move.toDay())) {
-			solution.exchangeFreeDayBetweenEmployees(move.fromDay(), move.toDay());
+			if (spreadsheetReader.isFreeDay(move.fromDay()) != spreadsheetReader.isFreeDay(move.toDay())) {
+				solution.exchangeFreeDayBetweenEmployees(move.fromDay(), move.toDay());
+			}
+
+			solution.exchangeEmployeesOnDays(move.fromDay(), move.toDay());
+			solution.setSolutionCosts(evaluatedMove.solutionCosts());
 		}
-
-		solution.exchangeEmployeesOnDays(move.fromDay(), move.toDay());
-		solution.setSolutionCosts(move.getSolutionCosts());
 	}
 
 	private Solution handleSearchStagnation() {
