@@ -23,12 +23,13 @@ public class TabuSearch {
 		this.moveValidator = new MoveValidator(spreadsheetReader);
 	}
 
-	public Solution run(Solution initialSolution) {
+	public Solution run(final Solution initialSolution) {
 		Solution bestSolution = initialSolution;
 		Solution currentSolution = bestSolution.createCopy();
 		solutionList.add(bestSolution);
+		int iterationsWithoutImprovement = 0;
 
-		for (int iterationsWithoutImprovement = 0; iterationsWithoutImprovement < Config.MAX_RETRIES_OF_TABU_SEARCH; iterationsWithoutImprovement++) {
+		while (iterationsWithoutImprovement < Config.MAX_RETRIES_OF_TABU_SEARCH) {
 			if (isSearchFinished(bestSolution)) {
 				return bestSolution;
 			}
@@ -40,6 +41,7 @@ public class TabuSearch {
 				if (currentSolution == null) {
 					return bestSolution;
 				}
+				iterationsWithoutImprovement++;
 				continue;
 			}
 
@@ -49,6 +51,8 @@ public class TabuSearch {
 				bestSolution = currentSolution.createCopy();
 				solutionList.add(bestSolution);
 				iterationsWithoutImprovement = 0;
+			} else {
+				iterationsWithoutImprovement++;
 			}
 		}
 		return bestSolution;
