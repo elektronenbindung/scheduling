@@ -4,6 +4,7 @@ import scheduling.common.Solution;
 import java.util.ArrayDeque;
 import java.util.Deque;
 import java.util.Iterator;
+import java.util.Optional;
 
 public class SolutionList {
 
@@ -25,15 +26,15 @@ public class SolutionList {
 		solutions.addLast(solution);
 	}
 
-	public Solution getPreviousSolution() {
+	public Optional<Solution> getPreviousSolution() {
 		Iterator<Solution> descendingIterator = solutions.descendingIterator();
 
 		while (descendingIterator.hasNext()) {
 			Solution solution = descendingIterator.next();
 			if (solution != null && solution.canBeRetried()) {
-				return solution;
+				return Optional.of(solution);
 			}
 		}
-		return null;
+		return Optional.empty();
 	}
 }

@@ -40,10 +40,10 @@ public class TabuSearch {
 			EvaluatedMove bestEvaluatedMove = findBestNeighborMove(currentSolution, bestSolution);
 
 			if (bestEvaluatedMove.move().isEmpty()) {
-				currentSolution = handleSearchStagnation();
-				if (currentSolution == null) {
-					return bestSolution;
-				}
+				Optional<Solution> stagnationSolution = handleSearchStagnation();
+				if (stagnationSolution.isEmpty()) return bestSolution;
+
+				currentSolution = stagnationSolution.get();
 				iterationsWithoutImprovement++;
 				continue;
 			}
@@ -63,24 +63,18 @@ public class TabuSearch {
 
 	private EvaluatedMove findBestNeighborMove(Solution currentSolution, Solution bestSolution) {
 		Move bestMove = null;
-		double originalCost = currentSolution.getCosts();
+		final double originalCost = currentSolution.getCosts();
 		double bestMoveCost = Double.MAX_VALUE;
 
 		for (int i = 0; i < Config.TABU_SEARCH_NEIGHBORHOOD_SAMPLE_SIZE; i++) {
 			Move potentialMove = generateRandomMove();
 
-			if (moveValidator.isMoveForbidden(currentSolution, potentialMove)) {
-				continue;
-			}
+			if (moveValidator.isMoveForbidden(currentSolution, potentialMove)) continue;
 
-			currentSolution.exchangeEmployeesOnDays(potentialMove.fromDay(), potentialMove.toDay());
-			double neighborCost = currentSolution.getCosts();
-			currentSolution.exchangeEmployeesOnDays(potentialMove.fromDay(), potentialMove.toDay());
+			final double neighborCost = getNeighborCost(currentSolution, potentialMove);
 
-			boolean isTabu = tabuList.contains(potentialMove);
-			if (isTabu && neighborCost >= bestSolution.getCosts()) {
-				continue;
-			}
+			final boolean isTabu = tabuList.contains(potentialMove);
+			if (isTabu && neighborCost >= bestSolution.getCosts()) continue;
 
 			if (neighborCost < bestMoveCost) {
 				bestMoveCost = neighborCost;
@@ -89,6 +83,13 @@ public class TabuSearch {
 		}
 		currentSolution.setSolutionCosts(originalCost);
 		return new EvaluatedMove(Optional.ofNullable(bestMove), bestMoveCost);
+	}
+
+	private double getNeighborCost(Solution currentSolution, Move potentialMove) {
+		currentSolution.exchangeEmployeesOnDays(potentialMove.fromDay(), potentialMove.toDay());
+		final double neighborCost = currentSolution.getCosts();
+		currentSolution.exchangeEmployeesOnDays(potentialMove.fromDay(), potentialMove.toDay());
+		return neighborCost;
 	}
 
 	private void applyMove(Solution solution, EvaluatedMove evaluatedMove) {
@@ -105,13 +106,12 @@ public class TabuSearch {
 		}
 	}
 
-	private Solution handleSearchStagnation() {
-		Solution previousSolution = solutionList.getPreviousSolution();
-		if (previousSolution == null) {
-			return null;
-		}
-		tabuList.reset();
-		return previousSolution.createCopy();
+	private Optional<Solution> handleSearchStagnation() {
+		return solutionList.getPreviousSolution()
+				.map(previousSolution -> {
+					tabuList.reset();
+					return previousSolution.createCopy();
+				});
 	}
 
 	private boolean isSearchFinished(Solution bestSolution) {

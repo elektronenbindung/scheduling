@@ -88,9 +88,7 @@ public class UiController {
     }
 
     public void finished() {
-        Platform.runLater(() -> {
-            setUiStateOnFinish();
-        });
+        Platform.runLater(this::setUiStateOnFinish);
     }
 
     public void println(String message) {
