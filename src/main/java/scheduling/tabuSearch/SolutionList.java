@@ -36,8 +36,4 @@ public class SolutionList {
 		}
 		return null;
 	}
-
-	public void reset() {
-		solutions.clear();
-	}
 }
