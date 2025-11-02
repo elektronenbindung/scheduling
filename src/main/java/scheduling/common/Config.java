@@ -1,6 +1,12 @@
 package scheduling.common;
 
 public class Config {
+	public static final String WINDOW_TITLE_PREFIX = "Scheduling ";
+	public static final String FXML_FILE_NAME = "UI.fxml";
+	public static final double SCREEN_PERCENTAGE_FOR_INITIAL_WINDOW_HEIGHT = 0.6;
+	public static final double SCREEN_PERCENTAGE_FOR_INITIAL_WINDOW_WIDTH = 0.5;
+	public static final double MAX_INITIAL_WINDOW_HEIGHT = 1200;
+	public static final double MAX_INITIAL_WINDOW_WIDTH = 1600;
 	public static final int NUMBER_OF_EMPLOYEES = 30;
 	public static final int NUMBER_OF_PARALLEL_THREADS = 50;
 	public static final int ROWS_OF_HEADER = 5;

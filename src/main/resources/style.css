@@ -1,0 +1,36 @@
+.main-container {
+    -fx-font-size: 1.1em;
+
+    -fx-padding: 1em;
+
+    -fx-spacing: 0.7em;
+}
+
+.input-row {
+    -fx-spacing: 0.7em;
+
+    -fx-alignment: center-left;
+}
+
+.button-row {
+    -fx-spacing: 1.5em;
+
+    -fx-alignment: center;
+    -fx-padding: 0.7em 0 0 0;
+}
+
+.button-row .button {
+    -fx-min-width: 7em;
+    -fx-pref-height: 2em;
+}
+
+.console-label {
+    -fx-font-size: 1.2em;
+    -fx-padding: 0.7em 0 0.3em 0;
+}
+
+.output-console {
+    -fx-min-height: 15em;
+
+    -fx-font-family: "monospaced";
+}
