@@ -11,8 +11,10 @@ import org.jgrapht.graph.DefaultWeightedEdge;
 import org.jgrapht.graph.builder.GraphTypeBuilder;
 
 import scheduling.common.Config;
+import scheduling.common.SolutionCostMapper;
 import scheduling.common.ThreadsController;
 import scheduling.common.Solution;
+import scheduling.spreadsheet.SpreadsheetReader;
 
 public class ShiftMatching {
 
@@ -114,7 +116,8 @@ public class ShiftMatching {
 		});
 
 		int[] numberOfFreeDaysForEmployee = getNumberOfFreeDaysForEmployee(solution);
-		return new Solution(solution, numberOfFreeDaysForEmployee, threadsController.getSpreadsheetReader());
+		SpreadsheetReader spreadsheetReader = threadsController.getSpreadsheetReader();
+		return new Solution(solution, numberOfFreeDaysForEmployee, spreadsheetReader, new SolutionCostMapper(spreadsheetReader));
 	}
 
 	private int[] getNumberOfFreeDaysForEmployee(int[] solution) {

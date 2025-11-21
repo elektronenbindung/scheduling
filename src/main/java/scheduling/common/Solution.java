@@ -14,13 +14,13 @@ public class Solution {
 	private double costs;
 	private final SolutionCostMapper solutionCostMapper;
 
-	public Solution(int[] solution, int[] numberOfFreeDaysForEmployee, SpreadsheetReader input) {
+	public Solution(int[] solution, int[] numberOfFreeDaysForEmployee, SpreadsheetReader input, SolutionCostMapper solutionCostMapper) {
 		this.solution = solution;
 		this.numberOfFreeDaysForEmployee = numberOfFreeDaysForEmployee;
 		this.spreadsheetReader = input;
 		this.costs = UNKNOWN_SOLUTION_COSTS;
 		this.numberOfRetries = 0;
-		this.solutionCostMapper = new SolutionCostMapper(input);
+		this.solutionCostMapper = solutionCostMapper;
 	}
 
 	public boolean canBeRetried() {
@@ -57,7 +57,7 @@ public class Solution {
 
 	public Solution createCopy() {
 		return new Solution(Arrays.copyOf(solution, solution.length),
-				Arrays.copyOf(numberOfFreeDaysForEmployee, numberOfFreeDaysForEmployee.length), spreadsheetReader);
+				Arrays.copyOf(numberOfFreeDaysForEmployee, numberOfFreeDaysForEmployee.length), spreadsheetReader, solutionCostMapper);
 	}
 
 	public void setSolutionCosts(double costs) {
