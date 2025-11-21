@@ -17,9 +17,15 @@ public class MoveValidator {
 			return true;
 		}
 
-		return areFreeDaysForbidden(currentSolution, move)
-				|| isAtLeastOneEmployeeUnavailable(currentSolution, move)
-				|| isAtLeastOneEmployeeFixed(currentSolution, move);
+		if(isAtLeastOneEmployeeFixed(currentSolution, move)){
+			return true;
+		}
+
+		if(isAtLeastOneEmployeeUnavailable(currentSolution, move)){
+			return true;
+		}
+
+		return areFreeDaysForbidden(currentSolution, move);
 	}
 
 	private boolean areFreeDaysForbidden(Solution currentSolution, Move move) {
