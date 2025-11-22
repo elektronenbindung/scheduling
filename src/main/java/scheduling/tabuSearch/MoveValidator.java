@@ -13,10 +13,6 @@ public class MoveValidator {
 	}
 
 	public boolean isMoveForbidden(Solution currentSolution, Move move) {
-		if (move.fromDay() == move.toDay()) {
-			return true;
-		}
-
 		if(isAtLeastOneEmployeeFixed(currentSolution, move)){
 			return true;
 		}
