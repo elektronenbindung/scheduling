@@ -11,7 +11,7 @@ import java.util.concurrent.ThreadLocalRandom;
 public class TabuSearch {
 
 	private record EvaluatedMove(Move move, double solutionCosts) {
-		boolean isPresent() { return move != null; }
+		boolean isEmpty() { return move == null; }
 	}
 
 	private final TabuList tabuList;
@@ -41,7 +41,7 @@ public class TabuSearch {
 
 			EvaluatedMove bestEvaluatedMove = findBestNeighborMove(currentSolution, bestSolution);
 
-			if (!bestEvaluatedMove.isPresent()) {
+			if (bestEvaluatedMove.isEmpty()) {
 				Optional<Solution> stagnationSolution = handleSearchStagnation();
 				if (stagnationSolution.isEmpty()) return bestSolution;
 
@@ -95,7 +95,6 @@ public class TabuSearch {
 	}
 
 	private void applyMove(Solution solution, EvaluatedMove evaluatedMove) {
-		if(evaluatedMove.isPresent()) {
 			Move move = evaluatedMove.move();
 			tabuList.add(move);
 
@@ -105,7 +104,6 @@ public class TabuSearch {
 
 			solution.exchangeEmployeesOnDays(move.fromDay(), move.toDay());
 			solution.setSolutionCosts(evaluatedMove.solutionCosts());
-		}
 	}
 
 	private Optional<Solution> handleSearchStagnation() {

@@ -33,7 +33,7 @@ public class SolutionCostMapper {
 
 			totalCosts += calculateDailyPenalties(solution, day);
 
-			updateEmployeeState(solution, day);
+			updateEmployeeState(currentEmployee, day);
 		}
 
 		return totalCosts;
@@ -70,8 +70,8 @@ public class SolutionCostMapper {
 		return dailyCosts;
 	}
 
-	private void updateEmployeeState(Solution solution, int day) {
-		state.lastOccurrenceOfEmployee[solution.getEmployeeForDay(day)] = day;
+	private void updateEmployeeState(int employee, int day) {
+		state.lastOccurrenceOfEmployee[employee] = day;
 	}
 
 	private double calculatePenaltyForMandatoryBlockShift(Solution solution, int day) {
