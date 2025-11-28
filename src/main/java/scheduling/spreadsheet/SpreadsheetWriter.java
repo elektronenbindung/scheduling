@@ -19,13 +19,13 @@ public class SpreadsheetWriter {
 	}
 
 	public void run() throws Exception {
-		File outputFile = getPathToOutputFile();
+		File outputFile = generateUniqueOutputFile();
 
 		String[][] output = getOutput();
 		saveOutput(outputFile, output);
 	}
 
-	private File getPathToOutputFile() {
+	private File generateUniqueOutputFile() {
 		File inputFile = threadsController.getSpreadsheetReader().getInputFile();
 		String parent = inputFile.getAbsoluteFile().getParent();
 		String originalName = inputFile.getName();
