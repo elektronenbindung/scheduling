@@ -19,14 +19,31 @@ public class SpreadsheetWriter {
 	}
 
 	public void run() throws Exception {
-		File inputFile = threadsController.getSpreadsheetReader().getInputFile();
-		String pathToOutputFile = inputFile.getAbsoluteFile().getParent() + File.separator
-				+ inputFile.getName().split("\\.")[0] + "_output.ods";
-
-		threadsController.println("output file: " + pathToOutputFile);
+		File outputFile = getPathToOutputFile();
 
 		String[][] output = getOutput();
-		saveOutput(pathToOutputFile, output);
+		saveOutput(outputFile, output);
+	}
+
+	private File getPathToOutputFile() {
+		File inputFile = threadsController.getSpreadsheetReader().getInputFile();
+		String parent = inputFile.getAbsoluteFile().getParent();
+		String originalName = inputFile.getName();
+
+		int dotIndex = originalName.lastIndexOf('.');
+		String baseName = (dotIndex == -1) ? originalName : originalName.substring(0, dotIndex);
+		String extension = ".ods";
+
+		String candidateName = baseName + "_output" + extension;
+		File candidateFile = new File(parent, candidateName);
+
+		int counter = 1;
+		while (candidateFile.exists()) {
+			candidateName = baseName + "_output(" + counter + ")" + extension;
+			candidateFile = new File(parent, candidateName);
+			counter++;
+		}
+		return candidateFile;
 	}
 
 	private String[][] getOutput() {
@@ -41,11 +58,9 @@ public class SpreadsheetWriter {
 		return output;
 	}
 
-	private void saveOutput(String pathToOutputFile, String[][] output) throws Exception {
-		File outputFile = new File(pathToOutputFile);
-		if (outputFile.exists()) {
-			throw new Exception("The output file already exists and will not be overwritten");
-		}
+	private void saveOutput(File outputFile, String[][] output) throws Exception {
+		threadsController.println("Writing output to: " + outputFile.getAbsolutePath());
+
 		Sheet sheet = threadsController.getSpreadsheetReader().getSheet();
 		Range range = sheet.getRange("B6:AF" + Config.LAST_ROW_OF_SCHEDULE);
 		range.setValues(output);
