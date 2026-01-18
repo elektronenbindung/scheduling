@@ -20,6 +20,7 @@ public class SpreadsheetReader {
 	private Boolean[] isSingleSShiftForbiddenOnDay;
 	private Integer[] fixedEmployeeOnDay;
 	private Boolean[][] isAvailablePerDay;
+	private double[] additionalFreeDaysBetweenShifts;
 	private double[] daysToWorkInTotalPerEmployee;
 	private double[] daysToWorkAtFreeDayPerEmployee;
 	private double[] wishedLengthOfShiftPerEmployee;
@@ -73,6 +74,10 @@ public class SpreadsheetReader {
 		return isAvailablePerDay[employee][day];
 	}
 
+	public double getAdditionalFreeDaysBetweenShifts(int employee) {
+		return additionalFreeDaysBetweenShifts[employee];
+	}
+
 	public double getDaysToWorkInTotalForEmployee(int employee) {
 		return daysToWorkInTotalPerEmployee[employee];
 	}
@@ -91,6 +96,7 @@ public class SpreadsheetReader {
 		lengthOfMonth = tools.calculateLengthOfMonth();
 		isFreeDay = tools.calculateIsFreeDay();
 		isSingleSShiftForbiddenOnDay = tools.calculateIsSingleShiftForbiddenOnDay();
+		additionalFreeDaysBetweenShifts = tools.calculateAdditionalFreeDaysBetweenShifts();
 		daysToWorkInTotalPerEmployee = tools.calculateDaysToWorkInTotal();
 		maxLengthOfShiftPerEmployee = tools.calculateMaxLengthOfShiftPerEmployee();
 		isAvailablePerDay = tools.calculateAvailability();

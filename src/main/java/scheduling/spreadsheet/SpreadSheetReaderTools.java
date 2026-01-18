@@ -5,6 +5,7 @@ import java.util.Arrays;
 import java.util.Objects;
 import java.util.function.IntToDoubleFunction;
 import java.util.stream.IntStream;
+
 import com.github.miachm.sods.Range;
 import scheduling.common.Config;
 
@@ -15,6 +16,7 @@ public class SpreadSheetReaderTools {
 	private static final String DAYS_TO_WORK_IN_TOTAL_COLUMN = "AH";
 	private static final String DAYS_TO_WORK_AT_FREE_DAY_COLUMN = "AI";
 	private static final String WISHED_LENGTH_OF_SHIFT_COLUMN = "AJ";
+	private static final String ADDITIONAL_MIN_FREE_DAYS_BETWEEN_SHIFTS = "AL";
 	private static final String DATE_CELL = "L1";
 	private static final int FREE_DAY_ROW_OFFSET = 1;
 	private static final int SINGLE_SHIFT_ALLOWED_ROW_OFFSET = 3;
@@ -25,7 +27,7 @@ public class SpreadSheetReaderTools {
 	}
 
 	public double[] calculateMaxLengthOfShiftPerEmployee() {
-		double[] result = helper.calculateEmployeePreferencesOnSpreadsheet(MAX_LENGTH_OF_SHIFT_COLUMN);
+		double[] result = helper.calculateEmployeePreferencesOnSpreadsheet(MAX_LENGTH_OF_SHIFT_COLUMN, false);
 		IntToDoubleFunction function = employee -> {
 			double maxLengthOfShift = result[employee] > 0 ? result[employee] : Config.DEFAULT_MAX_LENGTH_OF_SHIFT;
 			return Math.min(maxLengthOfShift, reader.getDaysToWorkInTotalForEmployee(employee));
@@ -89,16 +91,23 @@ public class SpreadSheetReaderTools {
 		return result;
 	}
 
+	public double[] calculateAdditionalFreeDaysBetweenShifts() {
+		return Arrays.stream(
+						helper.calculateEmployeePreferencesOnSpreadsheet(ADDITIONAL_MIN_FREE_DAYS_BETWEEN_SHIFTS, true))
+				.map(v -> v == Config.MISSING_EMPLOYEE ? 0 : v)
+				.toArray();
+	}
+
 	public double[] calculateDaysToWorkInTotal() {
-		return helper.calculateEmployeePreferencesOnSpreadsheet(DAYS_TO_WORK_IN_TOTAL_COLUMN);
+		return helper.calculateEmployeePreferencesOnSpreadsheet(DAYS_TO_WORK_IN_TOTAL_COLUMN, false);
 	}
 
 	public double[] calculateDaysToWorkAtFreeDay() {
-		return helper.calculateEmployeePreferencesOnSpreadsheet(DAYS_TO_WORK_AT_FREE_DAY_COLUMN);
+		return helper.calculateEmployeePreferencesOnSpreadsheet(DAYS_TO_WORK_AT_FREE_DAY_COLUMN, false);
 	}
 
 	public double[] calculateWishedLengthOfShiftPerEmployee() {
-		double[] result = helper.calculateEmployeePreferencesOnSpreadsheet(WISHED_LENGTH_OF_SHIFT_COLUMN);
+		double[] result = helper.calculateEmployeePreferencesOnSpreadsheet(WISHED_LENGTH_OF_SHIFT_COLUMN, false);
 
 		return IntStream.range(0, result.length)
 				.mapToDouble(employee -> Math.min(result[employee], reader.getMaxLengthOfShiftPerEmployee(employee)))

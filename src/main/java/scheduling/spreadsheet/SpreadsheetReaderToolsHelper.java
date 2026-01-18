@@ -32,7 +32,7 @@ public class SpreadsheetReaderToolsHelper {
 		return dayProperty;
 	}
 
-	public double[] calculateEmployeePreferencesOnSpreadsheet(String columnInA1Notation) {
+	public double[] calculateEmployeePreferencesOnSpreadsheet(String columnInA1Notation, boolean isNegativeValueAllowed) {
 		String a1Notation = columnInA1Notation + SCHEDULE_DATA_START_ROW + ":" + columnInA1Notation
 				+ Config.LAST_ROW_OF_SCHEDULE;
 		double[] preferencesPerEmployee = new double[Config.NUMBER_OF_EMPLOYEES];
@@ -44,9 +44,12 @@ public class SpreadsheetReaderToolsHelper {
 			preferencesPerEmployee[employee] = value[0] != null
 					? Double.parseDouble(String.valueOf(value[0]))
 					: Config.MISSING_EMPLOYEE;
-			preferencesPerEmployee[employee] = preferencesPerEmployee[employee] < 0
-					? Config.MISSING_EMPLOYEE
-					: preferencesPerEmployee[employee];
+
+			if(!isNegativeValueAllowed) {
+				preferencesPerEmployee[employee] = preferencesPerEmployee[employee] < 0
+						? Config.MISSING_EMPLOYEE
+						: preferencesPerEmployee[employee];
+			}
 		}
 		return preferencesPerEmployee;
 	}

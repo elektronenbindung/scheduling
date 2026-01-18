@@ -14,7 +14,7 @@ public class Config {
 	public static final String WORK_DAY = "A";
 	public static final String WORKING = "x";
 	public static final String SINGLE_SHIFT = "E";
-	public static final int MISSING_EMPLOYEE = -1;
+	public static final int MISSING_EMPLOYEE = Integer.MIN_VALUE;
 	public static final int WEIGHT_FOR_NORMAL_DAY = 1;
 	public static final int WEIGHT_FOR_FIXED_DAY = 1000;
 	public static final int WEIGHT_FOR_FREE_DAY = 32;

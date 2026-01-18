@@ -97,13 +97,14 @@ public class SolutionCostMapper {
 			return false;
 		}
 
-		boolean isTooSoonAfterLastBlock = daysSinceLastShift <= state.lengthOfLastBlockShift[employee];
+		boolean isTooSoonAfterLastBlock = daysSinceLastShift <= (state.lengthOfLastBlockShift[employee] +
+				spreadsheetReader.getAdditionalFreeDaysBetweenShifts(employee));
 		boolean isExactlyOneDayOff = daysSinceLastShift == Config.INTERVAL_FOR_ONE_DAY;
 
 		return isTooSoonAfterLastBlock || isExactlyOneDayOff;
 	}
 
-	private double calculatePenaltyForWishedInterval(int employee, int daysSinceLastShift,  int currentConsecutiveShifts) {
+	private double calculatePenaltyForWishedInterval(int employee, int daysSinceLastShift, int currentConsecutiveShifts) {
 		boolean hasWishedInterval = spreadsheetReader.getWishedLengthOfShiftForEmployee(employee) > 0;
 		boolean isNewShiftBlock = daysSinceLastShift > 1;
 		boolean isShiftBlockTooLong = currentConsecutiveShifts > spreadsheetReader
@@ -111,7 +112,10 @@ public class SolutionCostMapper {
 
 		if (hasWishedInterval && (isNewShiftBlock || isShiftBlockTooLong)) {
 			double expectedInterval = spreadsheetReader.getExpectedDaysBetweenShiftsForEmployee(employee);
-			return Math.abs(daysSinceLastShift - expectedInterval);
+			double additionalFreeDays = spreadsheetReader.getAdditionalFreeDaysBetweenShifts(employee);
+			double offset = employee == Config.MISSING_EMPLOYEE || additionalFreeDays > 0
+					|| additionalFreeDays == Config.MISSING_EMPLOYEE ? 0 : additionalFreeDays;
+			return Math.abs(daysSinceLastShift - expectedInterval) + offset;
 		}
 		return 0;
 	}
@@ -125,6 +129,7 @@ public class SolutionCostMapper {
 			this.lastOccurrenceOfEmployee = new int[Config.NUMBER_OF_EMPLOYEES];
 			this.lengthOfLastBlockShift = new int[Config.NUMBER_OF_EMPLOYEES];
 		}
+
 		void initialize() {
 			Arrays.fill(this.lastOccurrenceOfEmployee, Config.MISSING_EMPLOYEE);
 			Arrays.fill(this.lengthOfLastBlockShift, 1);
