@@ -7,6 +7,9 @@ import scheduling.common.Config;
 import java.util.Objects;
 
 public class SpreadsheetReaderToolsHelper {
+	private static final String SCHEDULE_DATA_START_COLUMN = "B";
+	private static final String SCHEDULE_DATA_END_COLUMN = "AF";
+	private static final int SCHEDULE_DATA_START_ROW = 6;
 
 	private final SpreadsheetReader reader;
 	private Integer[] fixedEmployeeOnDay;
@@ -14,6 +17,49 @@ public class SpreadsheetReaderToolsHelper {
 	public SpreadsheetReaderToolsHelper(SpreadsheetReader reader) {
 		this.reader = Objects.requireNonNull(reader, "SpreadsheetReader must not be null");
 		this.fixedEmployeeOnDay = null;
+	}
+
+	public Boolean[] calculateDayProperty(int row, String property) {
+		Boolean[] dayProperty = new Boolean[reader.getLengthOfMonth()];
+		String a1Notation = SCHEDULE_DATA_START_COLUMN + row + ":" + SCHEDULE_DATA_END_COLUMN + row;
+		Range range = reader.getSheet().getRange(a1Notation);
+		Object[] objects = range.getValues()[0];
+
+		for (int index = 0; index < reader.getLengthOfMonth(); index++) {
+			String str = String.valueOf(objects[index]);
+			dayProperty[index] = str.equals(property);
+		}
+		return dayProperty;
+	}
+
+	public double[] calculateEmployeePreferencesOnSpreadsheet(String columnInA1Notation) {
+		String a1Notation = columnInA1Notation + SCHEDULE_DATA_START_ROW + ":" + columnInA1Notation
+				+ Config.LAST_ROW_OF_SCHEDULE;
+		double[] preferencesPerEmployee = new double[Config.NUMBER_OF_EMPLOYEES];
+		Range range = reader.getSheet().getRange(a1Notation);
+		Object[][] values = range.getValues();
+
+		for (int employee = 0; employee < Config.NUMBER_OF_EMPLOYEES; employee++) {
+			Object[] value = values[employee];
+			preferencesPerEmployee[employee] = value[0] != null
+					? Double.parseDouble(String.valueOf(value[0]))
+					: Config.MISSING_EMPLOYEE;
+			preferencesPerEmployee[employee] = preferencesPerEmployee[employee] < 0
+					? Config.MISSING_EMPLOYEE
+					: preferencesPerEmployee[employee];
+		}
+		return preferencesPerEmployee;
+	}
+
+	public  <T> void calculatePropertyForEmployeeOnDays(T[] result, int employee,
+														TriFunction<Range, Integer, Integer, T> function) {
+		String a1Notation = SCHEDULE_DATA_START_COLUMN + SCHEDULE_DATA_START_ROW + ":" + SCHEDULE_DATA_END_COLUMN
+				+ Config.LAST_ROW_OF_SCHEDULE;
+		Range range = reader.getSheet().getRange(a1Notation);
+
+		for (int day = 0; day < reader.getLengthOfMonth(); day++) {
+			result[day] = function.apply(range, employee, day);
+		}
 	}
 
 	public TriFunction<Range, Integer, Integer, Integer> getFunctionForCalculationOfFixedEmployees() {
