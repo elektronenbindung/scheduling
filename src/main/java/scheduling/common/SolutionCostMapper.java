@@ -115,7 +115,7 @@ public class SolutionCostMapper {
 			double additionalFreeDays = spreadsheetReader.getAdditionalFreeDaysBetweenShifts(employee);
 			double offset = employee == Config.MISSING_EMPLOYEE || additionalFreeDays > 0
 					|| additionalFreeDays == Config.MISSING_EMPLOYEE ? 0 : additionalFreeDays;
-			return Math.abs(daysSinceLastShift - expectedInterval) + offset;
+			return Math.abs(Math.abs(daysSinceLastShift - expectedInterval) + offset);
 		}
 		return 0;
 	}
