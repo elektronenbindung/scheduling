@@ -34,19 +34,24 @@ Right now there are the following features:
   in this column you put 'FALSE', then the employee will not appear in the other tables, which are relevant for
   different funding agencies.
 * Column 'AH': The amount of times the employee is working in the specific month. The sum of this column must match the
-  length of the month. Otherwise you will get a red sum field. If everything is fine, this sum field will become green.
-  If this does not match something random will happen. A non positive or missing value is interpreted as zero.
+  length of the month. Otherwise, you will get a red sum field. If everything is fine, this sum field will become green.
+  If this does not match something random will happen. A non-positive or missing value is interpreted as zero.
 * Column 'AI': The amount of free days the employee is intended to work. The value of this column must always be less or
   equal than 'AH'. Furthermore, the sum of this column must be at least the amount of free days. If this is the case,
   the sum field will become green. If is less, the field will become red and the algorithm will choose the most matching
   employee for the free shifts among all employees. If you want the algorithm to choose the most matching one only among
   specific employees, you can put in sum a greater value of free shifts into the column as there are actually available.
   This means that an employee can have at most these amount of free shifts in total. In this case the sum field will
-  become yellow. A non positive or missing value is interpreted as zero.
+  become yellow. A non-positive or missing value is interpreted as zero.
 * Column 'AJ': This is the wished length of each block shift for each employee. The length of a block shift is the
   number of direct following shifts. If no value, a negative value or zero is set, it means that it does not matter
 * Column 'AK': This is the maximum length of a block shift. If no value, a negative value or zero is set, it means that
   it does not matter.
+* Column 'AL:' This is the minimum additional number of free days between a block shift. Usually the minimum number 
+ of days between shift is the length of the block shift. For example: If a block shift is three days long, then afterward
+ the employee has got at least three days of in a row. Here you can add an offset. If no value is set, then it is interpreted
+ as zero. If you set a value less than zero, then you additionally reduce the distance between to block shifts. This might
+be interesting if you have got an assistant with a long arrival.
 
 ## Known issues
 
