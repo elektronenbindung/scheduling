@@ -6,7 +6,7 @@ repository.
 
 ## Prerequisites
 
-* The software runs on at least Java 11 or higher. The spreadsheet can be provided as an argument on console. If the
+* The software runs on at least Java 21 or higher. The spreadsheet can be provided as an argument on console. If the
   program is started without any arguments on console or with more than one argument, the program starts with a user
   interface. The user then can select the input file via file chooser. Afterwards the user can hit ```ENTER``` or use
   the start button the run the program. The program terminates after some time and writes the result to an output file
@@ -48,7 +48,7 @@ Right now there are the following features:
 * Column 'AK': This is the maximum length of a block shift. If no value, a negative value or zero is set, it means that
   it does not matter.
 * Column 'AL:' This is the minimum additional number of free days between a block shift. Usually the minimum number 
- of days between shift is the length of the block shift. For example: If a block shift is three days long, then afterward
+ of days between a block shift is the length of the block shift. For example: If a block shift is three days long, then afterward
  the employee has got at least three days of in a row. Here you can add an offset. If no value is set, then it is interpreted
  as zero. If you set a value less than zero, then you additionally reduce the distance between to block shifts. This might
 be interesting if you have got an assistant with a long arrival.
