@@ -40,18 +40,13 @@ public final class Main {
 		Thread controllerThread = new Thread(threadsController);
 		controllerThread.start();
 
-		//noinspection finally
-		try {
-			while (true) {
-				String line = console.readLine();
+		while (true) {
+			String line = console.readLine();
 
-				if (line == null || Objects.equals(line, Config.QUIT)) {
-					threadsController.stop();
-					break;
-				}
+			if (line == null || Objects.equals(line, Config.QUIT)) {
+				threadsController.stop();
+				break;
 			}
-		} finally {
-			System.exit(0);
 		}
 	}
 }
