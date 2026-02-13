@@ -105,19 +105,27 @@ public class SolutionCostMapper {
 	}
 
 	private double calculatePenaltyForWishedInterval(int employee, int daysSinceLastShift, int currentConsecutiveShifts) {
-		boolean hasWishedInterval = spreadsheetReader.getWishedLengthOfShiftForEmployee(employee) > 0;
-		boolean isNewShiftBlock = daysSinceLastShift > 1;
-		boolean isShiftBlockTooLong = currentConsecutiveShifts > spreadsheetReader
-				.getMaxLengthOfShiftPerEmployee(employee);
-
-		if (hasWishedInterval && (isNewShiftBlock || isShiftBlockTooLong)) {
-			double expectedInterval = spreadsheetReader.getExpectedDaysBetweenShiftsForEmployee(employee);
-			double additionalFreeDays = spreadsheetReader.getAdditionalFreeDaysBetweenShifts(employee);
-			double offset = employee == Config.MISSING_EMPLOYEE || additionalFreeDays > 0
-					|| additionalFreeDays == Config.MISSING_EMPLOYEE ? 0 : additionalFreeDays;
-			return Math.max(0, Math.abs(daysSinceLastShift - expectedInterval) + offset);
+		if (spreadsheetReader.getWishedLengthOfShiftForEmployee(employee) <= 0) {
+			return 0;
 		}
-		return 0;
+
+		boolean isNewShiftBlock = daysSinceLastShift > 1;
+		boolean isShiftBlockTooLong = currentConsecutiveShifts > spreadsheetReader.getMaxLengthOfShiftPerEmployee(employee);
+
+		if (!isNewShiftBlock && !isShiftBlockTooLong) {
+			return 0;
+		}
+
+		double expectedInterval = spreadsheetReader.getExpectedDaysBetweenShiftsForEmployee(employee);
+		double additionalFreeDays = spreadsheetReader.getAdditionalFreeDaysBetweenShifts(employee);
+
+		boolean shouldResetOffset = (employee == Config.MISSING_EMPLOYEE)
+				|| (additionalFreeDays > 0)
+				|| (additionalFreeDays == Config.MISSING_EMPLOYEE);
+
+		double offset = shouldResetOffset ? 0 : additionalFreeDays;
+
+		return Math.max(0, Math.abs(daysSinceLastShift - expectedInterval) + offset);
 	}
 
 	private static class CalculationState {
