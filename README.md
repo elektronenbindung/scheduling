@@ -6,7 +6,7 @@ repository.
 
 ## Prerequisites
 
-* The software runs on at least Java 21 or higher. The spreadsheet can be provided as an argument on console. If the
+* The software runs on at least Java 25 or higher. The spreadsheet can be provided as an argument on console. If the
   program is started without any arguments on console or with more than one argument, the program starts with a user
   interface. The user then can select the input file via file chooser. Afterwards the user can hit ```ENTER``` or use
   the start button the run the program. The program terminates after some time and writes the result to an output file
