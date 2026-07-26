@@ -20,7 +20,7 @@
         <jgrapht.version>1.5.2</jgrapht.version>
         <sods.version>1.8.2</sods.version>
         
-        <maven-compiler-plugin.version>3.13.0</maven-compiler-plugin.version>
+        <maven-compiler-plugin.version>3.15.0</maven-compiler-plugin.version>
         <maven-assembly-plugin.version>3.7.1</maven-assembly-plugin.version>
         <javafx-maven-plugin.version>0.0.8</javafx-maven-plugin.version>
         <maven-clean-plugin.version>3.4.0</maven-clean-plugin.version>
