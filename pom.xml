@@ -18,7 +18,7 @@
         <javafx.version>27-ea+25</javafx.version>
         
         <jgrapht.version>1.5.2</jgrapht.version>
-        <sods.version>1.8.2</sods.version>
+        <sods.version>1.10.1</sods.version>
         
         <maven-compiler-plugin.version>3.15.0</maven-compiler-plugin.version>
         <maven-assembly-plugin.version>3.8.0</maven-assembly-plugin.version>
