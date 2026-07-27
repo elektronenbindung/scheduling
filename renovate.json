@@ -2,14 +2,12 @@
   "$schema": "https://docs.renovatebot.com/renovate-schema.json",
   "extends": [
     "config:recommended",
-    "security:recommended",
     ":dependencyDashboard"
   ],
   "timezone": "Europe/Berlin",
   "schedule": [
-    "0 17 * * 5"
+    "* 17 * * 5"
   ],
-  "pruneBranchAfterMerge": true,
   "packageRules": [
     {
       "matchUpdateTypes": [
