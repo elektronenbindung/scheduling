@@ -24,6 +24,7 @@ Right now there are the following features:
   on that day.
 * by setting 'x' for an employee on a specific day, you indicate that this employee has to work on that day. There is
   always exact one employee per day.
+* By setting a '+' you indicate that an employee would like to work on that day but does not necessarily have to.
 * Below the schedule, you can determine whether a day as a working day ("A"), a free day without extra money ('F' - e.g.
   Saturday or vacation) or a day with extra money ("Z" - e.g. Sunday or public holiday). The spreadsheet computes free
   days on Saturday and Sunday automatically.
