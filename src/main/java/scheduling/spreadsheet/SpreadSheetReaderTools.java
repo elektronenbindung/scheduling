@@ -2,9 +2,7 @@ package scheduling.spreadsheet;
 
 import java.time.LocalDate;
 import java.util.Arrays;
-import java.util.HashSet;
 import java.util.Objects;
-import java.util.Set;
 import java.util.function.IntToDoubleFunction;
 import java.util.stream.IntStream;
 
@@ -95,21 +93,12 @@ public class SpreadSheetReaderTools {
         return result;
     }
 
-    public Set<Integer>[] calculateWishedShift() {
-        Boolean[][] isShiftWishedPerEmployeeOnDay = new Boolean[Config.NUMBER_OF_EMPLOYEES][reader.getLengthOfMonth()];
-        for (int employee = 0; employee < Config.NUMBER_OF_EMPLOYEES; employee++) {
-            helper.calculatePropertyForEmployeeOnDays(isShiftWishedPerEmployeeOnDay[employee], employee,
-                    helper.getFunctionForWishedShift());
-        }
-        Set<Integer>[] result = new Set[reader.getLengthOfMonth()];
+    public Boolean[][] calculateWishedShift() {
+        Boolean[][] result = new Boolean[Config.NUMBER_OF_EMPLOYEES][reader.getLengthOfMonth()];
 
         for (int employee = 0; employee < Config.NUMBER_OF_EMPLOYEES; employee++) {
-            for (int day = 0; day < reader.getLengthOfMonth(); day++) {
-                if (isShiftWishedPerEmployeeOnDay[employee][day]) {
-                    result[day] = result[day] == null ? new HashSet<>() : result[day];
-                    result[day].add(employee);
-                }
-            }
+            helper.calculatePropertyForEmployeeOnDays(result[employee], employee,
+                    helper.getFunctionForWishedShift());
         }
         return result;
     }

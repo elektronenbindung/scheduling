@@ -3,7 +3,6 @@ package scheduling.spreadsheet;
 import java.io.File;
 import java.io.IOException;
 import java.util.Objects;
-import java.util.Set;
 
 import com.github.miachm.sods.Sheet;
 import com.github.miachm.sods.SpreadSheet;
@@ -25,7 +24,8 @@ public class SpreadsheetReader {
     private double[] daysToWorkInTotalPerEmployee;
     private double[] daysToWorkAtFreeDayPerEmployee;
     private double[] wishedLengthOfShiftPerEmployee;
-    private Set<Integer>[] wishedShiftPerDay;
+    private Boolean[][] wishedShiftPerEmployee;
+    private boolean[] hasAnyWishForDay;
     private double[] expectedDaysBetweenShiftsPerEmployee;
 
     public SpreadsheetReader(File inpFile) {
@@ -54,15 +54,10 @@ public class SpreadsheetReader {
     }
 
     public boolean isWishNotFulfilled(int employee, int day) {
-        if (employee == Config.MISSING_EMPLOYEE)
+        if (employee == Config.MISSING_EMPLOYEE) {
             return false;
-
-        Set<Integer> relevantHashSet = wishedShiftPerDay[day];
-
-        if (relevantHashSet == null)
-            return false;
-
-        return !relevantHashSet.contains(employee);
+        }
+        return hasAnyWishForDay[day] && !wishedShiftPerEmployee[employee][day];
     }
 
     public double getExpectedDaysBetweenShiftsForEmployee(int employee) {
@@ -118,6 +113,20 @@ public class SpreadsheetReader {
         daysToWorkAtFreeDayPerEmployee = tools.calculateDaysToWorkAtFreeDay();
         wishedLengthOfShiftPerEmployee = tools.calculateWishedLengthOfShiftPerEmployee();
         expectedDaysBetweenShiftsPerEmployee = tools.calculateExpectedDaysBetweenShifts();
-        wishedShiftPerDay = tools.calculateWishedShift();
+        wishedShiftPerEmployee = tools.calculateWishedShift();
+        hasAnyWishForDay = calculateHasAnyWishForDay();
+    }
+
+    private boolean[] calculateHasAnyWishForDay() {
+        boolean[] result = new boolean[lengthOfMonth];
+        for (int day = 0; day < lengthOfMonth; day++) {
+            for (int employee = 0; employee < Config.NUMBER_OF_EMPLOYEES; employee++) {
+                if (wishedShiftPerEmployee[employee][day]) {
+                    result[day] = true;
+                    break;
+                }
+            }
+        }
+        return result;
     }
 }
