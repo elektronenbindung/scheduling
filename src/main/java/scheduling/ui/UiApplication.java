@@ -31,14 +31,10 @@ public class UiApplication extends Application {
 		Screen screen = Screen.getPrimary();
 		Rectangle2D bounds = screen.getVisualBounds();
 
-		double width = Math.min(
-				bounds.getWidth() * Config.SCREEN_PERCENTAGE_FOR_INITIAL_WINDOW_WIDTH,
-				Config.MAX_INITIAL_WINDOW_WIDTH
-		);
-		double height = Math.min(
-				bounds.getHeight() * Config.SCREEN_PERCENTAGE_FOR_INITIAL_WINDOW_HEIGHT,
-				Config.MAX_INITIAL_WINDOW_HEIGHT
-		);
+		double width = Math.min(bounds.getWidth() * Config.SCREEN_PERCENTAGE_FOR_INITIAL_WINDOW_WIDTH,
+				Config.MAX_INITIAL_WINDOW_WIDTH);
+		double height = Math.min(bounds.getHeight() * Config.SCREEN_PERCENTAGE_FOR_INITIAL_WINDOW_HEIGHT,
+				Config.MAX_INITIAL_WINDOW_HEIGHT);
 
 		URL fxmlUrl = getClass().getClassLoader().getResource(Config.FXML_FILE_NAME);
 		if (fxmlUrl == null) {

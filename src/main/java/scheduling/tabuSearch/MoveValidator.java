@@ -13,11 +13,11 @@ public class MoveValidator {
 	}
 
 	public boolean isMoveForbidden(Solution currentSolution, Move move) {
-		if(isAtLeastOneEmployeeFixed(currentSolution, move)){
+		if (isAtLeastOneEmployeeFixed(currentSolution, move)) {
 			return true;
 		}
 
-		if(isAtLeastOneEmployeeUnavailable(currentSolution, move)){
+		if (isAtLeastOneEmployeeUnavailable(currentSolution, move)) {
 			return true;
 		}
 
@@ -45,11 +45,13 @@ public class MoveValidator {
 
 		int freeDaysForGainingEmployee = currentSolution.getNumberOfFreeDaysForEmployee(employeeGainingFreeDay);
 		boolean canGain = (employeeGainingFreeDay == Config.MISSING_EMPLOYEE)
-				|| (freeDaysForGainingEmployee < spreadsheetReader.getDaysToWorkAtFreeDayForEmployee(employeeGainingFreeDay));
+				|| (freeDaysForGainingEmployee < spreadsheetReader
+						.getDaysToWorkAtFreeDayForEmployee(employeeGainingFreeDay));
 
 		int freeDaysForLosingEmployee = currentSolution.getNumberOfFreeDaysForEmployee(employeeLosingFreeDay);
 		boolean canLose = (employeeLosingFreeDay == Config.MISSING_EMPLOYEE)
-				|| (freeDaysForLosingEmployee > spreadsheetReader.getDaysToWorkAtFreeDayForEmployee(employeeLosingFreeDay));
+				|| (freeDaysForLosingEmployee > spreadsheetReader
+						.getDaysToWorkAtFreeDayForEmployee(employeeLosingFreeDay));
 
 		return !canGain && !canLose;
 	}
@@ -75,4 +77,5 @@ public class MoveValidator {
 			return false;
 		}
 		return currentSolution.getEmployeeForDay(day) == fixedEmployee;
-}}
+	}
+}
