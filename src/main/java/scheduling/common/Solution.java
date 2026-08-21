@@ -14,7 +14,8 @@ public class Solution {
 	private double costs;
 	private final SolutionCostMapper solutionCostMapper;
 
-	public Solution(int[] solution, int[] numberOfFreeDaysForEmployee, SpreadsheetReader input, SolutionCostMapper solutionCostMapper) {
+	public Solution(int[] solution, int[] numberOfFreeDaysForEmployee, SpreadsheetReader input,
+			SolutionCostMapper solutionCostMapper) {
 		this.solution = solution;
 		this.numberOfFreeDaysForEmployee = numberOfFreeDaysForEmployee;
 		this.spreadsheetReader = input;
@@ -57,7 +58,8 @@ public class Solution {
 
 	public Solution createCopy() {
 		return new Solution(Arrays.copyOf(solution, solution.length),
-				Arrays.copyOf(numberOfFreeDaysForEmployee, numberOfFreeDaysForEmployee.length), spreadsheetReader, solutionCostMapper);
+				Arrays.copyOf(numberOfFreeDaysForEmployee, numberOfFreeDaysForEmployee.length), spreadsheetReader,
+				solutionCostMapper);
 	}
 
 	public void setSolutionCosts(double costs) {

@@ -30,6 +30,7 @@
         <maven-surefire-plugin.version>3.5.6</maven-surefire-plugin.version>
         <junit-jupiter.version>5.11.0</junit-jupiter.version>
         <jacoco.version>0.8.13</jacoco.version>
+        <spotless.version>2.44.0</spotless.version>
     </properties>
 
     <dependencies>
@@ -153,6 +154,32 @@
                 <configuration>
                     <mainClass>scheduling.ui.UiApplication</mainClass>
                 </configuration>
+            </plugin>
+
+            <plugin>
+                <groupId>com.diffplug.spotless</groupId>
+                <artifactId>spotless-maven-plugin</artifactId>
+                <version>${spotless.version}</version>
+                <configuration>
+                    <java>
+                        <includes>
+                            <include>src/main/java/**/*.java</include>
+                            <include>src/test/java/**/*.java</include>
+                        </includes>
+                        <eclipse/>
+                        <removeUnusedImports/>
+                        <formatAnnotations/>
+                    </java>
+                </configuration>
+                <executions>
+                    <execution>
+                        <id>spotless-check</id>
+                        <phase>verify</phase>
+                        <goals>
+                            <goal>check</goal>
+                        </goals>
+                    </execution>
+                </executions>
             </plugin>
         </plugins>
     </build>

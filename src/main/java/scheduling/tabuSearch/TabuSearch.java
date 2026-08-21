@@ -11,7 +11,9 @@ import java.util.concurrent.ThreadLocalRandom;
 public class TabuSearch {
 
 	private record EvaluatedMove(Move move, double solutionCosts) {
-		boolean isEmpty() { return move == null; }
+		boolean isEmpty() {
+			return move == null;
+		}
 	}
 
 	private final TabuList tabuList;
@@ -43,7 +45,8 @@ public class TabuSearch {
 
 			if (bestEvaluatedMove.isEmpty()) {
 				Optional<Solution> stagnationSolution = handleSearchStagnation();
-				if (stagnationSolution.isEmpty()) return bestSolution;
+				if (stagnationSolution.isEmpty())
+					return bestSolution;
 
 				currentSolution = stagnationSolution.get();
 				iterationsWithoutImprovement++;
@@ -71,12 +74,14 @@ public class TabuSearch {
 		for (int i = 0; i < Config.TABU_SEARCH_NEIGHBORHOOD_SAMPLE_SIZE; i++) {
 			Move potentialMove = generateRandomMove();
 
-			if (moveValidator.isMoveForbidden(currentSolution, potentialMove)) continue;
+			if (moveValidator.isMoveForbidden(currentSolution, potentialMove))
+				continue;
 
 			final double neighborCost = getNeighborCost(currentSolution, potentialMove);
 
 			final boolean isTabu = tabuList.contains(potentialMove);
-			if (isTabu && neighborCost >= bestSolution.getCosts()) continue;
+			if (isTabu && neighborCost >= bestSolution.getCosts())
+				continue;
 
 			if (neighborCost < bestMoveCost) {
 				bestMoveCost = neighborCost;
@@ -95,23 +100,22 @@ public class TabuSearch {
 	}
 
 	private void applyMove(Solution solution, EvaluatedMove evaluatedMove) {
-			Move move = evaluatedMove.move();
-			tabuList.add(move);
+		Move move = evaluatedMove.move();
+		tabuList.add(move);
 
-			if (spreadsheetReader.isFreeDay(move.fromDay()) != spreadsheetReader.isFreeDay(move.toDay())) {
-				solution.exchangeFreeDayBetweenEmployees(move.fromDay(), move.toDay());
-			}
+		if (spreadsheetReader.isFreeDay(move.fromDay()) != spreadsheetReader.isFreeDay(move.toDay())) {
+			solution.exchangeFreeDayBetweenEmployees(move.fromDay(), move.toDay());
+		}
 
-			solution.exchangeEmployeesOnDays(move.fromDay(), move.toDay());
-			solution.setSolutionCosts(evaluatedMove.solutionCosts());
+		solution.exchangeEmployeesOnDays(move.fromDay(), move.toDay());
+		solution.setSolutionCosts(evaluatedMove.solutionCosts());
 	}
 
 	private Optional<Solution> handleSearchStagnation() {
-		return solutionList.getPreviousSolution()
-				.map(previousSolution -> {
-					tabuList.reset();
-					return previousSolution.createCopy();
-				});
+		return solutionList.getPreviousSolution().map(previousSolution -> {
+			tabuList.reset();
+			return previousSolution.createCopy();
+		});
 	}
 
 	private boolean isSearchFinished(Solution bestSolution) {
