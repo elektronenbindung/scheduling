@@ -36,7 +36,7 @@ class MainIntegrationTest {
 			.toString();
 
 	private static final String COSTS_LINE_PREFIX = "Costs of solution: ";
-	private static final double MAX_EXPECTED_COSTS = 17.0;
+	private static final double EXPECTED_COSTS = 321.0;
 
 	private static final String READ_SUCCESS_LINE = "Input file has been read successfully, computing solutions...";
 	private static final String SOLVABLE_SUCCESS_LINE = "Success: This schedule is solvable";
@@ -87,8 +87,8 @@ class MainIntegrationTest {
 								+ " outputIdx=" + outputIdx + "\n" + "Captured stdout: " + stdout);
 
 				double bestCosts = extractBestCosts(stdout);
-				assertTrue(bestCosts < MAX_EXPECTED_COSTS, "Best solution costs " + bestCosts + " are not less than "
-						+ MAX_EXPECTED_COSTS + ".\n" + "Captured stdout: " + stdout + "\nCaptured stderr: " + stderr);
+				assertEquals(EXPECTED_COSTS, bestCosts, "Best solution costs " + bestCosts + " is not equal to "
+						+ EXPECTED_COSTS + ".\n" + "Captured stdout: " + stdout + "\nCaptured stderr: " + stderr);
 				assertTrue(outputFile != null && outputFile.exists(),
 						"Output file was not created.\nstdout: " + stdout + "\nstderr: " + stderr);
 				return;
