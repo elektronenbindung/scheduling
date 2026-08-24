@@ -6,7 +6,7 @@ import scheduling.common.ThreadsController;
 import scheduling.spreadsheet.SpreadsheetReader;
 
 import java.util.Optional;
-import java.util.concurrent.ThreadLocalRandom;
+import java.util.Random;
 
 public class TabuSearch {
 
@@ -21,13 +21,19 @@ public class TabuSearch {
 	private final ThreadsController threadsController;
 	private final SpreadsheetReader spreadsheetReader;
 	private final MoveValidator moveValidator;
+	private final Random random;
 
 	public TabuSearch(ThreadsController threadsController) {
+		this(threadsController, new Random());
+	}
+
+	public TabuSearch(ThreadsController threadsController, Random random) {
 		this.tabuList = new TabuList(Config.LENGTH_OF_TABU_LIST);
 		this.solutionList = new SolutionList(Config.LENGTH_OF_SOLUTION_LIST);
 		this.threadsController = threadsController;
 		this.spreadsheetReader = threadsController.getSpreadsheetReader();
 		this.moveValidator = new MoveValidator(spreadsheetReader);
+		this.random = random;
 	}
 
 	public Solution run(final Solution initialSolution) {
@@ -127,8 +133,8 @@ public class TabuSearch {
 		int fromDay;
 		int toDay;
 		do {
-			fromDay = ThreadLocalRandom.current().nextInt(lengthOfMonth);
-			toDay = ThreadLocalRandom.current().nextInt(lengthOfMonth);
+			fromDay = random.nextInt(lengthOfMonth);
+			toDay = random.nextInt(lengthOfMonth);
 		} while (fromDay == toDay);
 
 		return new Move(fromDay, toDay);

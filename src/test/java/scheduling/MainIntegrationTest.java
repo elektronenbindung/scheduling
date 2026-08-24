@@ -2,6 +2,7 @@ package scheduling;
 
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
@@ -19,6 +20,8 @@ import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.Timeout;
 
+import scheduling.common.Config;
+import scheduling.common.Solution;
 import scheduling.common.ThreadsController;
 
 /**
@@ -45,12 +48,79 @@ class MainIntegrationTest {
 	private static final String SOLVABLE_SUCCESS_LINE = "Success: This schedule is solvable";
 	private static final String OUTPUT_PATH_PREFIX = "Writing output to: ";
 
-	private static final long PER_RUN_TIMEOUT_SECONDS = 120;
-	private static final int MAX_ATTEMPTS = 3;
+	private static final long PER_RUN_TIMEOUT_SECONDS = 600;
+	private static final int MAX_ATTEMPTS = 1;
+
+	private static final long RANDOM_SEED = 42L;
+
+	private static final int NUMBER_OF_PARALLEL_THREADS_OVERRIDE = 1;
+
+	private static final String[][] EXPECTED_SCHEDULE = {
+			{null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, "x",
+					"x", "x", null, null, null, null, null, null, null, null, null, null, null},
+			{null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null,
+					null, null, "x", null, null, null, null, null, null, null, null, null, null},
+			{null, null, null, null, null, null, null, null, null, null, "x", "x", "x", null, null, null, null, null,
+					null, null, null, null, null, null, null, null, null, "x", "x", "x", null},
+			{null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null,
+					null, null, null, "x", null, null, null, null, "x", null, null, null, null},
+			{"x", "x", "x", "x", null, null, null, null, null, null, null, null, null, "x", "x", null, null, null, null,
+					null, null, null, null, null, null, null, null, null, null, null, null},
+			{null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, "x", "x", null,
+					null, null, null, null, null, null, "x", "x", null, null, null, null, null},
+			{null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null,
+					null, null, null, null, "x", "x", null, null, null, null, null, null, null},
+			{null, null, null, null, "x", null, null, null, "x", "x", null, null, null, null, null, null, null, null,
+					null, null, null, null, null, null, null, null, null, null, null, null, null},
+			{null, null, null, null, null, "x", "x", "x", null, null, null, null, null, null, null, null, null, null,
+					null, null, null, null, null, null, null, null, null, null, null, null, null},
+			{null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null,
+					null, null, null, null, null, null, null, null, null, null, null, null, null},
+			{null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null,
+					null, null, null, null, null, null, null, null, null, null, null, null, null},
+			{null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null,
+					null, null, null, null, null, null, null, null, null, null, null, null, null},
+			{null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null,
+					null, null, null, null, null, null, null, null, null, null, null, null, null},
+			{null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null,
+					null, null, null, null, null, null, null, null, null, null, null, null, null},
+			{null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null,
+					null, null, null, null, null, null, null, null, null, null, null, null, null},
+			{null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null,
+					null, null, null, null, null, null, null, null, null, null, null, null, null},
+			{null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null,
+					null, null, null, null, null, null, null, null, null, null, null, null, null},
+			{null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null,
+					null, null, null, null, null, null, null, null, null, null, null, null, null},
+			{null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null,
+					null, null, null, null, null, null, null, null, null, null, null, null, null},
+			{null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null,
+					null, null, null, null, null, null, null, null, null, null, null, null, null},
+			{null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null,
+					null, null, null, null, null, null, null, null, null, null, null, null, null},
+			{null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null,
+					null, null, null, null, null, null, null, null, null, null, null, null, null},
+			{null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null,
+					null, null, null, null, null, null, null, null, null, null, null, null, null},
+			{null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null,
+					null, null, null, null, null, null, null, null, null, null, null, null, null},
+			{null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null,
+					null, null, null, null, null, null, null, null, null, null, null, null, null},
+			{null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null,
+					null, null, null, null, null, null, null, null, null, null, null, null, null},
+			{null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null,
+					null, null, null, null, null, null, null, null, null, null, null, null, null},
+			{null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null,
+					null, null, null, null, null, null, null, null, null, null, null, null, null},
+			{null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null,
+					null, null, null, null, null, null, null, null, null, null, null, null, null},
+			{null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null,
+					null, null, null, null, null, null, null, null, null, null, null, null, null}};
 
 	@Test
 	@Timeout(value = PER_RUN_TIMEOUT_SECONDS * MAX_ATTEMPTS, unit = TimeUnit.SECONDS)
 	void runsSchedulingPipelineAndOutputsExpectedCosts() throws Exception {
+		System.setProperty("scheduling.numberOfParallelThreads", String.valueOf(NUMBER_OF_PARALLEL_THREADS_OVERRIDE));
 		File projectRoot = findProjectRoot();
 		File inputFile = projectRoot.toPath().resolve(TEST_INPUT_RESOURCE_PATH).toFile();
 		assertTrue(inputFile.exists(), "Input file not found: " + inputFile.getAbsolutePath());
@@ -58,9 +128,9 @@ class MainIntegrationTest {
 		AssertionError lastFailure = null;
 		for (int attempt = 1; attempt <= MAX_ATTEMPTS; attempt++) {
 			List<String> stdout = new ArrayList<>();
-			File outputFile = null;
+			ScheduleResult result = null;
 			try {
-				outputFile = runOnceInVm(inputFile, stdout);
+				result = runOnceInVm(inputFile, stdout);
 			} catch (TimeoutException e) {
 				throw e;
 			}
@@ -92,60 +162,47 @@ class MainIntegrationTest {
 				double bestCosts = extractBestCosts(stdout);
 				assertEquals(EXPECTED_COSTS, bestCosts, "Best solution costs " + bestCosts + " is not equal to "
 						+ EXPECTED_COSTS + ".\n" + "Captured stdout: " + stdout);
-				assertTrue(outputFile != null && outputFile.exists(),
+				assertTrue(result.outputFile() != null && result.outputFile().exists(),
 						"Output file was not created.\nstdout: " + stdout);
+
+				String[][] actualSchedule = result.schedule();
+				String[][] expectedSchedule = EXPECTED_SCHEDULE;
+				for (int employee = 0; employee < expectedSchedule.length; employee++) {
+					for (int day = 0; day < expectedSchedule[employee].length; day++) {
+						assertEquals(expectedSchedule[employee][day], actualSchedule[employee][day],
+								"Mismatch at employee=" + employee + " day=" + day + ".\n" + "Full schedule:\n"
+										+ formatSchedule(actualSchedule));
+					}
+				}
 				return;
 			} catch (AssertionError e) {
 				lastFailure = e;
 			} finally {
-				deleteQuietly(outputFile);
+				if (result != null) {
+					deleteQuietly(result.outputFile());
+				}
 			}
 		}
 		throw lastFailure != null ? lastFailure : new AssertionError("No attempt was executed.");
 	}
 
-	private File runOnceInVm(File inputFile, List<String> stdoutSink) throws Exception {
+	private ScheduleResult runOnceInVm(File inputFile, List<String> stdoutSink) throws Exception {
 		LineCapturingStream capturing = new LineCapturingStream(stdoutSink);
 		PrintStream originalOut = System.out;
 		PrintStream capturedOut = new PrintStream(capturing, true, StandardCharsets.UTF_8);
 		System.setOut(capturedOut);
 
 		CountDownLatch finishedLatch = new CountDownLatch(1);
-		ThreadsController threadsController = new ThreadsController(inputFile, null, finishedLatch::countDown);
+		ThreadsController threadsController = new ThreadsController(inputFile, null, finishedLatch::countDown,
+				RANDOM_SEED);
 
 		Thread controllerThread = new Thread(threadsController, "ThreadsController");
 		controllerThread.setDaemon(true);
 		controllerThread.start();
 
-		Thread stopper = new Thread(() -> {
-			while (!Thread.currentThread().isInterrupted() && finishedLatch.getCount() > 0) {
-				for (String line : stdoutSink) {
-					if (line.startsWith(COSTS_LINE_PREFIX)) {
-						try {
-							double costs = Double.parseDouble(line.substring(COSTS_LINE_PREFIX.length()).trim());
-							if (costs <= EXPECTED_COSTS) {
-								threadsController.stop();
-								return;
-							}
-						} catch (NumberFormatException ignored) {
-							// skip unparseable line
-						}
-					}
-				}
-				try {
-					Thread.sleep(50);
-				} catch (InterruptedException e) {
-					return;
-				}
-			}
-		}, "stopper");
-		stopper.setDaemon(true);
-		stopper.start();
-
 		boolean finished = finishedLatch.await(PER_RUN_TIMEOUT_SECONDS, TimeUnit.SECONDS);
 		System.setOut(originalOut);
 		capturedOut.flush();
-		stopper.interrupt();
 
 		if (!finished) {
 			threadsController.stop();
@@ -153,7 +210,38 @@ class MainIntegrationTest {
 					+ "Captured stdout: " + stdoutSink);
 		}
 
-		return locateOutputFile(stdoutSink, inputFile);
+		File outputFile = locateOutputFile(stdoutSink, inputFile);
+		String[][] schedule = buildScheduleFromSolution(threadsController);
+		return new ScheduleResult(outputFile, schedule);
+	}
+
+	private String[][] buildScheduleFromSolution(ThreadsController threadsController) {
+		Solution solution = threadsController.getBestSolution();
+		assertNotNull(solution, "No best solution available from ThreadsController");
+		int lengthOfMonth = threadsController.getSpreadsheetReader().getLengthOfMonth();
+		String[][] schedule = new String[Config.NUMBER_OF_EMPLOYEES][31];
+		for (int day = 0; day < lengthOfMonth; day++) {
+			int employee = solution.getEmployeeForDay(day);
+			if (employee != Config.MISSING_EMPLOYEE) {
+				schedule[employee][day] = Config.WORKING;
+			}
+		}
+		return schedule;
+	}
+
+	private static String formatSchedule(String[][] schedule) {
+		StringBuilder sb = new StringBuilder();
+		for (int employee = 0; employee < schedule.length; employee++) {
+			sb.append("Emp ").append(employee).append(": ");
+			for (int day = 0; day < schedule[employee].length; day++) {
+				sb.append(schedule[employee][day] == null ? "." : schedule[employee][day]).append(" ");
+			}
+			sb.append("\n");
+		}
+		return sb.toString();
+	}
+
+	private record ScheduleResult(File outputFile, String[][] schedule) {
 	}
 
 	private double extractBestCosts(List<String> stdout) {
