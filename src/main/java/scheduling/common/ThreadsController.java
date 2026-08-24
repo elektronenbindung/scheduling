@@ -16,6 +16,7 @@ public class ThreadsController implements Runnable {
 	private final UiController uiController;
 	private final boolean inUIMode;
 	private final Runnable onFinish;
+	private final Long randomSeed;
 	private int numberOfFinishedSolutions;
 	private boolean outputHasBeenWritten;
 	private Solution bestSolution;
@@ -29,11 +30,16 @@ public class ThreadsController implements Runnable {
 	}
 
 	public ThreadsController(File file, UiController uiController, Runnable onFinish) {
+		this(file, uiController, onFinish, null);
+	}
+
+	public ThreadsController(File file, UiController uiController, Runnable onFinish, Long randomSeed) {
 		inputFile = file;
 		spreadsheetReader = new SpreadsheetReader(inputFile);
 		this.uiController = uiController;
 		this.inUIMode = uiController != null;
 		this.onFinish = onFinish;
+		this.randomSeed = randomSeed;
 		numberOfFinishedSolutions = 0;
 		outputHasBeenWritten = false;
 		bestSolution = null;
@@ -94,6 +100,10 @@ public class ThreadsController implements Runnable {
 		return spreadsheetReader;
 	}
 
+	public Solution getBestSolution() {
+		return bestSolution;
+	}
+
 	public void setSolution(Solution solution) {
 		setSolutionLock.lock();
 		try {
@@ -120,7 +130,7 @@ public class ThreadsController implements Runnable {
 
 	private void startSolutionThreads() {
 		for (int i = 0; i < Config.NUMBER_OF_PARALLEL_THREADS; i++) {
-			SolutionController solutionController = new SolutionController(this);
+			SolutionController solutionController = new SolutionController(this, this.randomSeed);
 			executorService.submit(solutionController);
 		}
 	}

@@ -8,7 +8,8 @@ public class Config {
 	public static final double MAX_INITIAL_WINDOW_HEIGHT = 1200;
 	public static final double MAX_INITIAL_WINDOW_WIDTH = 1600;
 	public static final int NUMBER_OF_EMPLOYEES = 30;
-	public static final int NUMBER_OF_PARALLEL_THREADS = 50;
+	public static int NUMBER_OF_PARALLEL_THREADS = Integer
+			.parseInt(System.getProperty("scheduling.numberOfParallelThreads", "50"));
 	public static final int ROWS_OF_HEADER = 5;
 	public static final int LAST_ROW_OF_SCHEDULE = ROWS_OF_HEADER + NUMBER_OF_EMPLOYEES;
 	public static final String WORK_DAY = "A";
