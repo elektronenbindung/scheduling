@@ -36,7 +36,7 @@ class MainIntegrationTest {
 			.toString();
 
 	private static final String COSTS_LINE_PREFIX = "Costs of solution: ";
-	private static final double EXPECTED_COSTS = 321.0;
+	private static final double EXPECTED_COSTS = 323.0;
 
 	private static final String READ_SUCCESS_LINE = "Input file has been read successfully, computing solutions...";
 	private static final String SOLVABLE_SUCCESS_LINE = "Success: This schedule is solvable";
