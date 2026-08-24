@@ -1,8 +1,8 @@
 package scheduling;
 
-import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
@@ -15,37 +15,36 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
+import java.util.stream.Stream;
 
 import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.Timeout;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.MethodSource;
 
 import scheduling.common.Config;
 import scheduling.common.Solution;
 import scheduling.common.ThreadsController;
 
 /**
- * Integration test that runs the scheduling pipeline end-to-end against
- * {@code src/test/java/scheduling/Test.ods} and verifies that the expected
- * output line is printed to the console.
+ * Integration test that runs the scheduling pipeline end-to-end against a set
+ * of input files and verifies that the expected output is produced.
  *
  * <p>
  * The pipeline runs in the test JVM so that JaCoCo can record coverage. A
  * {@link CountDownLatch} is used as the finish callback so the controller
- * terminates without calling {@code System.exit}. Once the expected solution
- * costs are observed, {@link ThreadsController#stop()} is called so that all
- * still-running TabuSearch threads exit promptly.
+ * terminates without calling {@code System.exit}. Each test case is driven by a
+ * {@link TestCase} record holding the input file, the expected solvability
+ * line, the expected solution costs and the expected schedule as a
+ * two-dimensional array {@code [employee][day]}.
  */
 class MainIntegrationTest {
 
-	private static final String TEST_INPUT_RESOURCE_PATH = Paths.get("src", "test", "java", "scheduling", "Test.ods")
-			.toString();
-
 	private static final String COSTS_LINE_PREFIX = "Costs of solution: ";
-	private static final double EXPECTED_COSTS = 323.0;
-
 	private static final String READ_SUCCESS_LINE = "Input file has been read successfully, computing solutions...";
 	private static final String SOLVABLE_SUCCESS_LINE = "Success: This schedule is solvable";
+	private static final String NOT_SOLVABLE_WARNING_LINE = "Warning: This schedule is not solvable";
 	private static final String OUTPUT_PATH_PREFIX = "Writing output to: ";
 
 	private static final long PER_RUN_TIMEOUT_SECONDS = 600;
@@ -55,7 +54,9 @@ class MainIntegrationTest {
 
 	private static final int NUMBER_OF_PARALLEL_THREADS_OVERRIDE = 1;
 
-	private static final String[][] EXPECTED_SCHEDULE = {
+	private static final String TEST_INPUT_DIR = Paths.get("src", "test", "java", "scheduling").toString();
+
+	private static final String[][] EXPECTED_SCHEDULE_SOLVABLE = {
 			{null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, "x",
 					"x", "x", null, null, null, null, null, null, null, null, null, null, null},
 			{null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null,
@@ -117,12 +118,86 @@ class MainIntegrationTest {
 			{null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null,
 					null, null, null, null, null, null, null, null, null, null, null, null, null}};
 
-	@Test
+	private static final String[][] EXPECTED_SCHEDULE_NOT_SOLVABLE = {
+			{null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, "x",
+					"x", "x", null, null, null, null, null, null, null, null, null, null, null},
+			{null, null, null, null, null, null, null, null, null, null, null, null, null, null, "x", null, null, null,
+					null, null, null, null, null, null, null, null, null, null, null, null, null},
+			{null, null, null, null, null, null, null, null, null, null, "x", "x", "x", null, null, null, null, null,
+					null, null, null, null, null, null, null, "x", "x", "x", null, null, null},
+			{null, null, null, null, "x", null, null, null, null, null, null, null, null, null, null, null, null, null,
+					null, null, "x", null, null, null, null, null, null, null, null, null, null},
+			{null, "x", "x", null, null, null, null, null, null, null, null, null, null, "x", null, null, null, null,
+					null, null, null, null, null, "x", "x", null, null, null, null, null, null},
+			{null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, "x", "x", null,
+					null, null, null, null, null, null, null, null, null, null, "x", "x", null},
+			{null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null,
+					null, null, null, "x", "x", null, null, null, null, null, null, null, null},
+			{null, null, null, "x", null, null, null, null, "x", "x", null, null, null, null, null, null, null, null,
+					null, null, null, null, null, null, null, null, null, null, null, null, null},
+			{null, null, null, null, null, "x", "x", "x", null, null, null, null, null, null, null, null, null, null,
+					null, null, null, null, null, null, null, null, null, null, null, null, null},
+			{null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null,
+					null, null, null, null, null, null, null, null, null, null, null, null, null},
+			{null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null,
+					null, null, null, null, null, null, null, null, null, null, null, null, null},
+			{null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null,
+					null, null, null, null, null, null, null, null, null, null, null, null, null},
+			{null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null,
+					null, null, null, null, null, null, null, null, null, null, null, null, null},
+			{null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null,
+					null, null, null, null, null, null, null, null, null, null, null, null, null},
+			{null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null,
+					null, null, null, null, null, null, null, null, null, null, null, null, null},
+			{null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null,
+					null, null, null, null, null, null, null, null, null, null, null, null, null},
+			{null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null,
+					null, null, null, null, null, null, null, null, null, null, null, null, null},
+			{null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null,
+					null, null, null, null, null, null, null, null, null, null, null, null, null},
+			{null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null,
+					null, null, null, null, null, null, null, null, null, null, null, null, null},
+			{null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null,
+					null, null, null, null, null, null, null, null, null, null, null, null, null},
+			{null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null,
+					null, null, null, null, null, null, null, null, null, null, null, null, null},
+			{null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null,
+					null, null, null, null, null, null, null, null, null, null, null, null, null},
+			{null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null,
+					null, null, null, null, null, null, null, null, null, null, null, null, null},
+			{null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null,
+					null, null, null, null, null, null, null, null, null, null, null, null, null},
+			{null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null,
+					null, null, null, null, null, null, null, null, null, null, null, null, null},
+			{null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null,
+					null, null, null, null, null, null, null, null, null, null, null, null, null},
+			{null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null,
+					null, null, null, null, null, null, null, null, null, null, null, null, null},
+			{null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null,
+					null, null, null, null, null, null, null, null, null, null, null, null, null},
+			{null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null,
+					null, null, null, null, null, null, null, null, null, null, null, null, null},
+			{null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null,
+					null, null, null, null, null, null, null, null, null, null, null, null, null}};
+
+	private record TestCase(String inputFileName, String expectedSolvabilityLine, double expectedCosts,
+			String[][] expectedSchedule) {
+	}
+
+	static Stream<Arguments> testCases() {
+		return Stream.of(
+				Arguments.of(new TestCase("Test.ods", SOLVABLE_SUCCESS_LINE, 323.0, EXPECTED_SCHEDULE_SOLVABLE)),
+				Arguments.of(new TestCase("Test_not_solvable.ods", NOT_SOLVABLE_WARNING_LINE, 320.0,
+						EXPECTED_SCHEDULE_NOT_SOLVABLE)));
+	}
+
+	@ParameterizedTest
+	@MethodSource("testCases")
 	@Timeout(value = PER_RUN_TIMEOUT_SECONDS * MAX_ATTEMPTS, unit = TimeUnit.SECONDS)
-	void runsSchedulingPipelineAndOutputsExpectedCosts() throws Exception {
+	void runsSchedulingPipelineAndOutputsExpectedCosts(TestCase testCase) throws Exception {
 		System.setProperty("scheduling.numberOfParallelThreads", String.valueOf(NUMBER_OF_PARALLEL_THREADS_OVERRIDE));
 		File projectRoot = findProjectRoot();
-		File inputFile = projectRoot.toPath().resolve(TEST_INPUT_RESOURCE_PATH).toFile();
+		File inputFile = projectRoot.toPath().resolve(Paths.get(TEST_INPUT_DIR, testCase.inputFileName())).toFile();
 		assertTrue(inputFile.exists(), "Input file not found: " + inputFile.getAbsolutePath());
 
 		AssertionError lastFailure = null;
@@ -137,14 +212,14 @@ class MainIntegrationTest {
 
 			try {
 				int readIdx = stdout.indexOf(READ_SUCCESS_LINE);
-				int solvableIdx = stdout.indexOf(SOLVABLE_SUCCESS_LINE);
+				int solvableIdx = stdout.indexOf(testCase.expectedSolvabilityLine());
 				int firstCostsIdx = indexOfFirstCostsLine(stdout);
 				int outputIdx = indexOfFirstLineWithPrefix(stdout, OUTPUT_PATH_PREFIX);
 
 				assertTrue(readIdx >= 0, "Expected line '" + READ_SUCCESS_LINE + "' not found in stdout.\n"
 						+ "Captured stdout: " + stdout);
-				assertTrue(solvableIdx >= 0, "Expected line '" + SOLVABLE_SUCCESS_LINE + "' not found in stdout.\n"
-						+ "Captured stdout: " + stdout);
+				assertTrue(solvableIdx >= 0, "Expected line '" + testCase.expectedSolvabilityLine()
+						+ "' not found in stdout.\n" + "Captured stdout: " + stdout);
 				assertTrue(firstCostsIdx >= 0, "Expected at least one '" + COSTS_LINE_PREFIX + "...' line in stdout.\n"
 						+ "Captured stdout: " + stdout);
 				assertTrue(outputIdx >= 0, "Expected line starting with '" + OUTPUT_PATH_PREFIX
@@ -160,13 +235,13 @@ class MainIntegrationTest {
 								+ " outputIdx=" + outputIdx + "\n" + "Captured stdout: " + stdout);
 
 				double bestCosts = extractBestCosts(stdout);
-				assertEquals(EXPECTED_COSTS, bestCosts, "Best solution costs " + bestCosts + " is not equal to "
-						+ EXPECTED_COSTS + ".\n" + "Captured stdout: " + stdout);
+				assertEquals(testCase.expectedCosts(), bestCosts, "Best solution costs " + bestCosts
+						+ " is not equal to " + testCase.expectedCosts() + ".\n" + "Captured stdout: " + stdout);
 				assertTrue(result.outputFile() != null && result.outputFile().exists(),
 						"Output file was not created.\nstdout: " + stdout);
 
 				String[][] actualSchedule = result.schedule();
-				String[][] expectedSchedule = EXPECTED_SCHEDULE;
+				String[][] expectedSchedule = testCase.expectedSchedule();
 				for (int employee = 0; employee < expectedSchedule.length; employee++) {
 					for (int day = 0; day < expectedSchedule[employee].length; day++) {
 						assertEquals(expectedSchedule[employee][day], actualSchedule[employee][day],
@@ -277,14 +352,11 @@ class MainIntegrationTest {
 	@AfterEach
 	void cleanupLeftoverOutputFiles() {
 		File projectRoot = findProjectRoot();
-		File inputFile = projectRoot.toPath().resolve(TEST_INPUT_RESOURCE_PATH).toFile();
-		File parent = inputFile.getParentFile();
+		File parent = projectRoot.toPath().resolve(TEST_INPUT_DIR).toFile();
 		if (parent == null || !parent.isDirectory()) {
 			return;
 		}
-		String baseName = inputFile.getName().replace(".ods", "");
-		File[] siblings = parent
-				.listFiles((dir, name) -> name.startsWith(baseName + "_output") && name.endsWith(".ods"));
+		File[] siblings = parent.listFiles((dir, name) -> name.endsWith("_output.ods"));
 		if (siblings != null) {
 			for (File file : siblings) {
 				deleteQuietly(file);
