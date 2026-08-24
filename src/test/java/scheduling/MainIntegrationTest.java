@@ -1,9 +1,5 @@
 package scheduling;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.OutputStream;
@@ -26,6 +22,8 @@ import org.junit.jupiter.params.provider.MethodSource;
 import scheduling.common.Config;
 import scheduling.common.Solution;
 import scheduling.common.ThreadsController;
+
+import static org.junit.jupiter.api.Assertions.*;
 
 /**
  * Integration test that runs the scheduling pipeline end-to-end against a set
@@ -181,14 +179,17 @@ class MainIntegrationTest {
 					null, null, null, null, null, null, null, null, null, null, null, null, null}};
 
 	private record TestCase(String inputFileName, String expectedSolvabilityLine, double expectedCosts,
-			String[][] expectedSchedule) {
+			String[][] expectedSchedule, boolean expectSolution, String expectedErrorLine) {
 	}
 
 	static Stream<Arguments> testCases() {
 		return Stream.of(
-				Arguments.of(new TestCase("Test.ods", SOLVABLE_SUCCESS_LINE, 323.0, EXPECTED_SCHEDULE_SOLVABLE)),
+				Arguments.of(
+						new TestCase("Test.ods", SOLVABLE_SUCCESS_LINE, 323.0, EXPECTED_SCHEDULE_SOLVABLE, true, null)),
 				Arguments.of(new TestCase("Test_not_solvable.ods", NOT_SOLVABLE_WARNING_LINE, 320.0,
-						EXPECTED_SCHEDULE_NOT_SOLVABLE)));
+						EXPECTED_SCHEDULE_NOT_SOLVABLE, true, null)),
+				Arguments.of(new TestCase("Test_not_available.ods", null, -1, null, false,
+						"Error: Error on day 11: An employee is scheduled to work but is marked as unavailable.")));
 	}
 
 	@ParameterizedTest
@@ -211,6 +212,14 @@ class MainIntegrationTest {
 			}
 
 			try {
+				if (!testCase.expectSolution()) {
+					assertTrue(stdout.contains(testCase.expectedErrorLine()), "Expected error line '"
+							+ testCase.expectedErrorLine() + "' not found in stdout.\n" + "Captured stdout: " + stdout);
+					assertNull(result.schedule(), "Expected no schedule for error case.\nstdout: " + stdout);
+					assertNull(result.outputFile(), "Output file was created.\nstdout: " + stdout);
+					return;
+				}
+
 				int readIdx = stdout.indexOf(READ_SUCCESS_LINE);
 				int solvableIdx = stdout.indexOf(testCase.expectedSolvabilityLine());
 				int firstCostsIdx = indexOfFirstCostsLine(stdout);
@@ -292,7 +301,9 @@ class MainIntegrationTest {
 
 	private String[][] buildScheduleFromSolution(ThreadsController threadsController) {
 		Solution solution = threadsController.getBestSolution();
-		assertNotNull(solution, "No best solution available from ThreadsController");
+		if (solution == null) {
+			return null;
+		}
 		int lengthOfMonth = threadsController.getSpreadsheetReader().getLengthOfMonth();
 		String[][] schedule = new String[Config.NUMBER_OF_EMPLOYEES][31];
 		for (int day = 0; day < lengthOfMonth; day++) {
