@@ -3,32 +3,35 @@ package scheduling;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-import java.io.BufferedReader;
+import java.io.ByteArrayOutputStream;
 import java.io.File;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
+import java.io.OutputStream;
+import java.io.PrintStream;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.Timeout;
 
+import scheduling.common.ThreadsController;
+
 /**
- * Integration test that runs {@link ConsoleRunner} (which exercises the
- * scheduling pipeline end-to-end) against
- * {@code src/test/IntegrationTest/Test_bad.ods} and verifies that the expected
+ * Integration test that runs the scheduling pipeline end-to-end against
+ * {@code src/test/java/scheduling/Test.ods} and verifies that the expected
  * output line is printed to the console.
  *
  * <p>
- * The test runs in a separate JVM process because
- * {@link scheduling.common.ThreadsController#} calls {@code System.exit(0)}
- * when not running in UI mode.
+ * The pipeline runs in the test JVM so that JaCoCo can record coverage. A
+ * {@link CountDownLatch} is used as the finish callback so the controller
+ * terminates without calling {@code System.exit}. Once the expected solution
+ * costs are observed, {@link ThreadsController#stop()} is called so that all
+ * still-running TabuSearch threads exit promptly.
  */
 class MainIntegrationTest {
 
@@ -55,27 +58,27 @@ class MainIntegrationTest {
 		AssertionError lastFailure = null;
 		for (int attempt = 1; attempt <= MAX_ATTEMPTS; attempt++) {
 			List<String> stdout = new ArrayList<>();
-			List<String> stderr = new ArrayList<>();
-			int exitCode = runOnce(projectRoot, inputFile, stdout, stderr);
-			File outputFile = locateOutputFile(stdout, inputFile);
+			File outputFile = null;
+			try {
+				outputFile = runOnceInVm(inputFile, stdout);
+			} catch (TimeoutException e) {
+				throw e;
+			}
 
 			try {
-				assertEquals(0, exitCode,
-						"Process exited with non-zero status.\nstdout: " + stdout + "\nstderr: " + stderr);
-
 				int readIdx = stdout.indexOf(READ_SUCCESS_LINE);
 				int solvableIdx = stdout.indexOf(SOLVABLE_SUCCESS_LINE);
 				int firstCostsIdx = indexOfFirstCostsLine(stdout);
 				int outputIdx = indexOfFirstLineWithPrefix(stdout, OUTPUT_PATH_PREFIX);
 
 				assertTrue(readIdx >= 0, "Expected line '" + READ_SUCCESS_LINE + "' not found in stdout.\n"
-						+ "Captured stdout: " + stdout + "\nCaptured stderr: " + stderr);
+						+ "Captured stdout: " + stdout);
 				assertTrue(solvableIdx >= 0, "Expected line '" + SOLVABLE_SUCCESS_LINE + "' not found in stdout.\n"
-						+ "Captured stdout: " + stdout + "\nCaptured stderr: " + stderr);
+						+ "Captured stdout: " + stdout);
 				assertTrue(firstCostsIdx >= 0, "Expected at least one '" + COSTS_LINE_PREFIX + "...' line in stdout.\n"
-						+ "Captured stdout: " + stdout + "\nCaptured stderr: " + stderr);
+						+ "Captured stdout: " + stdout);
 				assertTrue(outputIdx >= 0, "Expected line starting with '" + OUTPUT_PATH_PREFIX
-						+ "' not found in stdout.\n" + "Captured stdout: " + stdout + "\nCaptured stderr: " + stderr);
+						+ "' not found in stdout.\n" + "Captured stdout: " + stdout);
 
 				assertTrue(readIdx < solvableIdx, "Read-success line must appear before solvability line.\n"
 						+ "readIdx=" + readIdx + " solvableIdx=" + solvableIdx + "\n" + "Captured stdout: " + stdout);
@@ -88,9 +91,9 @@ class MainIntegrationTest {
 
 				double bestCosts = extractBestCosts(stdout);
 				assertEquals(EXPECTED_COSTS, bestCosts, "Best solution costs " + bestCosts + " is not equal to "
-						+ EXPECTED_COSTS + ".\n" + "Captured stdout: " + stdout + "\nCaptured stderr: " + stderr);
+						+ EXPECTED_COSTS + ".\n" + "Captured stdout: " + stdout);
 				assertTrue(outputFile != null && outputFile.exists(),
-						"Output file was not created.\nstdout: " + stdout + "\nstderr: " + stderr);
+						"Output file was not created.\nstdout: " + stdout);
 				return;
 			} catch (AssertionError e) {
 				lastFailure = e;
@@ -99,6 +102,58 @@ class MainIntegrationTest {
 			}
 		}
 		throw lastFailure != null ? lastFailure : new AssertionError("No attempt was executed.");
+	}
+
+	private File runOnceInVm(File inputFile, List<String> stdoutSink) throws Exception {
+		LineCapturingStream capturing = new LineCapturingStream(stdoutSink);
+		PrintStream originalOut = System.out;
+		PrintStream capturedOut = new PrintStream(capturing, true, StandardCharsets.UTF_8);
+		System.setOut(capturedOut);
+
+		CountDownLatch finishedLatch = new CountDownLatch(1);
+		ThreadsController threadsController = new ThreadsController(inputFile, null, finishedLatch::countDown);
+
+		Thread controllerThread = new Thread(threadsController, "ThreadsController");
+		controllerThread.setDaemon(true);
+		controllerThread.start();
+
+		Thread stopper = new Thread(() -> {
+			while (!Thread.currentThread().isInterrupted() && finishedLatch.getCount() > 0) {
+				for (String line : stdoutSink) {
+					if (line.startsWith(COSTS_LINE_PREFIX)) {
+						try {
+							double costs = Double.parseDouble(line.substring(COSTS_LINE_PREFIX.length()).trim());
+							if (costs <= EXPECTED_COSTS) {
+								threadsController.stop();
+								return;
+							}
+						} catch (NumberFormatException ignored) {
+							// skip unparseable line
+						}
+					}
+				}
+				try {
+					Thread.sleep(50);
+				} catch (InterruptedException e) {
+					return;
+				}
+			}
+		}, "stopper");
+		stopper.setDaemon(true);
+		stopper.start();
+
+		boolean finished = finishedLatch.await(PER_RUN_TIMEOUT_SECONDS, TimeUnit.SECONDS);
+		System.setOut(originalOut);
+		capturedOut.flush();
+		stopper.interrupt();
+
+		if (!finished) {
+			threadsController.stop();
+			throw new TimeoutException("Pipeline did not finish within " + PER_RUN_TIMEOUT_SECONDS + " seconds.\n"
+					+ "Captured stdout: " + stdoutSink);
+		}
+
+		return locateOutputFile(stdoutSink, inputFile);
 	}
 
 	private double extractBestCosts(List<String> stdout) {
@@ -151,7 +206,7 @@ class MainIntegrationTest {
 
 	private File locateOutputFile(List<String> stdout, File inputFile) {
 		for (String line : stdout) {
-			String prefix = "Writing output to: ";
+			String prefix = OUTPUT_PATH_PREFIX;
 			if (line.startsWith(prefix)) {
 				return new File(line.substring(prefix.length()).trim());
 			}
@@ -171,57 +226,6 @@ class MainIntegrationTest {
 		}
 	}
 
-	private int runOnce(File projectRoot, File inputFile, List<String> stdout, List<String> stderr) throws Exception {
-		Process process = buildProcess(projectRoot, inputFile).start();
-		Thread stdoutReader = captureStream(process.getInputStream(), stdout);
-		Thread stderrReader = captureStream(process.getErrorStream(), stderr);
-
-		boolean finished = process.waitFor(PER_RUN_TIMEOUT_SECONDS, TimeUnit.SECONDS);
-		stdoutReader.join(5000);
-		stderrReader.join(5000);
-
-		if (!finished) {
-			process.destroyForcibly();
-			throw new AssertionError("Process did not finish within " + PER_RUN_TIMEOUT_SECONDS + " seconds.\n"
-					+ "stdout: " + stdout + "\nstderr: " + stderr);
-		}
-		return process.exitValue();
-	}
-
-	private ProcessBuilder buildProcess(File projectRoot, File inputFile) {
-		String classpath = System.getProperty("java.class.path");
-		String javaHome = System.getProperty("java.home");
-		String javaBin = Paths.get(javaHome, "bin", "java").toString();
-
-		List<String> command = new ArrayList<>();
-		command.add(javaBin);
-		command.add("-cp");
-		command.add(classpath);
-		command.add(ConsoleRunner.class.getName());
-		command.add(inputFile.getAbsolutePath());
-
-		ProcessBuilder builder = new ProcessBuilder(command);
-		builder.directory(projectRoot);
-		builder.redirectErrorStream(false);
-		return builder;
-	}
-
-	private Thread captureStream(InputStream stream, List<String> target) {
-		Thread thread = new Thread(() -> {
-			try (BufferedReader reader = new BufferedReader(new InputStreamReader(stream, StandardCharsets.UTF_8))) {
-				String line;
-				while ((line = reader.readLine()) != null) {
-					target.add(line);
-				}
-			} catch (IOException e) {
-				target.add("[error reading stream]: " + e.getMessage());
-			}
-		}, "stream-reader");
-		thread.setDaemon(true);
-		thread.start();
-		return thread;
-	}
-
 	private File findProjectRoot() {
 		Path current = Paths.get(".").toAbsolutePath().normalize();
 		Path root = current;
@@ -232,5 +236,42 @@ class MainIntegrationTest {
 			throw new IllegalStateException("Could not locate project root (pom.xml) from " + current);
 		}
 		return root.toFile();
+	}
+
+	private static final class TimeoutException extends Exception {
+		TimeoutException(String message) {
+			super(message);
+		}
+	}
+
+	private static final class LineCapturingStream extends OutputStream {
+		private final List<String> sink;
+		private final ByteArrayOutputStream buffer = new ByteArrayOutputStream();
+
+		LineCapturingStream(List<String> sink) {
+			this.sink = sink;
+		}
+
+		@Override
+		public synchronized void write(int b) {
+			if (b == '\n') {
+				flushLine();
+			} else if (b != '\r') {
+				buffer.write(b);
+			}
+		}
+
+		@Override
+		public synchronized void write(byte[] b, int off, int len) {
+			for (int i = off; i < off + len; i++) {
+				write(b[i] & 0xFF);
+			}
+		}
+
+		private void flushLine() {
+			String line = buffer.toString(StandardCharsets.UTF_8);
+			buffer.reset();
+			sink.add(line);
+		}
 	}
 }

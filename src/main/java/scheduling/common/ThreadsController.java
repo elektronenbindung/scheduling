@@ -15,6 +15,7 @@ public class ThreadsController implements Runnable {
 	private final SpreadsheetReader spreadsheetReader;
 	private final UiController uiController;
 	private final boolean inUIMode;
+	private final Runnable onFinish;
 	private int numberOfFinishedSolutions;
 	private boolean outputHasBeenWritten;
 	private Solution bestSolution;
@@ -24,17 +25,26 @@ public class ThreadsController implements Runnable {
 	private final ExecutorService executorService;
 
 	public ThreadsController(File file, UiController uiController) {
+		this(file, uiController, null);
+	}
+
+	public ThreadsController(File file, UiController uiController, Runnable onFinish) {
 		inputFile = file;
 		spreadsheetReader = new SpreadsheetReader(inputFile);
 		this.uiController = uiController;
 		this.inUIMode = uiController != null;
+		this.onFinish = onFinish;
 		numberOfFinishedSolutions = 0;
 		outputHasBeenWritten = false;
 		bestSolution = null;
 		stopped = false;
 		informedAboutSolvableSchedule = new AtomicBoolean(false);
 		setSolutionLock = new ReentrantLock();
-		executorService = Executors.newFixedThreadPool(Runtime.getRuntime().availableProcessors());
+		executorService = Executors.newFixedThreadPool(Runtime.getRuntime().availableProcessors(), r -> {
+			Thread t = new Thread(r, "ThreadsController-worker");
+			t.setDaemon(true);
+			return t;
+		});
 	}
 
 	@Override
@@ -139,6 +149,8 @@ public class ThreadsController implements Runnable {
 		if (inUIMode) {
 			stop();
 			uiController.finished();
+		} else if (onFinish != null) {
+			onFinish.run();
 		} else {
 			System.exit(0);
 		}
