@@ -240,20 +240,86 @@ class MainIntegrationTest {
 			{null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null,
 					null, null, null, null, null, null, null, null, null, null, null, null, null}};
 
+	private static final String[][] EXPECTED_SCHEDULE_OPTIMAL_SOLUTION = {
+			{null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null,
+					null, null, null, null, "x", null, null, null, null, null, null, null, null},
+			{null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null,
+					null, null, null, null, null, null, null, "x", null, null, null, null, null},
+			{"x", "x", "x", null, null, null, null, null, null, null, null, null, null, null, null, null, null, null,
+					null, null, null, null, null, null, null, null, null, null, null, null, null},
+			{null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null,
+					null, null, null, null, null, null, null, null, null, null, null, null, null},
+			{null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null,
+					null, null, null, null, null, null, null, null, null, null, null, "x", "x"},
+			{null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null,
+					null, null, null, null, null, null, null, null, null, null, null, null, null},
+			{null, null, null, "x", "x", "x", "x", "x", "x", null, null, null, null, null, null, null, null, null, null,
+					null, null, null, null, null, null, null, null, null, null, null, null},
+			{null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null,
+					null, null, null, null, null, null, null, null, null, null, null, null, null},
+			{null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null,
+					null, null, "x", "x", null, null, null, null, null, null, null, null, null},
+			{null, null, null, null, null, null, null, null, null, "x", "x", "x", "x", "x", "x", "x", "x", null, null,
+					null, null, null, null, null, null, null, null, null, null, null, null},
+			{null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, "x",
+					"x", null, null, null, null, null, null, null, null, null, null, null, null},
+			{null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null,
+					null, "x", null, null, null, "x", "x", null, null, null, "x", null, null},
+			{null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null,
+					null, null, null, null, null, null, null, null, "x", "x", null, null, null},
+			{null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null,
+					null, null, null, null, null, null, null, null, null, null, null, null, null},
+			{null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null,
+					null, null, null, null, null, null, null, null, null, null, null, null, null},
+			{null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null,
+					null, null, null, null, null, null, null, null, null, null, null, null, null},
+			{null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null,
+					null, null, null, null, null, null, null, null, null, null, null, null, null},
+			{null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null,
+					null, null, null, null, null, null, null, null, null, null, null, null, null},
+			{null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null,
+					null, null, null, null, null, null, null, null, null, null, null, null, null},
+			{null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null,
+					null, null, null, null, null, null, null, null, null, null, null, null, null},
+			{null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null,
+					null, null, null, null, null, null, null, null, null, null, null, null, null},
+			{null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null,
+					null, null, null, null, null, null, null, null, null, null, null, null, null},
+			{null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null,
+					null, null, null, null, null, null, null, null, null, null, null, null, null},
+			{null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null,
+					null, null, null, null, null, null, null, null, null, null, null, null, null},
+			{null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null,
+					null, null, null, null, null, null, null, null, null, null, null, null, null},
+			{null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null,
+					null, null, null, null, null, null, null, null, null, null, null, null, null},
+			{null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null,
+					null, null, null, null, null, null, null, null, null, null, null, null, null},
+			{null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null,
+					null, null, null, null, null, null, null, null, null, null, null, null, null},
+			{null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null,
+					null, null, null, null, null, null, null, null, null, null, null, null, null},
+			{null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null,
+					null, null, null, null, null, null, null, null, null, null, null, null, null}};
+
 	private record TestCase(String inputFileName, String expectedSolvabilityLine, double expectedCosts,
-			String[][] expectedSchedule, boolean expectSolution, String expectedErrorLine) {
+			String[][] expectedSchedule, boolean expectSolution, String expectedErrorLine,
+			boolean expectedEarlyTermination) {
 	}
 
 	static Stream<Arguments> testCases() {
 		return Stream.of(
-				Arguments.of(
-						new TestCase("Test.ods", SOLVABLE_SUCCESS_LINE, 323.0, EXPECTED_SCHEDULE_SOLVABLE, true, null)),
+				Arguments.of(new TestCase("Test.ods", SOLVABLE_SUCCESS_LINE, 323.0, EXPECTED_SCHEDULE_SOLVABLE, true,
+						null, false)),
 				Arguments.of(new TestCase("Test_not_solvable.ods", NOT_SOLVABLE_WARNING_LINE, 320.0,
-						EXPECTED_SCHEDULE_NOT_SOLVABLE, true, null)),
+						EXPECTED_SCHEDULE_NOT_SOLVABLE, true, null, false)),
 				Arguments.of(new TestCase("Test_stagnation.ods", SOLVABLE_SUCCESS_LINE, 16.75,
-						EXPECTED_SCHEDULE_STAGNATION, true, null)),
+						EXPECTED_SCHEDULE_STAGNATION, true, null, false)),
+				Arguments.of(new TestCase("Test_optimal_solution.ods", SOLVABLE_SUCCESS_LINE, 0.0,
+						EXPECTED_SCHEDULE_OPTIMAL_SOLUTION, true, null, true)),
 				Arguments.of(new TestCase("Test_not_available.ods", null, -1, null, false,
-						"Error: Error on day 11: An employee is scheduled to work but is marked as unavailable.")));
+						"Error: Error on day 11: An employee is scheduled to work but is marked as unavailable.",
+						false)));
 	}
 
 	@ParameterizedTest
@@ -312,6 +378,8 @@ class MainIntegrationTest {
 						+ " is not equal to " + testCase.expectedCosts() + ".\n" + "Captured stdout: " + stdout);
 				assertTrue(result.outputFile() != null && result.outputFile().exists(),
 						"Output file was not created.\nstdout: " + stdout);
+				assertEquals(testCase.expectedEarlyTermination(), result.earlyTerminated(),
+						"Early termination flag mismatch.\nstdout: " + stdout);
 
 				String[][] actualSchedule = result.schedule();
 				String[][] expectedSchedule = testCase.expectedSchedule();
@@ -360,7 +428,8 @@ class MainIntegrationTest {
 
 		File outputFile = locateOutputFile(stdoutSink, inputFile);
 		String[][] schedule = buildScheduleFromSolution(threadsController);
-		return new ScheduleResult(outputFile, schedule);
+		boolean earlyTerminated = threadsController.isStopped();
+		return new ScheduleResult(outputFile, schedule, earlyTerminated);
 	}
 
 	private String[][] buildScheduleFromSolution(ThreadsController threadsController) {
@@ -391,7 +460,7 @@ class MainIntegrationTest {
 		return sb.toString();
 	}
 
-	private record ScheduleResult(File outputFile, String[][] schedule) {
+	private record ScheduleResult(File outputFile, String[][] schedule, boolean earlyTerminated) {
 	}
 
 	private double extractBestCosts(List<String> stdout) {
