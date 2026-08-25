@@ -23,10 +23,6 @@ public class TabuSearch {
 	private final MoveValidator moveValidator;
 	private final Random random;
 
-	public TabuSearch(ThreadsController threadsController) {
-		this(threadsController, new Random());
-	}
-
 	public TabuSearch(ThreadsController threadsController, Random random) {
 		this.tabuList = new TabuList(Config.LENGTH_OF_TABU_LIST);
 		this.solutionList = new SolutionList(Config.LENGTH_OF_SOLUTION_LIST);
