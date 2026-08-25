@@ -39,6 +39,14 @@ jobs:
             target/site/jacoco/
           if-no-files-found: ignore
 
+      - name: Upload generated output files
+        if: always()
+        uses: actions/upload-artifact@v7
+        with:
+          name: output-ods
+          path: target/test-output-ods/
+          if-no-files-found: ignore
+
       - name: Upload coverage report
         if: always()
         uses: actions/upload-artifact@v7

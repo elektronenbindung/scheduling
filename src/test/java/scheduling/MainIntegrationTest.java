@@ -5,8 +5,10 @@ import java.io.File;
 import java.io.OutputStream;
 import java.io.PrintStream;
 import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.nio.file.StandardCopyOption;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.CountDownLatch;
@@ -334,12 +336,8 @@ class MainIntegrationTest {
 		AssertionError lastFailure = null;
 		for (int attempt = 1; attempt <= MAX_ATTEMPTS; attempt++) {
 			List<String> stdout = new ArrayList<>();
-			ScheduleResult result = null;
-			try {
-				result = runOnceInVm(inputFile, stdout);
-			} catch (TimeoutException e) {
-				throw e;
-			}
+			ScheduleResult result;
+			result = runOnceInVm(inputFile, stdout);
 
 			try {
 				if (!testCase.expectSolution()) {
@@ -393,10 +391,6 @@ class MainIntegrationTest {
 				return;
 			} catch (AssertionError e) {
 				lastFailure = e;
-			} finally {
-				if (result != null) {
-					deleteQuietly(result.outputFile());
-				}
 			}
 		}
 		throw lastFailure != null ? lastFailure : new AssertionError("No attempt was executed.");
@@ -494,16 +488,31 @@ class MainIntegrationTest {
 	}
 
 	@AfterEach
-	void cleanupLeftoverOutputFiles() {
+	void preserveOutputFiles() {
 		File projectRoot = findProjectRoot();
-		File parent = projectRoot.toPath().resolve(TEST_INPUT_DIR).toFile();
-		if (parent == null || !parent.isDirectory()) {
+		File sourceParent = projectRoot.toPath().resolve(TEST_INPUT_DIR).toFile();
+		if (!sourceParent.isDirectory()) {
 			return;
 		}
-		File[] siblings = parent.listFiles((dir, name) -> name.endsWith("_output.ods"));
-		if (siblings != null) {
-			for (File file : siblings) {
-				deleteQuietly(file);
+		File[] siblings = sourceParent.listFiles((dir, name) -> name.endsWith("_output.ods"));
+		if (siblings == null || siblings.length == 0) {
+			return;
+		}
+		File targetDir = projectRoot.toPath().resolve(Paths.get("target", "test-output-ods")).toFile();
+		if (!targetDir.exists() && !targetDir.mkdirs()) {
+			return;
+		}
+		for (File file : siblings) {
+			File dest = new File(targetDir, file.getName());
+			try {
+				Files.move(file.toPath(), dest.toPath(), StandardCopyOption.REPLACE_EXISTING,
+						StandardCopyOption.ATOMIC_MOVE);
+			} catch (Exception atomicMoveFailed) {
+				try {
+					Files.move(file.toPath(), dest.toPath(), StandardCopyOption.REPLACE_EXISTING);
+				} catch (Exception ignored) {
+					deleteQuietly(file);
+				}
 			}
 		}
 	}
