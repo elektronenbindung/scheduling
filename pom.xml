@@ -15,7 +15,7 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 
         <maven.compiler.release>25</maven.compiler.release>
-        <javafx.version>28-ea+5</javafx.version>
+        <javafx.version>25.0.4</javafx.version>
 
         <jgrapht.version>1.5.3</jgrapht.version>
         <sods.version>1.10.1</sods.version>
