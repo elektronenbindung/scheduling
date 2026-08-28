@@ -17,6 +17,13 @@
         "patch"
       ],
       "automerge": true
+    },
+    {
+      "matchPackageNames": [
+        "org.openjfx:javafx-controls",
+        "org.openjfx:javafx-fxml"
+      ],
+      "allowedVersions": "/^(?!.*-ea).*/"
     }
   ],
   "rebaseWhen": "behind-base-branch"
