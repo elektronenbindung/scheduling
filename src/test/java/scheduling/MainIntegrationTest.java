@@ -385,6 +385,9 @@ class MainIntegrationTest {
 						EXPECTED_SCHEDULE_FIXED, true, null, false)),
 				Arguments.of(new TestCase("Test_not_available.ods", null, -1, null, false,
 						"Error: Error on day 11: An employee is scheduled to work but is marked as unavailable.",
+						false)),
+				Arguments.of(new TestCase("Test_multiple_employees_at_day.ods", null, -1, null, false,
+						"Error: Error on day 11: Multiple employees are fixed for this day, but only one is allowed.",
 						false)));
 	}
 
