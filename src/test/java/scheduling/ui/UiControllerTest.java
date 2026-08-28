@@ -106,13 +106,62 @@ class UiControllerTest extends ApplicationTest {
 
 	@Test
 	void stopClickedDisablesStopButton() {
-		clickOn("#startButton");
+		inputField().setText(new java.io.File("src/test/java/scheduling/Test.ods").getAbsolutePath());
 		WaitForAsyncUtils.waitForFxEvents();
+
+		clickOn("#startButton");
+
+		long deadline = System.currentTimeMillis() + 5000;
+		while (!startButton().isDisabled() && System.currentTimeMillis() < deadline) {
+			WaitForAsyncUtils.waitForFxEvents();
+			sleep(50);
+		}
+		assertTrue(startButton().isDisabled(), "Controller should be running (start disabled)");
+		assertFalse(stopButton().isDisabled(), "Stop button should be enabled while running");
 
 		clickOn("#stopButton");
 		WaitForAsyncUtils.waitForFxEvents();
 
 		assertTrue(stopButton().isDisabled());
+	}
+
+	@Test
+	void chooseFileWithNoSelectionClearsConsoleAndShowsHint() {
+		controller.println("previous content");
+		WaitForAsyncUtils.waitForFxEvents();
+		assertTrue(outputConsole().getText().contains("previous content"));
+
+		controller.setFileSelector(window -> null);
+
+		clickOn("#selectFileButton");
+		WaitForAsyncUtils.waitForFxEvents();
+
+		assertFalse(outputConsole().getText().contains("previous content"));
+		assertTrue(outputConsole().getText().contains("No file selected"));
+		assertEquals("", inputField().getText());
+		assertFalse(startButton().isDisabled());
+		assertTrue(stopButton().isDisabled());
+	}
+
+	@Test
+	void chooseFileWithSelectionSetsInputFieldAndStartsProcessing() {
+		controller.setFileSelector(window -> new java.io.File("Test.ods"));
+
+		clickOn("#selectFileButton");
+		WaitForAsyncUtils.waitForFxEvents();
+
+		assertTrue(inputField().getText().endsWith("Test.ods"));
+
+		long deadline = System.currentTimeMillis() + 5000;
+		while (startButton().isDisabled() && System.currentTimeMillis() < deadline) {
+			WaitForAsyncUtils.waitForFxEvents();
+			sleep(50);
+		}
+		WaitForAsyncUtils.waitForFxEvents();
+
+		assertFalse(startButton().isDisabled());
+		assertTrue(stopButton().isDisabled());
+		assertTrue(outputConsole().getText().contains("does not exist"));
 	}
 
 	private Button startButton() {
