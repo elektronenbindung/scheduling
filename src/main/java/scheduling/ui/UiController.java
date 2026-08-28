@@ -1,6 +1,7 @@
 package scheduling.ui;
 
 import java.io.File;
+import java.util.function.Function;
 
 import javafx.application.Platform;
 import javafx.fxml.FXML;
@@ -11,6 +12,7 @@ import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
 import javafx.stage.FileChooser;
+import javafx.stage.Window;
 import scheduling.common.ThreadsController;
 
 public class UiController {
@@ -32,7 +34,7 @@ public class UiController {
 
 	private ThreadsController threadsController;
 
-	private final FileChooser fileChooser;
+	private Function<Window, File> fileSelector;
 
 	private static final String ODS_EXTENSION_DESCRIPTION = "ODS Files";
 	private static final String ODS_EXTENSION = "*.ods";
@@ -40,15 +42,20 @@ public class UiController {
 	private static final String OTS_EXTENSION = "*.ots";
 
 	public UiController() {
-		fileChooser = new FileChooser();
+		FileChooser fileChooser = new FileChooser();
 		fileChooser.getExtensionFilters().addAll(
 				new FileChooser.ExtensionFilter(ODS_EXTENSION_DESCRIPTION, ODS_EXTENSION),
 				new FileChooser.ExtensionFilter(OTS_EXTENSION_DESCRIPTION, OTS_EXTENSION));
+		fileSelector = fileChooser::showOpenDialog;
+	}
+
+	void setFileSelector(Function<Window, File> fileSelector) {
+		this.fileSelector = fileSelector;
 	}
 
 	@FXML
 	void selectFileClicked(MouseEvent event) {
-		File selectedFile = fileChooser.showOpenDialog(inputField.getScene().getWindow());
+		File selectedFile = fileSelector.apply(inputField.getScene().getWindow());
 		if (selectedFile != null) {
 			String fileName = selectedFile.getAbsolutePath();
 			inputField.setText(fileName);
