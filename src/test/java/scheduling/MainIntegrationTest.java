@@ -388,7 +388,9 @@ class MainIntegrationTest {
 						false)),
 				Arguments.of(new TestCase("Test_multiple_employees_at_day.ods", null, -1, null, false,
 						"Error: Error on day 11: Multiple employees are fixed for this day, but only one is allowed.",
-						false)));
+						false)),
+				Arguments.of(new TestCase("Test_not_existing.ods", null, -1, null, false,
+						"Error: The provided input file does not exist or is not a file", false)));
 	}
 
 	@ParameterizedTest
@@ -398,7 +400,6 @@ class MainIntegrationTest {
 		System.setProperty("scheduling.numberOfParallelThreads", String.valueOf(NUMBER_OF_PARALLEL_THREADS_OVERRIDE));
 		File projectRoot = findProjectRoot();
 		File inputFile = projectRoot.toPath().resolve(Paths.get(TEST_INPUT_DIR, testCase.inputFileName())).toFile();
-		assertTrue(inputFile.exists(), "Input file not found: " + inputFile.getAbsolutePath());
 
 		AssertionError lastFailure = null;
 		for (int attempt = 1; attempt <= MAX_ATTEMPTS; attempt++) {
