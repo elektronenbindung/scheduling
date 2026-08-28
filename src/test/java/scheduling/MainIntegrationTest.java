@@ -52,7 +52,7 @@ class MainIntegrationTest {
 
 	private static final long RANDOM_SEED = 42L;
 
-	private static final int NUMBER_OF_PARALLEL_THREADS_OVERRIDE = 1;
+	private static final int NUMBER_OF_PARALLEL_THREADS_OVERRIDE = 5;
 
 	private static final String TEST_INPUT_DIR = Paths.get("src", "test", "java", "scheduling").toString();
 
