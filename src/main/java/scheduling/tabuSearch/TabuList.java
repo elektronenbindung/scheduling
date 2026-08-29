@@ -20,10 +20,6 @@ public class TabuList {
 	}
 
 	public void add(Move move) {
-		if (capacity == 0) {
-			return;
-		}
-
 		if (moveQueue.size() >= capacity) {
 			Move oldestMove = moveQueue.poll();
 			moveSet.remove(oldestMove);

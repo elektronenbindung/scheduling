@@ -67,11 +67,6 @@ public class SpreadsheetReaderToolsHelper {
 	}
 
 	public TriFunction<Range, Integer, Integer, Integer> getFunctionForCalculationOfFixedEmployees() {
-		if (this.fixedEmployeeOnDay == null) {
-			throw new IllegalStateException(
-					"fixedEmployeeOnDay must be set before calling getFunctionForCalculationOfFixedEmployees.");
-		}
-
 		return this::calculateFixedEmployeeInternal;
 	}
 
@@ -108,11 +103,7 @@ public class SpreadsheetReaderToolsHelper {
 	}
 
 	private void validateSingleEmployeePerDay(boolean isWorking, int day) {
-		if (fixedEmployeeOnDay == null) {
-			throw new IllegalStateException("Internal error: fixedEmployeeOnDay is null during validation.");
-		}
-
-		if (isWorking && day >= 0 && day < fixedEmployeeOnDay.length) {
+		if (isWorking) {
 			if (fixedEmployeeOnDay[day] != Config.MISSING_EMPLOYEE) {
 				throw new IllegalArgumentException("Error on day " + (day + 1)
 						+ ": Multiple employees are fixed for this day, but only one is allowed.");
@@ -121,14 +112,6 @@ public class SpreadsheetReaderToolsHelper {
 	}
 
 	private int getFixedEmployeeOnDay(int day) {
-		if (fixedEmployeeOnDay == null) {
-			throw new IllegalStateException(
-					"Internal error: fixedEmployeeOnDay is null when retrieving fixed employee.");
-		}
-
-		if (day < 0 || day >= fixedEmployeeOnDay.length) {
-			return Config.MISSING_EMPLOYEE;
-		}
 		return fixedEmployeeOnDay[day];
 	}
 }

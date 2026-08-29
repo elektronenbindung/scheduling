@@ -17,9 +17,6 @@ public class SolutionList {
 	}
 
 	public void add(Solution solution) {
-		if (capacity == 0) {
-			return;
-		}
 		if (solutions.size() >= capacity) {
 			solutions.removeFirst();
 		}
