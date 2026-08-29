@@ -389,6 +389,8 @@ class MainIntegrationTest {
 				Arguments.of(new TestCase("Test_multiple_employees_at_day.ods", null, -1, null, false,
 						"Error: Error on day 11: Multiple employees are fixed for this day, but only one is allowed.",
 						false)),
+				Arguments.of(new TestCase("Test_not_parsable_date.ods", null, -1, null, false,
+						"Error: Cell L1 does not contain a valid date (LocalDate).", false)),
 				Arguments.of(new TestCase("Test_not_existing.ods", null, -1, null, false,
 						"Error: The provided input file does not exist or is not a file", false)));
 	}
