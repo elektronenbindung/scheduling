@@ -29,7 +29,10 @@ public final class Main {
 				System.out.println(UI_LAUNCH_HINT);
 				UiApplication.launch(UiApplication.class, args);
 			}
-			case CONSOLE -> runConsoleMode(new File(args[0]), console);
+			case CONSOLE -> {
+				assert console != null;
+				runConsoleMode(new File(args[0]), console);
+			}
 		}
 	}
 
