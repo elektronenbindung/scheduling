@@ -14,9 +14,6 @@ public class SolutionCostMapper {
 	}
 
 	public double calculateTotalCosts(Solution solution) {
-		if (solution == null) {
-			return Config.OPTIMAL_SOLUTION;
-		}
 		state.initialize();
 		double totalCosts = Config.OPTIMAL_SOLUTION;
 
