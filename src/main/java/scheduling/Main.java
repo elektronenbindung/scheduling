@@ -17,20 +17,34 @@ public final class Main {
 	}
 
 	public static void main(String[] args) {
-		if (args.length == 1 && Objects.equals(args[0], Config.VERSION)) {
-			System.out.println(AppVersion.getVersion());
-			System.exit(0);
-		}
-
 		Console console = System.console();
+		Mode mode = determineMode(args, console != null);
 
-		if (args.length != 1 || console == null) {
-			System.out.println(UI_LAUNCH_HINT);
-			UiApplication.launch(UiApplication.class, args);
-		} else {
-			File input = new File(args[0]);
-			runConsoleMode(input, console);
+		switch (mode) {
+			case VERSION -> {
+				System.out.println(AppVersion.getVersion());
+				System.exit(0);
+			}
+			case UI -> {
+				System.out.println(UI_LAUNCH_HINT);
+				UiApplication.launch(UiApplication.class, args);
+			}
+			case CONSOLE -> runConsoleMode(new File(args[0]), console);
 		}
+	}
+
+	enum Mode {
+		VERSION, UI, CONSOLE
+	}
+
+	static Mode determineMode(String[] args, boolean consoleAvailable) {
+		if (args.length == 1 && Objects.equals(args[0], Config.VERSION)) {
+			return Mode.VERSION;
+		}
+		if (args.length != 1 || !consoleAvailable) {
+			return Mode.UI;
+		}
+		return Mode.CONSOLE;
 	}
 
 	private static void runConsoleMode(File input, Console console) {
