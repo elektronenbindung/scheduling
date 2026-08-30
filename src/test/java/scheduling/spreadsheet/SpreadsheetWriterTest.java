@@ -9,6 +9,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import org.junit.jupiter.api.Test;
@@ -37,7 +38,6 @@ class SpreadsheetWriterTest {
 		ThreadsController threadsController = new ThreadsController(input, null);
 		threadsController.getSpreadsheetReader().run();
 
-		List<File> createdOutputs = new ArrayList<>();
 		for (int i = 0; i < 3; i++) {
 			Solution solution = emptySolution(threadsController.getSpreadsheetReader());
 			new SpreadsheetWriter(solution, threadsController).run();
@@ -66,9 +66,7 @@ class SpreadsheetWriterTest {
 	private Solution emptySolution(SpreadsheetReader reader) {
 		int lengthOfMonth = reader.getLengthOfMonth();
 		int[] solution = new int[lengthOfMonth];
-		for (int day = 0; day < lengthOfMonth; day++) {
-			solution[day] = Config.MISSING_EMPLOYEE;
-		}
+		Arrays.fill(solution, Config.MISSING_EMPLOYEE);
 		int[] numberOfFreeDays = new int[Config.NUMBER_OF_EMPLOYEES];
 		return new Solution(solution, numberOfFreeDays, reader, null);
 	}
@@ -87,7 +85,7 @@ class SpreadsheetWriterTest {
 
 	private List<String> listOdsFiles(File dir) {
 		List<String> names = new ArrayList<>();
-		File[] files = dir.listFiles((d, n) -> n.endsWith(".ods"));
+		File[] files = dir.listFiles((_, n) -> n.endsWith(".ods"));
 		if (files != null) {
 			for (File f : files) {
 				names.add(f.getName());
