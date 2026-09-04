@@ -27,7 +27,7 @@
         <maven-resources-plugin.version>3.5.0</maven-resources-plugin.version>
         <maven-jar-plugin.version>3.5.1</maven-jar-plugin.version>
         <maven-install-plugin.version>3.1.4</maven-install-plugin.version>
-        <maven-surefire-plugin.version>3.5.6</maven-surefire-plugin.version>
+        <maven-surefire-plugin.version>3.6.0</maven-surefire-plugin.version>
         <junit-jupiter.version>6.1.3</junit-jupiter.version>
         <testfx.version>4.0.18</testfx.version>
         <openjfx-monocle.version>21.0.2</openjfx-monocle.version>
