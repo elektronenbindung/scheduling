@@ -88,10 +88,8 @@ public class UiController {
 
 	@FXML
 	void stopClicked(MouseEvent event) {
-		if (threadsController != null) {
-			stopButton.setDisable(true);
-			threadsController.stop();
-		}
+		stopButton.setDisable(true);
+		threadsController.stop();
 	}
 
 	public void finished() {
