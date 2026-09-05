@@ -4,6 +4,9 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+import java.io.File;
+
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
 import org.testfx.framework.junit5.ApplicationTest;
 import org.testfx.util.WaitForAsyncUtils;
@@ -29,6 +32,17 @@ class UiControllerTest extends ApplicationTest {
 		controller = loader.getController();
 		stage.setScene(new Scene(root));
 		stage.show();
+	}
+
+	@AfterEach
+	void deleteGeneratedOutputFiles() {
+		File inputDir = new File(java.nio.file.Paths.get("src", "test", "java", "scheduling").toString());
+		File[] outputFiles = inputDir.listFiles((_, name) -> name.endsWith("_output.ods"));
+		if (outputFiles != null) {
+			for (File file : outputFiles) {
+				file.delete();
+			}
+		}
 	}
 
 	@Test
@@ -81,6 +95,39 @@ class UiControllerTest extends ApplicationTest {
 		clickOn("#inputField").type(KeyCode.A);
 		WaitForAsyncUtils.waitForFxEvents();
 
+		assertFalse(startButton().isDisabled());
+		assertTrue(stopButton().isDisabled());
+	}
+
+	@Test
+	void handleOnKeyReleasedWithEnterStartsProcessingWhenNoControllerIsActive() {
+		assertEquals("", inputField().getText());
+
+		clickOn("#inputField").type(KeyCode.ENTER);
+
+		long deadline = System.currentTimeMillis() + 5000;
+		while (!outputConsole().getText().contains("does not exist") && System.currentTimeMillis() < deadline) {
+			WaitForAsyncUtils.waitForFxEvents();
+			sleep(50);
+		}
+		WaitForAsyncUtils.waitForFxEvents();
+
+		assertTrue(outputConsole().getText().contains("does not exist"));
+		assertFalse(startButton().isDisabled());
+		assertTrue(stopButton().isDisabled());
+	}
+
+	@Test
+	void handleOnKeyReleasedWithEnterIsIgnoredWhileControllerIsActive() throws Exception {
+		controller.println("previous content");
+		WaitForAsyncUtils.waitForFxEvents();
+
+		setThreadsController(new scheduling.common.ThreadsController(new java.io.File("Test.ods"), controller));
+
+		clickOn("#inputField").type(KeyCode.ENTER);
+		WaitForAsyncUtils.waitForFxEvents();
+
+		assertTrue(outputConsole().getText().contains("previous content"));
 		assertFalse(startButton().isDisabled());
 		assertTrue(stopButton().isDisabled());
 	}
@@ -162,6 +209,12 @@ class UiControllerTest extends ApplicationTest {
 		assertFalse(startButton().isDisabled());
 		assertTrue(stopButton().isDisabled());
 		assertTrue(outputConsole().getText().contains("does not exist"));
+	}
+
+	private void setThreadsController(scheduling.common.ThreadsController threadsController) throws Exception {
+		java.lang.reflect.Field field = UiController.class.getDeclaredField("threadsController");
+		field.setAccessible(true);
+		field.set(controller, threadsController);
 	}
 
 	private Button startButton() {
