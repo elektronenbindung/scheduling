@@ -1,5 +1,5 @@
 {
-  "$schema": "https://renovatebot.com",
+  "$schema": "https://docs.renovatebot.com/renovate-schema.json",
   "extends": [
     "config:recommended",
     ":dependencyDashboard"
@@ -10,6 +10,9 @@
   ],
   "prConcurrentLimit": 0,
   "prHourlyLimit": 0,
+  "gitIgnoredAuthors": [
+    "29139614+renovate[bot]@users.noreply.github.com"
+  ],
   "packageRules": [
     {
       "matchUpdateTypes": [
