@@ -2,6 +2,7 @@ package scheduling.ui;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.File;
@@ -152,7 +153,24 @@ class UiControllerTest extends ApplicationTest {
 	}
 
 	@Test
-	void stopClickedDisablesStopButton() {
+	void stopClickedWithNoControllerIsActiveKeepsStopButtonDisabled() throws Exception {
+		assertNull(getThreadsController());
+
+		clickOn("#stopButton");
+		WaitForAsyncUtils.waitForFxEvents();
+
+		assertNull(getThreadsController());
+		assertTrue(stopButton().isDisabled());
+		assertFalse(startButton().isDisabled());
+		assertFalse(selectFileButton().isDisabled());
+	}
+
+	@Test
+	void startAndStopCycleSwitchesUiBetweenRunningAndReadyState() {
+		assertFalse(startButton().isDisabled(), "Initially start button should be enabled");
+		assertFalse(selectFileButton().isDisabled(), "Initially file select button should be enabled");
+		assertTrue(stopButton().isDisabled(), "Initially stop button should be disabled");
+
 		inputField().setText(new java.io.File("src/test/java/scheduling/Test.ods").getAbsolutePath());
 		WaitForAsyncUtils.waitForFxEvents();
 
@@ -164,12 +182,15 @@ class UiControllerTest extends ApplicationTest {
 			sleep(50);
 		}
 		assertTrue(startButton().isDisabled(), "Controller should be running (start disabled)");
+		assertTrue(selectFileButton().isDisabled(), "select file button button should be disabled while running");
 		assertFalse(stopButton().isDisabled(), "Stop button should be enabled while running");
 
 		clickOn("#stopButton");
 		WaitForAsyncUtils.waitForFxEvents();
 
-		assertTrue(stopButton().isDisabled());
+		assertFalse(startButton().isDisabled(), "At the end start button should be enabled");
+		assertFalse(selectFileButton().isDisabled(), "At the end file select button should be enabled");
+		assertTrue(stopButton().isDisabled(), "At the end stop button should be disabled");
 	}
 
 	@Test
@@ -215,6 +236,12 @@ class UiControllerTest extends ApplicationTest {
 		java.lang.reflect.Field field = UiController.class.getDeclaredField("threadsController");
 		field.setAccessible(true);
 		field.set(controller, threadsController);
+	}
+
+	private scheduling.common.ThreadsController getThreadsController() throws Exception {
+		java.lang.reflect.Field field = UiController.class.getDeclaredField("threadsController");
+		field.setAccessible(true);
+		return (scheduling.common.ThreadsController) field.get(controller);
 	}
 
 	private Button startButton() {
