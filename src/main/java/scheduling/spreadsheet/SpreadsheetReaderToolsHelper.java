@@ -78,6 +78,10 @@ public class SpreadsheetReaderToolsHelper {
 		return (range, employee, day) -> Config.WISHED_SHIFT.equals(String.valueOf(range.getValues()[employee][day]));
 	}
 
+	public TriFunction<Range, Integer, Integer, Boolean> getFunctionForAvoidedShift() {
+		return (range, employee, day) -> Config.AVOIDED_SHIFT.equals(String.valueOf(range.getValues()[employee][day]));
+	}
+
 	public void setFixedEmployeeOnDay(Integer[] fixedEmployeeOnDay) {
 		this.fixedEmployeeOnDay = Objects.requireNonNull(fixedEmployeeOnDay,
 				"fixedEmployeeOnDay array must not be null");

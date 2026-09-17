@@ -15,6 +15,7 @@ public class Config {
 	public static final String WORK_DAY = "A";
 	public static final String WORKING = "x";
 	public static final String WISHED_SHIFT = "+";
+	public static final String AVOIDED_SHIFT = "-";
 	public static final String SINGLE_SHIFT = "E";
 	public static final int MISSING_EMPLOYEE = Integer.MIN_VALUE;
 	public static final int WEIGHT_FOR_NORMAL_DAY = 1;
@@ -30,6 +31,7 @@ public class Config {
 	public static final double PENALTY_FOR_FORBIDDEN_SHIFT = 10000;
 	public static final double PENALTY_FOR_MANDATORY_BLOCK_SHIFT = 300;
 	public static final double PENALTY_FOR_WISHED_SHIFT = 2;
+	public static final double PENALTY_FOR_AVOIDED_SHIFT = 10;
 	public static final double OPTIMAL_SOLUTION = 0;
 	public static final int UNKNOWN_SOLUTION_COSTS = -1;
 	public static final String QUIT = ":q";
