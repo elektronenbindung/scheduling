@@ -25,6 +25,7 @@ public class SpreadsheetReader {
 	private double[] daysToWorkAtFreeDayPerEmployee;
 	private double[] wishedLengthOfShiftPerEmployee;
 	private Boolean[][] wishedShiftPerEmployee;
+	private Boolean[][] avoidedShiftPerEmployee;
 	private boolean[] hasAnyWishForDay;
 	private double[] expectedDaysBetweenShiftsPerEmployee;
 
@@ -58,6 +59,13 @@ public class SpreadsheetReader {
 			return false;
 		}
 		return hasAnyWishForDay[day] && !wishedShiftPerEmployee[employee][day];
+	}
+
+	public boolean isShiftAvoided(int employee, int day) {
+		if (employee == Config.MISSING_EMPLOYEE) {
+			return false;
+		}
+		return avoidedShiftPerEmployee[employee][day];
 	}
 
 	public double getExpectedDaysBetweenShiftsForEmployee(int employee) {
@@ -114,6 +122,7 @@ public class SpreadsheetReader {
 		wishedLengthOfShiftPerEmployee = tools.calculateWishedLengthOfShiftPerEmployee();
 		expectedDaysBetweenShiftsPerEmployee = tools.calculateExpectedDaysBetweenShifts();
 		wishedShiftPerEmployee = tools.calculateWishedShift();
+		avoidedShiftPerEmployee = tools.calculateAvoidedShift();
 		hasAnyWishForDay = calculateHasAnyWishForDay();
 	}
 

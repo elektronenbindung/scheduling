@@ -47,6 +47,7 @@ public class SolutionCostMapper {
 		double dailyCosts = 0.0;
 		int employee = solution.getEmployeeForDay(day);
 		dailyCosts += calculatePenaltyForWishedShift(employee, day);
+		dailyCosts += calculatePenaltyForAvoidedShift(employee, day);
 
 		dailyCosts += calculatePenaltyForMandatoryBlockShift(solution, day);
 
@@ -74,6 +75,10 @@ public class SolutionCostMapper {
 
 	private double calculatePenaltyForWishedShift(int employee, int day) {
 		return spreadsheetReader.isWishNotFulfilled(employee, day) ? Config.PENALTY_FOR_WISHED_SHIFT : 0;
+	}
+
+	private double calculatePenaltyForAvoidedShift(int employee, int day) {
+		return spreadsheetReader.isShiftAvoided(employee, day) ? Config.PENALTY_FOR_AVOIDED_SHIFT : 0;
 	}
 
 	private double calculatePenaltyForMandatoryBlockShift(Solution solution, int day) {

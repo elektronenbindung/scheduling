@@ -102,6 +102,15 @@ public class SpreadSheetReaderTools {
 		return result;
 	}
 
+	public Boolean[][] calculateAvoidedShift() {
+		Boolean[][] result = new Boolean[Config.NUMBER_OF_EMPLOYEES][reader.getLengthOfMonth()];
+
+		for (int employee = 0; employee < Config.NUMBER_OF_EMPLOYEES; employee++) {
+			helper.calculatePropertyForEmployeeOnDays(result[employee], employee, helper.getFunctionForAvoidedShift());
+		}
+		return result;
+	}
+
 	public double[] calculateAdditionalFreeDaysBetweenShifts() {
 		return Arrays
 				.stream(helper.calculateEmployeePreferencesOnSpreadsheet(ADDITIONAL_MIN_FREE_DAYS_BETWEEN_SHIFTS, true))
