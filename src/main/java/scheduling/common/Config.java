@@ -31,7 +31,7 @@ public class Config {
 	public static final double PENALTY_FOR_FORBIDDEN_SHIFT = 10000;
 	public static final double PENALTY_FOR_MANDATORY_BLOCK_SHIFT = 300;
 	public static final double PENALTY_FOR_WISHED_SHIFT = 2;
-	public static final double PENALTY_FOR_AVOIDED_SHIFT = 10;
+	public static final double PENALTY_FOR_AVOIDED_SHIFT = 5;
 	public static final double OPTIMAL_SOLUTION = 0;
 	public static final int UNKNOWN_SOLUTION_COSTS = -1;
 	public static final String QUIT = ":q";
