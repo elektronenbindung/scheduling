@@ -61,52 +61,56 @@ public class SpreadSheetReaderTools {
 		}
 	}
 
-	public Boolean[] calculateIsFreeDay() {
+	public boolean[] calculateIsFreeDay() {
 		int row = Config.LAST_ROW_OF_SCHEDULE + FREE_DAY_ROW_OFFSET;
-		return Arrays.stream(helper.calculateDayProperty(row, Config.WORK_DAY)).map(x -> !x).toArray(Boolean[]::new);
+		return negateDayProperty(helper.calculateDayProperty(row, Config.WORK_DAY));
 	}
 
-	public Boolean[] calculateIsSingleShiftForbiddenOnDay() {
+	public boolean[] calculateIsSingleShiftForbiddenOnDay() {
 		int row = Config.LAST_ROW_OF_SCHEDULE + SINGLE_SHIFT_ALLOWED_ROW_OFFSET;
-		return Arrays.stream(helper.calculateDayProperty(row, Config.SINGLE_SHIFT)).map(x -> !x)
-				.toArray(Boolean[]::new);
+		return negateDayProperty(helper.calculateDayProperty(row, Config.SINGLE_SHIFT));
 	}
 
-	public Integer[] calculateFixedEmployees() {
-		Integer[] result = new Integer[reader.getLengthOfMonth()];
+	public int[] calculateFixedEmployees() {
+		int[] result = new int[reader.getLengthOfMonth()];
 		Arrays.fill(result, Config.MISSING_EMPLOYEE);
 		helper.setFixedEmployeeOnDay(result);
 
 		for (int employee = 0; employee < Config.NUMBER_OF_EMPLOYEES; employee++) {
-			helper.calculatePropertyForEmployeeOnDays(result, employee,
-					helper.getFunctionForCalculationOfFixedEmployees());
+			helper.calculatePropertyForEmployeeOnDays(employee, helper.getFunctionForCalculationOfFixedEmployees(),
+					(day, fixedEmployee) -> result[day] = fixedEmployee);
 		}
 		return result;
 	}
 
-	public Boolean[][] calculateAvailability() {
-		Boolean[][] result = new Boolean[Config.NUMBER_OF_EMPLOYEES][reader.getLengthOfMonth()];
+	public boolean[][] calculateAvailability() {
+		boolean[][] result = new boolean[Config.NUMBER_OF_EMPLOYEES][reader.getLengthOfMonth()];
 		for (int employee = 0; employee < Config.NUMBER_OF_EMPLOYEES; employee++) {
-			helper.calculatePropertyForEmployeeOnDays(result[employee], employee,
-					helper.getFunctionForCalculationOfAvailableEmployees());
+			boolean[] resultForEmployee = result[employee];
+			helper.calculatePropertyForEmployeeOnDays(employee, helper.getFunctionForCalculationOfAvailableEmployees(),
+					(day, isAvailable) -> resultForEmployee[day] = isAvailable);
 		}
 		return result;
 	}
 
-	public Boolean[][] calculateWishedShift() {
-		Boolean[][] result = new Boolean[Config.NUMBER_OF_EMPLOYEES][reader.getLengthOfMonth()];
+	public boolean[][] calculateWishedShift() {
+		boolean[][] result = new boolean[Config.NUMBER_OF_EMPLOYEES][reader.getLengthOfMonth()];
 
 		for (int employee = 0; employee < Config.NUMBER_OF_EMPLOYEES; employee++) {
-			helper.calculatePropertyForEmployeeOnDays(result[employee], employee, helper.getFunctionForWishedShift());
+			boolean[] resultForEmployee = result[employee];
+			helper.calculatePropertyForEmployeeOnDays(employee, helper.getFunctionForWishedShift(),
+					(day, isWished) -> resultForEmployee[day] = isWished);
 		}
 		return result;
 	}
 
-	public Boolean[][] calculateAvoidedShift() {
-		Boolean[][] result = new Boolean[Config.NUMBER_OF_EMPLOYEES][reader.getLengthOfMonth()];
+	public boolean[][] calculateAvoidedShift() {
+		boolean[][] result = new boolean[Config.NUMBER_OF_EMPLOYEES][reader.getLengthOfMonth()];
 
 		for (int employee = 0; employee < Config.NUMBER_OF_EMPLOYEES; employee++) {
-			helper.calculatePropertyForEmployeeOnDays(result[employee], employee, helper.getFunctionForAvoidedShift());
+			boolean[] resultForEmployee = result[employee];
+			helper.calculatePropertyForEmployeeOnDays(employee, helper.getFunctionForAvoidedShift(),
+					(day, isAvoided) -> resultForEmployee[day] = isAvoided);
 		}
 		return result;
 	}
@@ -131,6 +135,14 @@ public class SpreadSheetReaderTools {
 		return IntStream.range(0, result.length)
 				.mapToDouble(employee -> Math.min(result[employee], reader.getMaxLengthOfShiftPerEmployee(employee)))
 				.toArray();
+	}
+
+	private boolean[] negateDayProperty(boolean[] dayProperty) {
+		boolean[] result = new boolean[dayProperty.length];
+		for (int day = 0; day < dayProperty.length; day++) {
+			result[day] = !dayProperty[day];
+		}
+		return result;
 	}
 
 }

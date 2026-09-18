@@ -12,15 +12,15 @@ public class SpreadsheetReaderToolsHelper {
 	private static final int SCHEDULE_DATA_START_ROW = 6;
 
 	private final SpreadsheetReader reader;
-	private Integer[] fixedEmployeeOnDay;
+	private int[] fixedEmployeeOnDay;
 
 	public SpreadsheetReaderToolsHelper(SpreadsheetReader reader) {
 		this.reader = Objects.requireNonNull(reader, "SpreadsheetReader must not be null");
 		this.fixedEmployeeOnDay = null;
 	}
 
-	public Boolean[] calculateDayProperty(int row, String property) {
-		Boolean[] dayProperty = new Boolean[reader.getLengthOfMonth()];
+	public boolean[] calculateDayProperty(int row, String property) {
+		boolean[] dayProperty = new boolean[reader.getLengthOfMonth()];
 		String a1Notation = SCHEDULE_DATA_START_COLUMN + row + ":" + SCHEDULE_DATA_END_COLUMN + row;
 		Range range = reader.getSheet().getRange(a1Notation);
 		Object[] objects = range.getValues()[0];
@@ -55,14 +55,14 @@ public class SpreadsheetReaderToolsHelper {
 		return preferencesPerEmployee;
 	}
 
-	public <T> void calculatePropertyForEmployeeOnDays(T[] result, int employee,
-			TriFunction<Range, Integer, Integer, T> function) {
+	public <T> void calculatePropertyForEmployeeOnDays(int employee, TriFunction<Range, Integer, Integer, T> function,
+			DayPropertySetter<T> resultSetter) {
 		String a1Notation = SCHEDULE_DATA_START_COLUMN + SCHEDULE_DATA_START_ROW + ":" + SCHEDULE_DATA_END_COLUMN
 				+ Config.LAST_ROW_OF_SCHEDULE;
 		Range range = reader.getSheet().getRange(a1Notation);
 
 		for (int day = 0; day < reader.getLengthOfMonth(); day++) {
-			result[day] = function.apply(range, employee, day);
+			resultSetter.set(day, function.apply(range, employee, day));
 		}
 	}
 
@@ -82,7 +82,7 @@ public class SpreadsheetReaderToolsHelper {
 		return (range, employee, day) -> Config.AVOIDED_SHIFT.equals(String.valueOf(range.getValues()[employee][day]));
 	}
 
-	public void setFixedEmployeeOnDay(Integer[] fixedEmployeeOnDay) {
+	public void setFixedEmployeeOnDay(int[] fixedEmployeeOnDay) {
 		this.fixedEmployeeOnDay = Objects.requireNonNull(fixedEmployeeOnDay,
 				"fixedEmployeeOnDay array must not be null");
 	}
