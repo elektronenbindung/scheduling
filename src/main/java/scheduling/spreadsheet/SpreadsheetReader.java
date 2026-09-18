@@ -16,16 +16,16 @@ public class SpreadsheetReader {
 	private Sheet sheet;
 	private int lengthOfMonth;
 	private double[] maxLengthOfShiftPerEmployee;
-	private Boolean[] isFreeDay;
-	private Boolean[] isSingleSShiftForbiddenOnDay;
-	private Integer[] fixedEmployeeOnDay;
-	private Boolean[][] isAvailablePerDay;
+	private boolean[] isFreeDay;
+	private boolean[] isSingleSShiftForbiddenOnDay;
+	private int[] fixedEmployeeOnDay;
+	private boolean[][] isAvailablePerDay;
 	private double[] additionalFreeDaysBetweenShifts;
 	private double[] daysToWorkInTotalPerEmployee;
 	private double[] daysToWorkAtFreeDayPerEmployee;
 	private double[] wishedLengthOfShiftPerEmployee;
-	private Boolean[][] wishedShiftPerEmployee;
-	private Boolean[][] avoidedShiftPerEmployee;
+	private boolean[][] wishedShiftPerEmployee;
+	private boolean[][] avoidedShiftPerEmployee;
 	private boolean[] hasAnyWishForDay;
 	private double[] expectedDaysBetweenShiftsPerEmployee;
 
