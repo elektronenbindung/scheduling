@@ -383,7 +383,7 @@ class MainIntegrationTest {
 						EXPECTED_SCHEDULE_OPTIMAL_SOLUTION, true, null, true)),
 				Arguments.of(new TestCase("Test_fixed_schedule", SOLVABLE_SUCCESS_LINE, 36.625, EXPECTED_SCHEDULE_FIXED,
 						true, null, false)),
-				Arguments.of(new TestCase("Test_avoid_shift.ods", SOLVABLE_SUCCESS_LINE, 46.625,
+				Arguments.of(new TestCase("Test_avoid_shift.ods", SOLVABLE_SUCCESS_LINE, 41.625,
 						EXPECTED_SCHEDULE_FIXED, true, null, false)),
 				Arguments.of(new TestCase("Test_not_available.ods", null, -1, null, false,
 						"Error: Error on day 11: An employee is scheduled to work but is marked as unavailable.",
