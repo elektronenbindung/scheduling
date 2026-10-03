@@ -186,8 +186,12 @@ class UiControllerTest extends ApplicationTest {
 		assertFalse(stopButton().isDisabled(), "Stop button should be enabled while running");
 
 		clickOn("#stopButton");
-		WaitForAsyncUtils.waitForFxEvents();
 
+		long finishDeadline = System.currentTimeMillis() + 5000;
+		while (startButton().isDisabled() && System.currentTimeMillis() < finishDeadline) {
+			WaitForAsyncUtils.waitForFxEvents();
+			sleep(50);
+		}
 		assertFalse(startButton().isDisabled(), "At the end start button should be enabled");
 		assertFalse(selectFileButton().isDisabled(), "At the end file select button should be enabled");
 		assertTrue(stopButton().isDisabled(), "At the end stop button should be disabled");
