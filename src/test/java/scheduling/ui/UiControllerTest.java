@@ -203,7 +203,7 @@ class UiControllerTest extends ApplicationTest {
 		WaitForAsyncUtils.waitForFxEvents();
 		assertTrue(outputConsole().getText().contains("previous content"));
 
-		controller.setFileSelector(window -> null);
+		controller.setFileSelector(_ -> null);
 
 		clickOn("#selectFileButton");
 		WaitForAsyncUtils.waitForFxEvents();
@@ -217,7 +217,7 @@ class UiControllerTest extends ApplicationTest {
 
 	@Test
 	void chooseFileWithSelectionSetsInputFieldAndStartsProcessing() {
-		controller.setFileSelector(window -> new java.io.File("Test.ods"));
+		controller.setFileSelector(_ -> new java.io.File("Test.ods"));
 
 		clickOn("#selectFileButton");
 		WaitForAsyncUtils.waitForFxEvents();
