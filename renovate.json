@@ -6,7 +6,7 @@
   ],
   "timezone": "Europe/Berlin",
   "schedule": [
-    "after 17:00 on friday"
+    "after 17:00 every weekday"
   ],
   "prConcurrentLimit": 0,
   "prHourlyLimit": 0,
